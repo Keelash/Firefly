@@ -21,6 +21,8 @@ Windows:
   
 # Acknowledment:
 Firefly is based on the Assimp and the GLM Library. You can get them at :
+
     Assimp : http://www.assimp.org/
+    
     GLM : http://glm.g-truc.net/
   
