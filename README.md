@@ -13,8 +13,11 @@ First Step : To maximize space, the library are compressed. Think to unzip them 
 Unix:
    
    1. >> mkdir build
+   
    2. >> cd build
+   
    3. >> cmake ..
+   
    4. >> make
 
 Windows:
@@ -22,6 +25,7 @@ Windows:
   
 # Acknowledgment:
 Firefly is based on the Assimp and the GLM Library. You can get them at :
+
     Assimp : http://www.assimp.org/
     GLM : http://glm.g-truc.net/
   
