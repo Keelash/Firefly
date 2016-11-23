@@ -29,8 +29,12 @@ set(ASSIMP_BUILD_STATIC_LIB ON)
 
 add_subdirectory(lib/assimp-3.3.1)
 
-#find Shader File
+#find Shader File and copy it near the binary
 file(GLOB SHDR shader/*)
+
+file(MAKE_DIRECTORY shader)
+file(COPY ${SHDR} DESTINATION shader)
+
 
 #Find Source File
 file(GLOB_RECURSE SRCS src/*)
