@@ -11,15 +11,15 @@ If you don"t have Cmake, you can download it at http://www.cmake.org/.
 First Step : To maximize space, the library are compressed. Think to unzip them before building !
 
 Unix:
-   1. >>mkdir build
-   2. >>cd build
-   3. >>cmake ..
-   4. >>make
+   1. >> mkdir build
+   2. >> cd build
+   3. >> cmake ..
+   4. >> make
 
 Windows:
   Don't know yet how it can work... I think Mingw or Cmake can do the job
   
-# Acknowledment:
+# Acknowledgment:
 Firefly is based on the Assimp and the GLM Library. You can get them at :
 
     Assimp : http://www.assimp.org/
