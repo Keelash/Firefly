@@ -38,10 +38,20 @@ void OpenGlTexture::bindAsActiveTexture(GLuint pos) {
     glBindTexture(GL_TEXTURE_2D, this->texid_);
 }
 
+void OpenGlTexture::generateMipMap() {
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void OpenGlTexture::getPixel(int level, float* pixel) {
+    glGetTexImage(GL_TEXTURE_2D, level, GL_RGBA, GL_FLOAT, pixel);
+}
+
 void OpenGlTexture::createFromFile(const char* file) {
     GLuint texture;
     QImage image(file);
     image.convertToFormat(QImage::Format_RGB888);
+
+
 
     if(!image.isNull()) {
         glGenTextures(1, &texture);

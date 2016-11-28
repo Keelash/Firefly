@@ -15,6 +15,9 @@ public:
     void unbindTexture();
     void bindAsActiveTexture(GLuint pos);
 
+    void getPixel(int level, float* pixel);
+    void generateMipMap();
+
     GLuint getTextureId() { return this->texid_; }
 
 private:

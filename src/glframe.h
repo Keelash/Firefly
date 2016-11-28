@@ -26,6 +26,7 @@ public:
 
     bool setEnvmap(const char *path);
     bool loadFile(std::string path);
+    void changeCamera(int mode) { this->data_base_->changeCameraMode((Camera_Mode)mode); }
 
     void keyPressEvent(QKeyEvent *e);
     void mousePressEvent(QMouseEvent *e);
@@ -34,6 +35,7 @@ public:
 private:
     Engine_Graphic *engine_g;
     Engine_Interaction *engine_i;
+
     DataBase *data_base_;
 
     QTimer *timer_;

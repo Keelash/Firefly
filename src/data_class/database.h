@@ -33,6 +33,7 @@ public:
     inline const std::vector<Light*>& getLights() { return this->vector_light_; }
 
     void setCamera(Camera &c) { this->camera_ = c; }
+    void changeCameraMode(Camera_Mode mode) { this->camera_.setMode(mode); }
     Camera& getCamera() { return this->camera_; }
 
     void setEnvMap(std::string path);

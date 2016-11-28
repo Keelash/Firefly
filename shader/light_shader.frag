@@ -43,21 +43,25 @@ vec3 F_Schlick(vec3 f0, float f90, float u) {
     return f0 + ( f90 - f0 ) * pow(1.f - u , 5.f);
 }
 
+float chiGGX(float v) {
+    return v > 0.0f ? 1.0f : 0.0f;
+}
 
-float V_SmithGGXCorrelated ( float NdotL , float NdotV , float alphaG ) {
-    float alphaG2 = alphaG * alphaG ;
-    // Caution : the " NdotL *" and " NdotV *" are explicitely inversed , this is not a mistake .
-    float Lambda_GGXV = NdotL * sqrt(( -NdotV * alphaG2 + NdotV ) * NdotV + alphaG2);
-    float Lambda_GGXL = NdotV * sqrt(( -NdotL * alphaG2 + NdotL ) * NdotL + alphaG2);
-    return 0.5f / ( Lambda_GGXV + Lambda_GGXL ) ;
+float GGX_PartialGeometryTerm(vec3 v, vec3 n, vec3 h, float alpha) {
+    float VdotH = clamp(dot(v, h), 0.0, 1.0);
+    float chi = chiGGX(VdotH / clamp(dot(v, n),0.0,1.0));
+    VdotH = VdotH * VdotH;
+
+    float tan2 = (1-VdotH)/VdotH;
+    return (chi * 2) / (1 + sqrt(1+alpha*alpha*tan2));
 }
 
 
 float D_GGX ( float NdotH , float m ) {
-    // Divide by PI is apply later
     float m2 = m * m ;
-    float f = ( NdotH * m2 - NdotH ) * NdotH + 1;
-    return m2 / ( f * f ) ;
+    float NdotH2 = NdotH * NdotH;
+    float f = NdotH2 * m2 + (1 - NdotH2);
+    return (chiGGX(NdotH) * m2) / (f * f * M_PI);
 }
 
 
@@ -74,14 +78,12 @@ float Fr_DisneyDiffuse( float NdotV , float NdotL , float LdotH , float linearRo
 }
 
 void main() {
-    brightness = vec4(0.0f);
-
     vec3 position = getPosition();
     vec3 N = getNormal();
     vec3 L = normalize(light_position - position);
     vec3 V = normalize(camera_position - position);
 
-    float roughness = getRoughness() + 0.01;
+    float roughness = getRoughness();
     float linearRoughness = pow(roughness, 4);
     float ior = getReflection();
     float metallic = getMetalPart();
@@ -98,16 +100,21 @@ void main() {
 
     //Specular
     vec3 F = F_Schlick(F0, 1, LdotH);
-    float Vis = V_SmithGGXCorrelated(NdotV, NdotL, roughness);
+    float Vis = GGX_PartialGeometryTerm(V, N, H, roughness) * GGX_PartialGeometryTerm(L, N, H, roughness);
     float D = D_GGX(NdotH, roughness);
-    vec3 Fr = D * F * Vis / M_PI;
+    vec3 Fr =  D * F * Vis / (4*NdotV*NdotH + 0.05);
 
     //Diffuse
     float Fd = Fr_DisneyDiffuse(NdotV, NdotL, LdotH, linearRoughness);
+    vec3 colour = (m_colour / M_PI * Fd + Fr) * light_intensity * light_colour * NdotL;
 
-    out_colour = vec4((m_colour * Fd + Fr) * light_colour * light_intensity * NdotL, 1.0f);
+    out_colour = vec4(colour, 1.0f);
 
-    if(dot(out_colour.rgb, vec3(0.2126f, 0.7152f, 0.0722f)) > 1.0f) {
-        brightness = out_colour;
+    float luminance = dot(out_colour.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
+    brightness = vec4(0.0f, 0.0f, 0.0f, luminance);
+
+    if(luminance > 1.0f) {
+        colour = colour / (vec3(1.0f) + colour);
+        brightness = vec4(colour, luminance);
     }
 }

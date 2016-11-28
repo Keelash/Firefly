@@ -7,9 +7,9 @@ Material::Material(int id) {
     this->diffColor_[1] = 1.0f;
     this->diffColor_[2] = 1.0f;
 
-    this->metalpart_ = 0.0f;
-    this->roughtness_ = 0.0f;
-    this->reflection_ = 1.0f;
+    this->metalpart_ = 1.0f;
+    this->roughtness_ = 0.1f;
+    this->reflection_ = 1.2f;
 
     this->id_ = id;
     this->shaderKey_ = 0;

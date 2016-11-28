@@ -153,7 +153,7 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path) {
         }
         else {
             material_a->Get(AI_MATKEY_SHININESS, value);
-            material_d->setRoughtness(value);
+            material_d->setRoughtness(glm::max(value, 0.01f));
         }
 
         if(material_a->GetTextureCount(aiTextureType_NORMALS) != 0) {
@@ -168,8 +168,8 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path) {
 void addLight(const aiScene *scene, DataBase *data) {
 
     if(scene->mNumLights == 0) {
-        data->addLight(glm::vec3(4.0), 2000.0f, 2.0f);
-        data->addLight(glm::vec3(-2.0), 30000.0f, 0.1);
+        data->addLight(glm::vec3(4.0), 2000.0f, 65.0f);
+        data->addLight(glm::vec3(-2.0), 30000.0f, 2.0f);
         return;
     }
 

@@ -1,58 +1,35 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include <QFileDialog>
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
-    this->CreateMenuBar();
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
+    this->ui->setupUi(this);
 
-    this->main_frame = new QFrame(this);
-    QHBoxLayout *h_main_layout = new QHBoxLayout(this->main_frame);
-
-    this->glframe = new GLFrame(this->main_frame);
-    this->tool_frame = new QFrame(this->main_frame);
-    QVBoxLayout *v_tool_layout = new QVBoxLayout(this->tool_frame);
-
-    this->main_frame->setLayout(h_main_layout);
-    h_main_layout->addWidget(this->glframe);
-    h_main_layout->addWidget(this->tool_frame);
-
-    this->tool_frame->setLayout(v_tool_layout);
-    this->tool_frame->setFrameShape(QFrame::Box);
-    this->tool_frame->setFrameShadow(QFrame::Raised);
-
-    QLabel *tool_label = new QLabel(this->tool_frame);
-    tool_label->setText("I'm a tool box !");
-    v_tool_layout->addWidget(tool_label);
-
-    this->setCentralWidget(this->main_frame);
+    connect(this->ui->actionLoad_File, SIGNAL(triggered(bool)), this, SLOT(loadFile_Activated()));
+    connect(this->ui->CameraMod_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(cameraMode_changed(int)));
 }
 
 MainWindow::~MainWindow() {
-
+    delete this->ui;
 }
 
-void MainWindow::CreateMenuBar() {
-    this->setWindowTitle("Firefly");
-
-    QMenu *fileMenu = this->menuBar()->addMenu(tr("&File"));
-    QAction *loadFile_action = fileMenu->addAction("Load File");
-
-    connect(loadFile_action, SIGNAL(triggered()), this, SLOT(on_loadFile_Activated()));
-
-}
-
-void MainWindow::on_loadFile_Activated() {
+void MainWindow::loadFile_Activated() {
     bool fileLoaded;
     QString path = QFileDialog::getOpenFileName(this,
                                                     tr("Open object file"),
                                                     "."
                                                     );
 
-    fileLoaded = this->glframe->loadFile(path.toStdString());
+    fileLoaded = this->ui->openGLWidget->loadFile(path.toStdString());
 
     if(!fileLoaded) {
         QMessageBox::warning(this, tr("Firefly"),
                              tr("An error occured while loading the file"),
                              QMessageBox::Ok);
     }
+}
+
+void MainWindow::cameraMode_changed(int newMode) {
+    this->ui->openGLWidget->changeCamera(newMode);
 }

@@ -11,6 +11,10 @@
 
 #include "glframe.h"
 
+namespace Ui {
+class MainWindow;
+}
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -18,16 +22,11 @@ public:
     virtual ~MainWindow();
 
 public slots:
-    void on_loadFile_Activated();
+    void loadFile_Activated();
+    void cameraMode_changed(int newMode);
 
 private:
-    QGroupBox* CreateRenderingGroupBox();
-    void CreateMenuBar();
-
-    QFrame *main_frame;
-
-    GLFrame *glframe;
-    QFrame *tool_frame;
+    Ui::MainWindow *ui;
 };
 
 #endif //MAINWINDOW_H

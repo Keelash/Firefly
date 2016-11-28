@@ -3,7 +3,7 @@
 #include <iostream>
 
 Camera::Camera(Camera_Mode mode, glm::vec3 position, glm::vec3 look_at,
-               float fov, float heigth, float width, float exposure) {
+               float fov, float heigth, float width) {
 
     this->mode_ = mode;
 
@@ -15,7 +15,6 @@ Camera::Camera(Camera_Mode mode, glm::vec3 position, glm::vec3 look_at,
     this->up_ = glm::vec3(0.0, 1.0, 0.0);
 
     this->fov_ = fov;
-    this->exposure_ = exposure;
 
     createViewMatric();
 
@@ -88,8 +87,7 @@ void Camera::rotateAroundRight(float angle) {
 
 Camera Camera::createBaseCamera(int height, int width) {
     return Camera(
-                MODE_TRACKBALL_3D,
+                MODE_TRACKBALL_H,
                 glm::vec3(0.0, 1.0, -3.0f), glm::vec3(0.0, 0.0, 0.0),
-                45.0f, height, width,
-                0.5f);
+                45.0f, height, width);
 }
