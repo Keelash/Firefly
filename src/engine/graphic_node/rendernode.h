@@ -24,7 +24,7 @@ public:
     static const std::string fragment_path;
 
 private:
-    Shader_Mod shaders_;
+    Modular_Shader shaders_;
 };
 
 #endif // RENDERNODE_H

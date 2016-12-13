@@ -12,6 +12,9 @@ OpenGlTexture::OpenGlTexture(const char* file) {
 OpenGlTexture::OpenGlTexture(int width, int height, GLint internalFormat, GLenum format, GLenum type) {
     this->initializeOpenGLFunctions();
 
+    this->width_ = width;
+    this->height_ = height;
+
     glGenTextures(1, &this->texid_);
     glBindTexture(GL_TEXTURE_2D, this->texid_);
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
@@ -51,8 +54,6 @@ void OpenGlTexture::createFromFile(const char* file) {
     QImage image(file);
     image.convertToFormat(QImage::Format_RGB888);
 
-
-
     if(!image.isNull()) {
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -62,6 +63,8 @@ void OpenGlTexture::createFromFile(const char* file) {
         glBindTexture(GL_TEXTURE_2D, 0);
 
         this->texid_ = texture;
+        this->width_ = image.width();
+        this->height_ = image.height();
     }
     else {
         std::cerr << "[TEXTURE] Error when loading: " << file << std::endl;

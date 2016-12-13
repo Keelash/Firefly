@@ -5,12 +5,11 @@ HE_Mesh::HE_Mesh() {
     this->vector_halfedge_.push_back(f);
 }
 
-int HE_Mesh::addVertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 uv) {
+int HE_Mesh::addVertex(glm::vec3 pos, glm::vec3 norm) {
     HEMesh_Vertex v;
 
     v.pos = pos;
     v.norm = norm;
-    v.uv = uv;
 
     this->vector_vertex_.push_back(v);
     return this->vector_vertex_.size() - 1;
@@ -29,7 +28,7 @@ int HE_Mesh::addFace(std::vector<unsigned int> &vector_vertex) {
         unsigned int next = vector_vertex[(i+1) % face_size];
         unsigned int he_size_next = this->vector_vertex_[next].halfedge.size();
 
-        f.vertex.push_back(curr);
+        //f.vertex.push_back(curr);
 
         he.face = this->vector_face_.size();
         he.next = this->vector_halfedge_.size() + (i+1)%face_size;

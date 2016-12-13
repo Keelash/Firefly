@@ -2,11 +2,10 @@
 #define MATERIAL_H
 
 #include "bindable.h"
-
-
+#include "material_element.h"
 #include "texture.h"
-#include "enum_class.h"
 #include "src/glm_include.h"
+
 
 class Material : public Bindable {
 public:
@@ -19,7 +18,7 @@ public:
     void setRoughtness(GLfloat rough) { this->roughtness_ = rough; }
     void setMetalpart(GLfloat met) { this->metalpart_ = met; }
     void setReflection(GLfloat ref) { this->reflection_ = ref; }
-    void addTexture(const char *path, Texture_type type);
+    void addTexture(const char *path, MTex type);
 
     int getShaderKey() { return this->shaderKey_; }
 

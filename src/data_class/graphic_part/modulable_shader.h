@@ -6,10 +6,18 @@
 
 #include "src/data_class/graphic_part/shader.h"
 
-class Shader_Mod {
+class Module_Shader {
 public:
-    Shader_Mod(std::string vertex_path, std::string frag_path);
-    ~Shader_Mod();
+
+private:
+    std::string shader_mod_;
+    unsigned int id_;
+};
+
+class Modular_Shader {
+public:
+    Modular_Shader(std::string vertex_path, std::string frag_path);
+    ~Modular_Shader();
 
     bool hasKey(int key);
 

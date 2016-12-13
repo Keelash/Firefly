@@ -18,8 +18,8 @@ public:
     DataBase();
     ~DataBase();
 
-    Mesh* addMesh(std::vector<Model_Vertex> &vertex_vector, std::vector<Model_Face> &indice_vector);
-    inline Mesh* getMesh(int mesh_id) { return this->vector_mesh_[mesh_id]; }
+    G_Mesh* addMesh(std::vector<G_Mesh::G_Mesh_Vertex> &vertex_vector, std::vector<G_Mesh::G_Mesh_Face> &indice_vector);
+    inline G_Mesh* getMesh(int mesh_id) { return this->vector_mesh_[mesh_id]; }
 
     Material* addMaterial();
     inline Material* getMaterial(int mat_id) { return this->vector_material_[mat_id]; }
@@ -45,7 +45,7 @@ public:
 
 private:
     std::vector<Material*> vector_material_;
-    std::vector<Mesh*> vector_mesh_;
+    std::vector<G_Mesh*> vector_mesh_;
     std::vector<Instance*> vector_instance_;
     std::vector<Light*> vector_light_;
 

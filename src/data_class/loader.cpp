@@ -79,8 +79,8 @@ bool Loader::loadScene(std::string path, DataBase *data) {
 }
 
 Bbox addMesh(const aiScene *scene, DataBase *data) {
-    std::vector<Model_Vertex> vertex_vector;
-    std::vector<Model_Face> indices_vector;
+    std::vector<G_Mesh::G_Mesh_Vertex> vertex_vector;
+    std::vector<G_Mesh::G_Mesh_Face> indices_vector;
     Bbox scene_b;
 
     aiVector3t<float> vert = scene->mMeshes[0]->mVertices[0];
@@ -90,7 +90,7 @@ Bbox addMesh(const aiScene *scene, DataBase *data) {
         aiMesh *mesh = scene->mMeshes[i];
 
         for (int j = 0; j < mesh->mNumVertices; ++j) {
-            Model_Vertex v;
+            G_Mesh::G_Mesh_Vertex v;
 
             v.pos = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
             v.normal = glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z);
@@ -111,7 +111,7 @@ Bbox addMesh(const aiScene *scene, DataBase *data) {
 
         for (int j = 0; j < mesh->mNumFaces; ++j) {
             aiFace face = mesh->mFaces[j];
-            Model_Face t;
+            G_Mesh::G_Mesh_Face t;
             for (int k = 0; k < 3; ++k)
                 t.vertices[k] = face.mIndices[k];
 
@@ -138,7 +138,7 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path) {
             material_a->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 
             texture_path = file_path + '/' + std::string(path.C_Str());
-            material_d->addTexture(texture_path.c_str(), TEXTURE_DIFF);
+            material_d->addTexture(texture_path.c_str(), MATERIAL_TEXTURE_DIFFUSE);
         }
         else {
             material_a->Get(AI_MATKEY_COLOR_DIFFUSE, color);
@@ -149,18 +149,18 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path) {
             material_a->GetTexture(aiTextureType_SHININESS, 0, &path);
 
             texture_path = file_path + '/' + std::string(path.C_Str());
-            material_d->addTexture(texture_path.c_str(), TEXTURE_ROU);
+            material_d->addTexture(texture_path.c_str(), MATERIAL_TEXTURE_ROUGHTNESS);
         }
         else {
             material_a->Get(AI_MATKEY_SHININESS, value);
-            material_d->setRoughtness(glm::max(value, 0.01f));
+            material_d->setRoughtness(glm::max(value, 0.50f));
         }
 
         if(material_a->GetTextureCount(aiTextureType_NORMALS) != 0) {
             material_a->GetTexture(aiTextureType_NORMALS, 0, &path);
 
             texture_path = file_path + '/' + std::string(path.C_Str());
-            material_d->addTexture(texture_path.c_str(), TEXTURE_NOR);
+            material_d->addTexture(texture_path.c_str(), MATERIAL_TEXTURE_NORMAL);
         }
     }
 }
@@ -168,7 +168,7 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path) {
 void addLight(const aiScene *scene, DataBase *data) {
 
     if(scene->mNumLights == 0) {
-        data->addLight(glm::vec3(4.0), 2000.0f, 65.0f);
+        data->addLight(glm::vec3(4.0), 2423.0f, 8.0f);
         data->addLight(glm::vec3(-2.0), 30000.0f, 2.0f);
         return;
     }

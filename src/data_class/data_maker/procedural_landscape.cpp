@@ -16,15 +16,15 @@ void Procedural_Landscape::CreateLandscape(DataBase *data, int resolution) {
     int nbVertices = resolution * resolution;
     int nbIndices = 2 * (nbVertices - 2*resolution + 1);
 
-    std::vector<Model_Vertex> vertices;
-    std::vector<Model_Face> indices;
+    std::vector<G_Mesh::G_Mesh_Vertex> vertices;
+    std::vector<G_Mesh::G_Mesh_Face> indices;
 
     Fractional_Brownian_Motion noise_maker(6, 0.28, 0.4, new Perlin_Noise(12081994));
 
     //On creer les points formant le maillage
     for (int i = 0; i < resolution; ++i) {
         for (int j = 0; j < resolution; ++j) {
-            Model_Vertex v;
+            G_Mesh::G_Mesh_Vertex v;
             double x, y;
 
             x = ((GLfloat)j) / ((GLfloat)resolution-1);
@@ -46,7 +46,7 @@ void Procedural_Landscape::CreateLandscape(DataBase *data, int resolution) {
     for (int i = 0; i < resolution - 1; ++i) {
         for(int j = 0; j < resolution - 1; ++j) {
             unsigned int pos_ver = i * resolution + j;
-            Model_Face i;
+            G_Mesh::G_Mesh_Face i;
             glm::vec3 e1, e2, normal;
 
             e1 = e2 = vertices[pos_ver].pos;
@@ -84,7 +84,7 @@ void Procedural_Landscape::CreateLandscape(DataBase *data, int resolution) {
         vertices[i].normal = glm::normalize(vertices[i].normal);
     }
 
-    Mesh *mesh = data->addMesh(vertices, indices);
+    G_Mesh *mesh = data->addMesh(vertices, indices);
     Material *material = data->addMaterial();
     material->setRoughtness(0.1);
     material->setReflection(0.9);

@@ -85,11 +85,10 @@ void main() {
 
     float roughness = getRoughness();
     float linearRoughness = pow(roughness, 4);
-    float ior = getReflection();
     float metallic = getMetalPart();
     vec3 m_colour = getColor();
 
-    vec3 F0 = vec3(0.16 * ior * ior);
+    vec3 F0 = vec3(0.04);
     F0 = (1.0f - metallic) * F0 + metallic * m_colour;
 
     float NdotV = abs(dot(N , V )) + 1e-5f; // avoid artifact
@@ -111,10 +110,10 @@ void main() {
     out_colour = vec4(colour, 1.0f);
 
     float luminance = dot(out_colour.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
-    brightness = vec4(0.0f, 0.0f, 0.0f, luminance);
-
+    vec3 bright_colour = vec3(0.0);
     if(luminance > 1.0f) {
-        colour = colour / (vec3(1.0f) + colour);
-        brightness = vec4(colour, luminance);
+        bright_colour = colour / (vec3(1.0f) + colour);
     }
+
+    brightness = vec4(bright_colour, 1.0f);
 }

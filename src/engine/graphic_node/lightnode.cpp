@@ -3,8 +3,8 @@
 const std::string LightNode::vertex_path = std::string("./shader/light_shader.vert");
 const std::string LightNode::fragment_path = std::string("./shader/light_shader.frag");
 
-LightNode::LightNode(): A_ShadingNode(), shader_(vertex_path, fragment_path) {
-
+LightNode::LightNode(): A_ShadingNode() {
+    this->shader_.loadShader(vertex_path, fragment_path);
 }
 
 LightNode::~LightNode() {

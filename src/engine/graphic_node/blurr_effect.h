@@ -17,7 +17,7 @@ private:
 
     unsigned int nbPass_;
     FramebufferObject *framebuffer_[2];
-    Shader* shader_;
+    Shader shader_;
 };
 
 #endif//BLURREFFECT_H

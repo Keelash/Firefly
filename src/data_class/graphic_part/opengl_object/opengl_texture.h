@@ -18,12 +18,18 @@ public:
     void getPixel(int level, float* pixel);
     void generateMipMap();
 
+    unsigned int getWidht() { return this->width_; }
+    unsigned int getHeight() { return this->height_; }
+
     GLuint getTextureId() { return this->texid_; }
 
 private:
     void createFromFile(const char* path);
 
     GLuint texid_;
+
+    unsigned int width_;
+    unsigned int height_;
 };
 
 #endif // TEXTURE_H

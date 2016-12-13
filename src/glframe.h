@@ -23,6 +23,7 @@ public:
 
     inline Engine_Graphic* getGraphicEngine() { return this->engine_g; }
     inline Engine_Interaction* getInteractionEngine() { return this->engine_i; }
+    inline DataBase* getDatabase() { return this->data_base_; }
 
     bool setEnvmap(const char *path);
     bool loadFile(std::string path);

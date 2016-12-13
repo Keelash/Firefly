@@ -3,8 +3,8 @@
 const std::string AmbientNode::vertex_path = std::string("./shader/ambient_shader.vert");
 const std::string AmbientNode::fragment_path = std::string("./shader/ambient_shader.frag");
 
-AmbientNode::AmbientNode(): A_ShadingNode(), shader_(vertex_path, fragment_path) {
-
+AmbientNode::AmbientNode(): A_ShadingNode() {
+    this->shader_.loadShader(vertex_path, fragment_path);
 }
 
 AmbientNode::~AmbientNode() {

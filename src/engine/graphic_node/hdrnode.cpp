@@ -4,11 +4,11 @@ const std::string SensorNode::vertex_path_ = std::string("./shader/hdr_shader.ve
 const std::string SensorNode::fragment_path_ = std::string("./shader/hdr_shader.frag");
 
 SensorNode::SensorNode(int width, int height):
-    A_PostProcessNode(), shader_(vertex_path_, fragment_path_), blurr_(width, height, 1)
+    A_PostProcessNode(), blurr_(width, height, 3)
 {
+    this->shader_.loadShader(vertex_path_, fragment_path_);
     this->min_mipMapLevel_ = (int)glm::floor(glm::log2((float)glm::max(width, height)));
     this->brightness_key_ = 1.0f;
-
 }
 
 SensorNode::~SensorNode() {
@@ -24,14 +24,15 @@ void SensorNode::draw(RenderBuffer *render, DataBase *data) {
     screen.disableDepthTest();
     screen.disableBlending();
 
-    //A voir : Rendre cela plus petit en faisant un premier rendu vers une texture 64*64
-    render->getBrightTexture()->bindTexture();
-        render->getBrightTexture()->generateMipMap();
+    render->getRenderTexture()->bindTexture();
+        render->getRenderTexture()->generateMipMap();
         render->getRenderTexture()->getPixel(this->min_mipMapLevel_, pixel);
-    render->getBrightTexture()->unbindTexture();
+    render->getRenderTexture()->unbindTexture();
 
-    this->brightness_key_ = 1.03f - 2.0f / (2.0f + glm::log(pixel[3] + 1));
-    this->brightness_key_ = glm::max(glm::min(1.0f, this->brightness_key_ / pixel[3]), 0.05f);
+    float luminance = pixel[0] * 0.2126f + pixel[1] * 0.7152f + pixel[2] * 0.0722f;
+    this->brightness_key_ = (1.03f - 2.0f / (2.0f + glm::log(luminance + 1))) / (luminance+0.001);
+    this->brightness_key_ = glm::max(glm::min(1.0f, this->brightness_key_), 0.05f);
+
 
     this->shader_.bindShader();
     this->quad_->bind();

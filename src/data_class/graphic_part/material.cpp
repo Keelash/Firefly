@@ -9,7 +9,7 @@ Material::Material(int id) {
 
     this->metalpart_ = 1.0f;
     this->roughtness_ = 0.1f;
-    this->reflection_ = 1.2f;
+    this->reflection_ = 0.0f;
 
     this->id_ = id;
     this->shaderKey_ = 0;
@@ -36,25 +36,25 @@ void Material::setDiffColor(GLfloat red, GLfloat blue, GLfloat green){
     this->diffColor_[2] = blue;
 }
 
-void Material::addTexture(const char *path, Texture_type type){
+void Material::addTexture(const char *path, MTex type){
     switch(type) {
-        case TEXTURE_DIFF :
+        case MATERIAL_TEXTURE_DIFFUSE :
             if(this->texture_[0] != nullptr) delete this->texture_[0];
             this->texture_[0] = new Texture(path);
             break;
-        case TEXTURE_ROU :
+        case MATERIAL_TEXTURE_ROUGHTNESS :
             if(this->texture_[1] != nullptr) delete this->texture_[1];
             this->texture_[1] = new Texture(path);
             break;
-        case TEXTURE_MET :
+        case MATERIAL_TEXTURE_METALPART :
             if(this->texture_[2] != nullptr) delete this->texture_[2];
             this->texture_[2] = new Texture(path);
             break;
-        case TEXTURE_NOR :
+        case MATERIAL_TEXTURE_NORMAL :
             if(this->texture_[3] != nullptr) delete this->texture_[3];
             this->texture_[3] = new Texture(path);
             break;
-        case TEXTURE_REFLECT :
+        case MATERIAL_TEXTURE_REFLECTION :
             if(this->texture_[4] != nullptr) delete this->texture_[4];
             this->texture_[4] = new Texture(path);
             break;
@@ -64,8 +64,7 @@ void Material::addTexture(const char *path, Texture_type type){
 }
 
 void Material::bind(Shader &shader){
-
-    if (this->shaderKey_ & TEXTURE_DIFF) {                        //Diffuse Texture Binding
+    if (this->shaderKey_ & MATERIAL_TEXTURE_DIFFUSE) {                        //Diffuse Texture Binding
         this->texture_[0]->bindAsActiveTexture(0);
         shader.setTextureLocation("texture_diffuse", 0);
     }
@@ -73,7 +72,7 @@ void Material::bind(Shader &shader){
         shader.setUniformLocation("color_diffuse", this->diffColor_);
 
     //-------------------------------------------------------------------
-    if (this->shaderKey_ & TEXTURE_ROU) {
+    if (this->shaderKey_ & MATERIAL_TEXTURE_ROUGHTNESS) {
         this->texture_[1]->bindAsActiveTexture(1);
         shader.setTextureLocation("texture_roughtness", 1);                   //Roughtness Texture Binding
     }
@@ -81,7 +80,7 @@ void Material::bind(Shader &shader){
         shader.setUniformLocation("value_roughtness", this->roughtness_);
 
     //-------------------------------------------------------------------
-    if (this->shaderKey_ & TEXTURE_MET) {                      //Metalpart Texture Binding
+    if (this->shaderKey_ & MATERIAL_TEXTURE_METALPART) {                      //Metalpart Texture Binding
         this->texture_[2]->bindAsActiveTexture(2);
         shader.setTextureLocation("texture_metalpart", 2);
     }
@@ -89,13 +88,13 @@ void Material::bind(Shader &shader){
         shader.setUniformLocation("value_metalpart", this->metalpart_);
 
     //-------------------------------------------------------------------
-    if (this->shaderKey_ & TEXTURE_NOR) {                       //Normal Texture Binding
+    if (this->shaderKey_ & MATERIAL_TEXTURE_NORMAL) {                       //Normal Texture Binding
         this->texture_[3]->bindAsActiveTexture(3);
         shader.setTextureLocation("texture_normal", 3);
     }
 
     //-------------------------------------------------------------------
-    if (this->shaderKey_ & TEXTURE_REFLECT) {     //Reflection Texture Binding
+    if (this->shaderKey_ & MATERIAL_TEXTURE_REFLECTION) {     //Reflection Texture Binding
         this->texture_[4]->bindAsActiveTexture(4);
         shader.setTextureLocation("texture_reflection", 4);
     }

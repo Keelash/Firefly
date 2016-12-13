@@ -3,8 +3,9 @@
 const std::string BlurrEffect::vertex_shader_path = std::string("./shader/blurr_shader.vert");
 const std::string BlurrEffect::fragment_shader_path = std::string("./shader/blurr_shader.frag");
 
-BlurrEffect::BlurrEffect(int width, int height, unsigned int nbPass) {
-    this->shader_ = new Shader(vertex_shader_path, fragment_shader_path);
+BlurrEffect::BlurrEffect(int width, int height, unsigned int nbPass) : A_Effect() {
+
+    this->shader_.loadShader(vertex_shader_path, fragment_shader_path);
     this->nbPass_ = nbPass;
 
     for(int i = 0; i < 2; ++i) {
@@ -22,11 +23,11 @@ Texture* BlurrEffect::applyEffect(Texture* in){
         this->framebuffer_[i%2]->disableBlending();
         this->framebuffer_[i%2]->disableDepthTest();
 
-        this->shader_->bindShader();
-        this->shader_->setUniformLocation("direction", direction[i%2]);
+        this->shader_.bindShader();
+        this->shader_.setUniformLocation("direction", direction[i%2]);
 
         curr->bindAsActiveTexture(0);
-        this->shader_->setTextureLocation("original_texture", 0);
+        this->shader_.setTextureLocation("original_texture", 0);
 
         this->quad_->bind();
             this->quad_->draw();

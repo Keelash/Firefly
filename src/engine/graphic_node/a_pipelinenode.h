@@ -17,7 +17,7 @@ public:
     A_QuadNode();
     virtual ~A_QuadNode();
 protected:
-    SimpleUvMesh *quad_;
+    G_UVMesh *quad_;
 };
 
 

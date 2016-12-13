@@ -8,8 +8,8 @@ DataBase::~DataBase() {
     this->clear();
 }
 
-Mesh* DataBase::addMesh(std::vector<Model_Vertex> &vertex_vector, std::vector<Model_Face> &indice_vector) {
-    Mesh *new_m = new Mesh(this->vector_mesh_.size(), vertex_vector, indice_vector);
+G_Mesh* DataBase::addMesh(std::vector<G_Mesh::G_Mesh_Vertex> &vertex_vector, std::vector<G_Mesh::G_Mesh_Face> &indice_vector) {
+    G_Mesh *new_m = new G_Mesh(this->vector_mesh_.size(), vertex_vector, indice_vector);
 
     this->vector_mesh_.push_back(new_m);
     return new_m;
@@ -26,7 +26,7 @@ Instance *DataBase::addInstance(unsigned int id_mesh, unsigned int id_mat, glm::
     Instance *new_i = new Instance(id_mesh, id_mat, transform);
 
     Material *mat = this->vector_material_[id_mat];
-    Mesh *mesh = this->vector_mesh_[id_mesh];
+    G_Mesh *mesh = this->vector_mesh_[id_mesh];
 
     this->vector_instance_.push_back(new_i);
     this->scene_.addInstance(new_i, mesh, mat);

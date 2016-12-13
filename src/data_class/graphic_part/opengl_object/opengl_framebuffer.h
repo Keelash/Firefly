@@ -18,13 +18,21 @@ public:
 
     void clear(GLbitfield mask);
     void setViewport(int x, int y, int width, int height);
+    void getViewport(int &x, int &y, int &width, int &height);
+
+    void blitFramebuffer(A_OpenGlFramebuffer &output,
+                         int x1, int y1, int width1, int height1,
+                         int x2, int y2, int width2, int height2,
+                         GLbitfield mask);
 
     virtual void bind() = 0;
+protected:
+    GLuint framebuffer_;
 };
 
 class OpenGlScreenFramebuffer : public A_OpenGlFramebuffer {
 public:
-    OpenGlScreenFramebuffer(): A_OpenGlFramebuffer() {  }
+    OpenGlScreenFramebuffer(): A_OpenGlFramebuffer() { this->framebuffer_ = 0; }
     virtual ~OpenGlScreenFramebuffer() {  }
 
     virtual void bind();
@@ -42,8 +50,8 @@ public:
 
     virtual void bind();
     void unbind();
+
 private:
-    GLuint framebuffer_;
     GLuint rbo_;
 
     int width_;
