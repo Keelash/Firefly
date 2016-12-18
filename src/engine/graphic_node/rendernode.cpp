@@ -16,13 +16,12 @@ RenderNode::~RenderNode() {
 
 void RenderNode::drawGeometry(GeometryBuffer *gbuffer, DataBase *data) {
     Camera &camera = data->getCamera();
-    glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix();
 
     gbuffer->getFramebuffer()->bind();
     gbuffer->getFramebuffer()->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gbuffer->getFramebuffer()->disableBlending();
     gbuffer->getFramebuffer()->enableDepthTest();
 
-    data->getScene().draw(&this->shaders_, MVP);
+    data->getScene().draw(&this->shaders_, camera.getViewMatrix(), camera.getProjectionMatrix());
 }
 

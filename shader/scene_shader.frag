@@ -4,7 +4,7 @@ uniform sampler2D texture_diffuse;
 uniform vec3 color_diffuse;
 #endif
 
-#ifdef ROUGHTNESS_TEXTURE
+#ifdef ROUGHNESS_TEXTURE
 uniform sampler2D texture_roughtness;
 #else
 uniform float value_roughtness;
@@ -44,7 +44,7 @@ vec3 getColor() {
 }
 
 float getRoughtness() {
-#ifdef ROUGHTNESS_TEXTURE
+#ifdef ROUGHNESS_TEXTURE
     return texture(texture_roughtness, uvcoord_vertex).r;
 #else
     return value_roughtness;

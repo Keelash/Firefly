@@ -17,7 +17,7 @@ public:
     ~Scene() {  }
 
     void addInstance(Instance* inst, G_Mesh* mesh, Material* mat);
-    void draw(Modular_Shader *shader_mod, glm::mat4 MVP);
+    void draw(Geometry_Shader *shader_mod, glm::mat4 view, glm::mat4 projection);
 
     void clear();
 

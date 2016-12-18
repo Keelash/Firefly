@@ -8,12 +8,9 @@
 
 class OpenGlShader : protected QOpenGLFunctions_3_3_Core {
 public:
-    OpenGlShader(std::string vertexshader_path, std::string fragmentshader_path);
+    OpenGlShader(std::string vertex_shader, std::string fragment_shader);
     OpenGlShader();
     virtual ~OpenGlShader();
-
-    GLboolean loadShader(std::string vertexPath, std::string fragmentPath);
-    void addDefine(const char* define);
 
     void bindShader();
     void unbindShader();
@@ -30,7 +27,6 @@ private:
     GLboolean CompileCode(const GLchar *vShaderCode, const GLchar *fShaderCode);
     GLboolean showError(GLuint shader, GLint op, std::string errorMsg);
 
-    std::string define_;
     GLuint program_;
 };
 

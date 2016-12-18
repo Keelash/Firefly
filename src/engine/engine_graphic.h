@@ -22,7 +22,6 @@ public:
     virtual ~Engine_Graphic();
 
     void resize(int w, int h);
-    void reloadShader();
 
     virtual void update();
 

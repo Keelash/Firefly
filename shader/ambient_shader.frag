@@ -4,8 +4,6 @@ uniform sampler2D position_texture;
 uniform sampler2D normal_texture;
 uniform sampler2D color_texture;
 
-uniform vec3 camera_position;
-
 layout (location = 0) out vec4 color;
 layout (location = 1) out vec4 brightness;
 

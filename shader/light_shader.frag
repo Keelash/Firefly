@@ -4,11 +4,9 @@ uniform sampler2D position_texture;
 uniform sampler2D normal_texture;
 uniform sampler2D color_texture;
 
-uniform vec3 light_position;
+uniform vec4 light_position;
 uniform vec3 light_colour;
 uniform float light_intensity;
-
-uniform vec3 camera_position;
 
 uniform float M_PI = 3.1415926535897932384626433832795;
 
@@ -80,8 +78,8 @@ float Fr_DisneyDiffuse( float NdotV , float NdotL , float LdotH , float linearRo
 void main() {
     vec3 position = getPosition();
     vec3 N = getNormal();
-    vec3 L = normalize(light_position - position);
-    vec3 V = normalize(camera_position - position);
+    vec3 L = normalize(light_position.xyz - position);
+    vec3 V = normalize(-position);
 
     float roughness = getRoughness();
     float linearRoughness = pow(roughness, 4);

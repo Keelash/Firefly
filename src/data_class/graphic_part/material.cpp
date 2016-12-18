@@ -63,41 +63,41 @@ void Material::addTexture(const char *path, MTex type){
     this->shaderKey_ |= type;
 }
 
-void Material::bind(Shader &shader){
+void Material::bind(Shader *shader){
     if (this->shaderKey_ & MATERIAL_TEXTURE_DIFFUSE) {                        //Diffuse Texture Binding
         this->texture_[0]->bindAsActiveTexture(0);
-        shader.setTextureLocation("texture_diffuse", 0);
+        shader->setTextureLocation("texture_diffuse", 0);
     }
     else
-        shader.setUniformLocation("color_diffuse", this->diffColor_);
+        shader->setUniformLocation("color_diffuse", this->diffColor_);
 
     //-------------------------------------------------------------------
     if (this->shaderKey_ & MATERIAL_TEXTURE_ROUGHTNESS) {
         this->texture_[1]->bindAsActiveTexture(1);
-        shader.setTextureLocation("texture_roughtness", 1);                   //Roughtness Texture Binding
+        shader->setTextureLocation("texture_roughtness", 1);                   //Roughtness Texture Binding
     }
     else
-        shader.setUniformLocation("value_roughtness", this->roughtness_);
+        shader->setUniformLocation("value_roughtness", this->roughtness_);
 
     //-------------------------------------------------------------------
     if (this->shaderKey_ & MATERIAL_TEXTURE_METALPART) {                      //Metalpart Texture Binding
         this->texture_[2]->bindAsActiveTexture(2);
-        shader.setTextureLocation("texture_metalpart", 2);
+        shader->setTextureLocation("texture_metalpart", 2);
     }
     else
-        shader.setUniformLocation("value_metalpart", this->metalpart_);
+        shader->setUniformLocation("value_metalpart", this->metalpart_);
 
     //-------------------------------------------------------------------
     if (this->shaderKey_ & MATERIAL_TEXTURE_NORMAL) {                       //Normal Texture Binding
         this->texture_[3]->bindAsActiveTexture(3);
-        shader.setTextureLocation("texture_normal", 3);
+        shader->setTextureLocation("texture_normal", 3);
     }
 
     //-------------------------------------------------------------------
     if (this->shaderKey_ & MATERIAL_TEXTURE_REFLECTION) {     //Reflection Texture Binding
         this->texture_[4]->bindAsActiveTexture(4);
-        shader.setTextureLocation("texture_reflection", 4);
+        shader->setTextureLocation("texture_reflection", 4);
     }
     else
-        shader.setUniformLocation("value_reflection", this->reflection_);
+        shader->setUniformLocation("value_reflection", this->reflection_);
 }

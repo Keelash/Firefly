@@ -35,12 +35,6 @@ Engine_Graphic::~Engine_Graphic() {
     delete this->sensor_node_;
 }
 
-void Engine_Graphic::reloadShader() {
-    //this->scene_rendering_node_->reloadShader();
-    this->ambient_node_->reloadShader();
-    this->light_node_->reloadShader();
-}
-
 void  Engine_Graphic::resize(int width, int height) {
     ScreenFramebuffer screen;
 

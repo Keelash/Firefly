@@ -5,7 +5,7 @@
 
 #include "bindable.h"
 
-class Light : public Bindable {
+class Light {
 public:
     static glm::vec3 RGBfromTemp(float temp);
 
@@ -26,10 +26,11 @@ public:
     inline void setPosition(glm::vec3 &position) { this->position_ = position; }
     inline glm::vec3& getPosition() { return this->position_; }
 
-    void bind(Shader &shader);
+    void bindLight(Shader *shader, glm::mat4 transform);
 private:
-    glm::vec3 position_;
+    int id_;
 
+    glm::vec3 position_;
     glm::vec3 colour_hue_;
     float intensity_;
 };

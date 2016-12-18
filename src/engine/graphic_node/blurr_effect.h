@@ -12,12 +12,12 @@ public:
 
     Texture* applyEffect(Texture* in);
 private:
-    static const std::string fragment_shader_path;
-    static const std::string vertex_shader_path;
+    static const std::string fragment_path;
+    static const std::string vertex_path;
 
     unsigned int nbPass_;
     FramebufferObject *framebuffer_[2];
-    Shader shader_;
+    Shader *shader_;
 };
 
 #endif//BLURREFFECT_H

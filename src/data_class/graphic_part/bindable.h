@@ -7,7 +7,7 @@ class Bindable {
 public:
     Bindable(int id = 0): id_(id) {  }
 
-    virtual void bind(Shader &shader) = 0;
+    virtual void bind(Shader *shader) = 0;
     int getId() { return this->id_; }
 
 protected:

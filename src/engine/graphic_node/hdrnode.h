@@ -16,7 +16,7 @@ public:
 
     void draw(RenderBuffer *render, DataBase *data);
 private:
-    Shader shader_;
+    Shader *shader_;
     BlurrEffect blurr_;
 
     float min_mipMapLevel_;

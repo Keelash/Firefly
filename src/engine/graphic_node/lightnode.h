@@ -14,12 +14,10 @@ public:
     LightNode();
     virtual ~LightNode();
 
-    inline Shader* getShader() { return &this->shader_; }
-    virtual void reloadShader();
     virtual void draw(GeometryBuffer *buffer, DataBase *, RenderBuffer *render);
 
 private:
-    Shader shader_;
+    Shader *shader_;
 };
 
 #endif // LIGHTNODE_H

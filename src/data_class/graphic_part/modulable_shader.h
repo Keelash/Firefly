@@ -6,29 +6,31 @@
 
 #include "src/data_class/graphic_part/shader.h"
 
-class Module_Shader {
-public:
-
-private:
-    std::string shader_mod_;
-    unsigned int id_;
-};
-
 class Modular_Shader {
 public:
-    Modular_Shader(std::string vertex_path, std::string frag_path);
-    ~Modular_Shader();
+    Modular_Shader() {  }
+    virtual ~Modular_Shader();
 
-    bool hasKey(int key);
+    virtual bool hasKey(int key);
 
-    void addMod(int key);
-    Shader *getMod(int key);
+    virtual void addMod(int key, ShaderCode code);
+    virtual Shader *getMod(int key);
+
+private:
+    std::map<int, Shader*> shader_var_;
+};
+
+class Geometry_Shader : public Modular_Shader {
+public:
+    Geometry_Shader(std::string vert_path, std::string frag_path)
+        : vertex_path_(vert_path), fragment_path_(frag_path) {  }
+    virtual ~Geometry_Shader() {  }
+
+    virtual void addMod(int key);
 
 private:
     std::string vertex_path_;
     std::string fragment_path_;
-
-    std::map<int, Shader*> shader_var_;
 };
 
 #endif // MODULABLE_SHADER

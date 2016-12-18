@@ -1,13 +1,13 @@
 #include "light.h"
 
 Light::Light(int id, glm::vec3 position, float temperature, float intensity) :
-    Bindable(id), position_(position), colour_hue_(RGBfromTemp(temperature)), intensity_(intensity)
+    id_(id), position_(position), colour_hue_(RGBfromTemp(temperature)), intensity_(intensity)
 {
 
 }
 
 Light::Light(int id, glm::vec3 position, glm::vec3 colour, float intensity) :
-    Bindable(id), position_(position), colour_hue_(colour), intensity_(intensity)
+    id_(id), position_(position), colour_hue_(colour), intensity_(intensity)
 {
 
 }
@@ -47,10 +47,12 @@ glm::vec3 Light::RGBfromTemp(float temperature) {
     return rgb_value / glm::vec3(255.0);
 }
 
-void Light::bind(Shader &shader) {
-    shader.bindShader();
+void Light::bindLight(Shader *shader, glm::mat4 transform) {
+    glm::vec4 position = transform * glm::vec4(this->position_, 1.0f);
 
-    shader.setUniformLocation("light_position", this->position_);
-    shader.setUniformLocation("light_colour", this->colour_hue_);
-    shader.setUniformLocation("light_intensity", this->intensity_);
+    shader->bindShader();
+
+    shader->setUniformLocation("light_position", position);
+    shader->setUniformLocation("light_colour", this->colour_hue_);
+    shader->setUniformLocation("light_intensity", this->intensity_);
 }

@@ -7,6 +7,7 @@ out vec4 position_vertex;
 out vec4 normal_vertex;
 
 uniform mat4 matrix_view_projection;
+uniform mat4 matrix_view;
 uniform mat4 matrix_model;
 
 void main() {
@@ -14,7 +15,7 @@ void main() {
 
     gl_Position = matrix_view_projection * position;
 
-    position_vertex = normalize(position);
+    position_vertex =  matrix_view * position;
     uvcoord_vertex = vec2(uvcoord_in.x, -uvcoord_in.y);
-    normal_vertex = normalize(matrix_model * vec4(normale_in, 0.0));
+    normal_vertex = normalize(matrix_view * matrix_model * vec4(normale_in, 0.0));
 }

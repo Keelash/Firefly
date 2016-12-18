@@ -22,7 +22,7 @@ public:
 
     int getShaderKey() { return this->shaderKey_; }
 
-    virtual void bind(Shader &shader);
+    virtual void bind(Shader *shader);
 
 private:
     unsigned int shaderKey_;

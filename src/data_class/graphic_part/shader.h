@@ -1,11 +1,15 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
-#include <vector>
-
 #include "opengl_object/opengl_shader.h"
+#include "shader_code.h"
 
-typedef OpenGlShader Shader;
+class Shader : public OpenGlShader {
+public:
+    Shader(ShaderCode &code)
+        : OpenGlShader(code.getVertexCode(), code.getFragmentCode()) {
+    }
+    virtual ~Shader() {  }
+};
 
 #endif // SHADER_H

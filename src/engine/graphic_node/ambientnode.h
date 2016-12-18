@@ -15,10 +15,9 @@ public:
     virtual ~AmbientNode();
 
     virtual void draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *render);
-    virtual void reloadShader();
 
 private:
-    Shader shader_;
+    Shader *shader_;
 };
 
 #endif //AMBIENTNODE_H
