@@ -1,21 +1,23 @@
 #ifndef ENGINE_ABSTRACT_H
 #define ENGINE_ABSTRACT_H
 
-#include <vector>
-#include <iostream>
+#include "src/data_class/database.h"
 
-#include <QObject>
-#include <QGLWidget>
-
-class Engine_Abstract {
+class A_Engine_Const {
 public:
-    Engine_Abstract(QGLWidget *parent): parent_(parent) {  }
-    virtual ~Engine_Abstract() {  }
+    A_Engine_Const() {  }
+    virtual ~A_Engine_Const() {  }
 
-    virtual void update() = 0;
-
-protected:
-    QGLWidget *parent_;
+    virtual void update(const DataBase *data) = 0;
 };
+
+class A_Engine {
+public:
+    A_Engine() {  }
+    virtual ~A_Engine() {  }
+
+    virtual void update(DataBase *data) = 0;
+};
+
 #endif // ENGINE_ABSTRACT_H
 

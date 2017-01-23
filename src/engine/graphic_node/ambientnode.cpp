@@ -15,8 +15,7 @@ AmbientNode::~AmbientNode() {
 
 }
 
-void AmbientNode::draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *render) {
-    Camera &camera = data->getCamera();
+void AmbientNode::draw(GeometryBuffer *buffer, const DataBase *, RenderBuffer *render) {
 
     render->getFrameBuffer()->bind();
     render->getFrameBuffer()->disableBlending();

@@ -19,11 +19,11 @@ public:
 
     void setMode(Camera_Mode mode) { this->mode_ = mode; }
 
-    glm::mat4& getViewMatrix() { return this->view_; }
-    glm::mat4& getProjectionMatrix() { return this->projection_; }
+    glm::mat4 getViewMatrix() const { return this->view_; }
+    glm::mat4 getProjectionMatrix() const { return this->projection_; }
 
-    glm::vec3& getDirection() { return this->direction_; }
-    glm::vec3& getPosition() { return this->position_; }
+    glm::vec3 getDirection() const { return this->direction_; }
+    glm::vec3 getPosition() const { return this->position_; }
     void resize(float height, float width);
 
     void translateLocal(glm::vec3 vec);

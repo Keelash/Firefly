@@ -16,18 +16,16 @@
 
 #include "graphic_node/blurr_effect.h"
 
-class Engine_Graphic : public Engine_Abstract {
+class Engine_Graphic : public A_Engine_Const {
 public:
-    Engine_Graphic(QGLWidget *parent, DataBase *data);
+    Engine_Graphic(int width, int height);
     virtual ~Engine_Graphic();
 
     void resize(int w, int h);
 
-    virtual void update();
+    virtual void update(const DataBase *data);
 
 private:
-    DataBase *data_base_;
-
     GeometryBuffer *gbuffer_;
     RenderBuffer *renderbuffer_;
 

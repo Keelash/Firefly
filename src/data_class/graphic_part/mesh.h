@@ -5,7 +5,6 @@
 #include "src/glm_include.h"
 
 
-
 class G_Mesh : public OpenGL_ElementMesh {
 public:
 

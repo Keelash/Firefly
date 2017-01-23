@@ -29,7 +29,6 @@ public:
     bool loadFile(std::string path);
     void changeCamera(int mode) { this->data_base_->changeCameraMode((Camera_Mode)mode); }
 
-    void keyPressEvent(QKeyEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
 

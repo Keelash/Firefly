@@ -18,7 +18,7 @@ SensorNode::~SensorNode() {
 
 }
 
-void SensorNode::draw(RenderBuffer *render, DataBase *data) {
+void SensorNode::draw(RenderBuffer *render, const DataBase *data) {
     ScreenFramebuffer screen;
     Texture *blurred_bright = this->blurr_.applyEffect(render->getBrightTexture());
     float pixel[4];

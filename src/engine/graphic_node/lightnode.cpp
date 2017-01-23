@@ -14,9 +14,9 @@ LightNode::LightNode(): A_ShadingNode() {
 LightNode::~LightNode() {
 }
 
-void LightNode::draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *render) {
-    Camera &camera = data->getCamera();
-    const std::vector<Light*>& lights = data->getLights();
+void LightNode::draw(GeometryBuffer *buffer, const DataBase *data, RenderBuffer *render) {
+    const Camera *camera = data->getCamera();
+    const std::vector<Light*>* lights = data->getLights();
 
     render->getFrameBuffer()->bind();
     render->getFrameBuffer()->disableDepthTest();
@@ -35,8 +35,8 @@ void LightNode::draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *rende
         buffer->getTexture(F_TEXTURE_CR)->bindAsActiveTexture(2);
         this->shader_->setTextureLocation("color_texture", 2);
 
-        for(int i = 0; i < lights.size(); ++i) {
-            lights[i]->bindLight(this->shader_, data->getCamera().getViewMatrix());
+        for(int i = 0; i < lights->size(); ++i) {
+            (*lights)[i]->bindLight(this->shader_, data->getCamera()->getViewMatrix());
 
             this->quad_->draw();
         }

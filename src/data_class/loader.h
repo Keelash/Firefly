@@ -4,11 +4,19 @@
 #include <string>
 
 #include "database.h"
+#include "assimp/Importer.hpp"
 
 class Loader {
 public:
-    bool loadScene(std::string path, DataBase *data);
+    Loader() {  }
+    ~Loader() {  }
+
+    bool loadFile(std::string path);
+    bool sceneToData(DataBase *data);
+
 private:
+    std::string filePath_;
+    Assimp::Importer importer_;
 };
 
 #endif //LOADER_H

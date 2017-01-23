@@ -21,23 +21,26 @@ void addMaterial(const aiScene *scene, DataBase *data, std::string &file_path);
 Bbox addMesh(const aiScene *scene, DataBase *data);
 void addLight(const aiScene *scene, DataBase *data);
 
-
-
-bool Loader::loadScene(std::string path, DataBase *data) {
-    Assimp::Importer importer;
-    std::stack<Stack_Node> node_stack;
-    const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);
-    std::string file_path = path.substr(0, path.find_last_of('/'));
-    Bbox scene_b;
+bool Loader::loadFile(std::string path) {
+    const aiScene* scene = this->importer_.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);
 
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        std::cout << "ERROR::ASSIMP::" << this->importer_.GetErrorString() << std::endl;
         return false;
     }
 
+    this->filePath_ = path.substr(0, path.find_last_of('/'));
+    return true;
+}
+
+bool Loader::sceneToData(DataBase *data) {
+    const aiScene* scene = this->importer_.GetScene();
+    std::stack<Stack_Node> node_stack;
+    Bbox scene_b;
+
     scene_b = addMesh(scene, data);
-    addMaterial(scene, data, file_path);
+    addMaterial(scene, data, this->filePath_);
     addLight(scene, data);
 
     node_stack.push(Stack_Node(scene->mRootNode, aiMatrix4x4()));
@@ -64,7 +67,6 @@ bool Loader::loadScene(std::string path, DataBase *data) {
             tras = glm::translate(tras, -3.0f/m *(scene_b.min + 0.5f*value));
             tras = glm::scale(tras, glm::vec3(3.0f/m));
 
-            //Remettre si possible les valeurs entre -1 et 1 c'est bien
             data->addInstance(numMeshes, numMaterial, tras);
         }
 

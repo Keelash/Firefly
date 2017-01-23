@@ -8,12 +8,10 @@
 #include "src/data_class/database.h"
 #include "engine_abstract.h"
 
-class Engine_Interaction : public Engine_Abstract {
+class Engine_Interaction {
 public:
-    Engine_Interaction(QGLWidget *parent, DataBase *data);
+    Engine_Interaction();
     ~Engine_Interaction() {  }
-
-    void keyboardEventHandler(QKeyEvent *e);
 
     void mousePressLeftEventHandler();
     void mousePressRightEventHandler();
@@ -21,10 +19,11 @@ public:
     void mouseReleaseLeftEventHandler();
     void mouseReleaseRightEventHandler();
 
-    virtual void update();
+    virtual void update(DataBase *data);
 
 private:
-    DataBase* data_base_;
+    QPoint pos_onLeftPressed;
+    QPoint pos_onRightPressed;
 
     bool moveCamera_;
     bool zoomCamera_;

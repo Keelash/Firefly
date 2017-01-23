@@ -14,7 +14,7 @@ public:
     LightNode();
     virtual ~LightNode();
 
-    virtual void draw(GeometryBuffer *buffer, DataBase *, RenderBuffer *render);
+    virtual void draw(GeometryBuffer *buffer, const DataBase *, RenderBuffer *render);
 
 private:
     Shader *shader_;

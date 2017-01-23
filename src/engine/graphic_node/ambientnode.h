@@ -14,7 +14,7 @@ public:
     AmbientNode();
     virtual ~AmbientNode();
 
-    virtual void draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *render);
+    virtual void draw(GeometryBuffer *buffer, const DataBase *, RenderBuffer *render);
 
 private:
     Shader *shader_;

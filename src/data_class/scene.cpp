@@ -8,10 +8,10 @@ void Scene::addInstance(Instance* inst, G_Mesh *mesh, Material* mat) {
     this->scene_[shader_key][mesh][mat].push_back(inst);
 }
 
-void Scene::draw(Geometry_Shader *shader_mod, glm::mat4 view, glm::mat4 projection) {
-    Node_Shader::iterator shad_it;
-    Node_Mesh::iterator mesh_it;
-    Node_Material::iterator mat_it;
+void Scene::draw(Geometry_Shader *shader_mod, glm::mat4 view, glm::mat4 projection) const {
+    Node_Shader::const_iterator shad_it;
+    Node_Mesh::const_iterator mesh_it;
+    Node_Material::const_iterator mat_it;
 
     glm::mat4 MVP = projection * view;
 

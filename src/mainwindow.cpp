@@ -7,7 +7,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->ui->setupUi(this);
 
     connect(this->ui->actionLoad_File, SIGNAL(triggered(bool)), this, SLOT(loadFile_Activated()));
-    connect(this->ui->CameraMod_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(cameraMode_changed(int)));
+
+    connect(this->ui->actionHorizontal_Trackball,SIGNAL(toggled(bool)),
+            this, SLOT(actionHTrackball_toggled(bool)));
+    connect(this->ui->action3D_Trackball, SIGNAL(toggled(bool)),
+            this, SLOT(action3DTrackball_toggled(bool)));
 }
 
 MainWindow::~MainWindow() {
@@ -30,6 +34,16 @@ void MainWindow::loadFile_Activated() {
     }
 }
 
-void MainWindow::cameraMode_changed(int newMode) {
-    this->ui->openGLWidget->changeCamera(newMode);
+void MainWindow::actionHTrackball_toggled(bool value) {
+    if(value) {
+        this->ui->openGLWidget->changeCamera(0);
+        this->ui->action3D_Trackball->setChecked(false);
+    }
+}
+
+void MainWindow::action3DTrackball_toggled(bool value) {
+    if(value) {
+        this->ui->openGLWidget->changeCamera(1);
+        this->ui->actionHorizontal_Trackball->setChecked(false);
+    }
 }

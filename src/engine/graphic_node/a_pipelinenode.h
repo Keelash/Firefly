@@ -9,7 +9,7 @@ public:
     A_GeometricNode() { }
     virtual ~A_GeometricNode() {  }
 
-    virtual void drawGeometry(GeometryBuffer *gbuffer, DataBase *data) = 0;
+    virtual void drawGeometry(GeometryBuffer *gbuffer, const DataBase *data) = 0;
 };
 
 class A_QuadNode {
@@ -22,11 +22,11 @@ protected:
 
 
 class A_ShadingNode : public A_QuadNode {
-    virtual void draw(GeometryBuffer *buffer, DataBase *data, RenderBuffer *render) = 0;
+    virtual void draw(GeometryBuffer *buffer, const DataBase *data, RenderBuffer *render) = 0;
 };
 
 class A_PostProcessNode : public A_QuadNode {
-    virtual void draw(RenderBuffer *hdr, DataBase *data) = 0;
+    virtual void draw(RenderBuffer *hdr, const DataBase *data) = 0;
 };
 
 #endif //A_PIPELINENODE

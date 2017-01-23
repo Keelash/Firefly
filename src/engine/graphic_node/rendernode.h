@@ -18,7 +18,7 @@ public:
     RenderNode();
     ~RenderNode();
 
-    virtual void drawGeometry(GeometryBuffer *gbuffer, DataBase *data);
+    virtual void drawGeometry(GeometryBuffer *gbuffer, const DataBase *data);
 
     static const std::string vertex_path;
     static const std::string fragment_path;

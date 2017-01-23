@@ -14,7 +14,7 @@ public:
     SensorNode(int width, int height);
     ~SensorNode();
 
-    void draw(RenderBuffer *render, DataBase *data);
+    void draw(RenderBuffer *render, const DataBase *data);
 private:
     Shader *shader_;
     BlurrEffect blurr_;
