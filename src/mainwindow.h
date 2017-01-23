@@ -23,7 +23,9 @@ public:
 
 public slots:
     void loadFile_Activated();
-    void cameraMode_changed(int newMode);
+
+    void actionHTrackball_toggled(bool value);
+    void action3DTrackball_toggled(bool value);
 
 private:
     Ui::MainWindow *ui;

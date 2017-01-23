@@ -36,8 +36,8 @@ void GLFrame::initializeGL() {
     glm::mat4 *matrix = new glm::mat4(1.0);
 
     this->data_base_ = new DataBase();
-    this->engine_g = new Engine_Graphic(this, this->data_base_);
-    this->engine_i = new Engine_Interaction(this, this->data_base_);
+    this->engine_g = new Engine_Graphic(this->width(), this->height());
+    this->engine_i = new Engine_Interaction();
 
 
     //Voire pour jeter tout cela dans un fichier qui creer une scene de base.
@@ -50,17 +50,13 @@ void GLFrame::initializeGL() {
 }
 
 void GLFrame::paintGL() {
-    this->engine_i->update();
-    this->engine_g->update();
+    this->engine_i->update(this->data_base_);
+    this->engine_g->update(this->data_base_);
 }
 
 void GLFrame::resizeGL(int w, int h) {
     this->engine_g->resize(w, h);
-    this->data_base_->getCamera().resize(h, w);
-}
-
-void GLFrame::keyPressEvent(QKeyEvent *e) {
-    this->engine_i->keyboardEventHandler(e);
+    //this->data_base_->getCamera().resize(h, w);
 }
 
 void GLFrame::mousePressEvent(QMouseEvent *e) {
@@ -91,8 +87,12 @@ bool GLFrame::setEnvmap(const char* path) {
 bool GLFrame::loadFile(std::string path) {
     Loader loader;
 
-    this->data_base_->clear();
-    return loader.loadScene(path, this->data_base_);
+    if(loader.loadFile(path)) {
+        this->data_base_->clear();
+        return loader.sceneToData(this->data_base_);
+    }
+
+    return false;
 }
 
 
