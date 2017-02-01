@@ -9,8 +9,6 @@
 #include <QLineEdit>
 #include <QMenuBar>
 
-#include "glframe.h"
-
 namespace Ui {
 class MainWindow;
 }
@@ -20,12 +18,6 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
-
-public slots:
-    void loadFile_Activated();
-
-    void actionHTrackball_toggled(bool value);
-    void action3DTrackball_toggled(bool value);
 
 private:
     Ui::MainWindow *ui;

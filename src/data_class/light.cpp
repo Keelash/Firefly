@@ -1,13 +1,13 @@
 #include "light.h"
 
-Light::Light(int id, glm::vec3 position, float temperature, float intensity) :
-    id_(id), position_(position), colour_hue_(RGBfromTemp(temperature)), intensity_(intensity)
+Light::Light(glm::vec3 position, float temperature, float intensity) :
+    position_(position), colour_hue_(RGBfromTemp(temperature)), intensity_(intensity)
 {
 
 }
 
-Light::Light(int id, glm::vec3 position, glm::vec3 colour, float intensity) :
-    id_(id), position_(position), colour_hue_(colour), intensity_(intensity)
+Light::Light(glm::vec3 position, glm::vec3 colour, float intensity) :
+    position_(position), colour_hue_(colour), intensity_(intensity)
 {
 
 }

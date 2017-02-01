@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="GLFrame" name="openGLWidget"/>
+     <widget class="QGraphicsView" name="graphicsView"/>
     </item>
    </layout>
   </widget>
@@ -85,13 +85,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>GLFrame</class>
-   <extends>QOpenGLWidget</extends>
-   <header>src/glframe.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

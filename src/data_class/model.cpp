@@ -1,7 +1,7 @@
 #include "model.h"
 #include "loader.h"
 
-Model::Model() : Data(), std::map<int, std::vector<Object_Data>>() {
+Model::Model() : std::map<int, std::vector<Object_Data>>() {
 
 }
 
@@ -16,8 +16,4 @@ Model::~Model() {
             delete vector->at(i).mesh_;
         }
     }
-}
-
-DataType Model::getType() const {
-    return DataType::DATA_MODEL;
 }

@@ -1,15 +1,15 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "bindable.h"
 #include "material_element.h"
 #include "texture.h"
+#include "shader.h"
 #include "src/glm_include.h"
 
 
-class Material : public Bindable {
+class Material {
 public:
-    Material(int id);
+    Material();
     virtual ~Material();
 
     void deleteMaterial();

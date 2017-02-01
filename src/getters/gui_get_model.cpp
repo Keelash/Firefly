@@ -3,8 +3,8 @@
 
 #include <QFileDialog>
 
-GUI_get_model::GUI_get_model(Get_Model getters, QWidget *parent) :
-    QWidget(parent), ui(new Ui::GUI_get_model), getters_(getters) {
+GUI_get_model::GUI_get_model(QWidget *parent) :
+    QWidget(parent), ui(new Ui::GUI_get_model) {
 
     ui->setupUi(this);
 }
@@ -19,5 +19,4 @@ void GUI_get_model::on_loadfile_button_pressed() {
                                             tr("Model Files (*.obj *.blend)"));
 
     this->ui->file_label->setText(fileName);
-    this->getters_->loadFile(fileName);
 }

@@ -2,15 +2,14 @@
 #define LIGHT_H
 
 #include "src/glm_include.h"
-
-#include "bindable.h"
+#include "shader.h"
 
 class Light {
 public:
     static glm::vec3 RGBfromTemp(float temp);
 
-    Light(int id, glm::vec3 position, float temperature = 6000.0f, float intensity = 1.0f);
-    Light(int id, glm::vec3 position, glm::vec3 colour = glm::vec3(1.0f), float intensity = 1.0f);
+    Light(glm::vec3 position = glm::vec3(0.0f), float temperature = 6000.0f, float intensity = 1.0f);
+    Light(glm::vec3 position = glm::vec3(0.0f), glm::vec3 colour = glm::vec3(1.0f), float intensity = 1.0f);
     ~Light() {  }
 
     inline void setTemperature(float temperature) {
@@ -28,7 +27,6 @@ public:
 
     void bindLight(Shader *shader, glm::mat4 transform);
 private:
-    int id_;
 
     glm::vec3 position_;
     glm::vec3 colour_hue_;

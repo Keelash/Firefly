@@ -93,12 +93,12 @@ G_Mesh* Model_Loader::convertToGMesh(aiMesh* mesh) {
         indices_vector.push_back(t);
     }
 
-    return new G_Mesh(0, vertex_vector, indices_vector);
+    return new G_Mesh(vertex_vector, indices_vector);
 }
 
 Material* Model_Loader::convertToMaterial(aiMaterial* material, std::string &file_path) {
 
-        Material *material_d = new Material(0);
+        Material *material_d = new Material();
         aiString path; std::string texture_path;
         aiColor3D color; float value;
 

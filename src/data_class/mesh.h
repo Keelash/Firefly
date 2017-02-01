@@ -20,8 +20,8 @@ public:
     } G_Mesh_Face;
 
 
-    G_Mesh(unsigned int id, std::vector<G_Mesh_Vertex> &vertex_vector,
-         std::vector<G_Mesh_Face> &face_vector): OpenGL_ElementMesh(), id_(id) {
+    G_Mesh(std::vector<G_Mesh_Vertex> &vertex_vector,
+         std::vector<G_Mesh_Face> &face_vector): OpenGL_ElementMesh() {
 
         this->setData((GLfloat*) &vertex_vector[0], vertex_vector.size(), sizeof(G_Mesh_Vertex));
         this->defineDataSet(0, 3, GL_FLOAT, GL_FALSE, sizeof(G_Mesh_Vertex), (GLvoid*) 0);
@@ -31,11 +31,6 @@ public:
         this->setElement((GLuint*) &face_vector[0], face_vector.size() * 3);
     }
     virtual ~G_Mesh() {  }
-
-    unsigned int getId() { return this->id_; }
-
-private:
-    unsigned int id_;
 };
 
 

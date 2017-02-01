@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Material::Material(int id) {
+Material::Material() {
     this->diffColor_[0] = 1.0f;
     this->diffColor_[1] = 1.0f;
     this->diffColor_[2] = 1.0f;
@@ -11,7 +11,6 @@ Material::Material(int id) {
     this->roughtness_ = 0.1f;
     this->reflection_ = 0.0f;
 
-    this->id_ = id;
     this->shaderKey_ = 0;
 
     for (int i = 0; i < NB_TEXTURE; ++i) {
