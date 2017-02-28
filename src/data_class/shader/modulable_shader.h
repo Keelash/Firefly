@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include "src/data_class/shader.h"
+#include "shader.h"
 
 class Modular_Shader {
 public:

@@ -4,44 +4,30 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <vector>
 
-class A_OpenGlMesh : protected QOpenGLFunctions_3_3_Core {
+class OpenGLMesh : protected QOpenGLFunctions_3_3_Core {
 public:
-    A_OpenGlMesh();
-    virtual ~A_OpenGlMesh();
+    enum DrawType {
+        DRAW_ARRAY, DRAW_ELEMENT
+    };
 
-    void bind();
-    void unbind();
-    virtual void draw() = 0;
+    OpenGLMesh(DrawType type = DRAW_ARRAY);
+    virtual ~OpenGLMesh();
+
+    void bind() const;
+    void unbind() const;
+    virtual void draw() const;
 
 protected:
     void setData(GLfloat *data_vector, GLuint nbPoint, GLuint data_size);
     void defineDataSet(GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid* pointer);
+    void setElement(GLuint *indices_vector, GLuint nbPoint);
 
     GLuint vao_;
     GLuint vbo_;
+    GLuint ebo_;
 
     unsigned int nbPoint_;
-};
-
-class OpenGL_ElementMesh : public A_OpenGlMesh {
-public:
-    OpenGL_ElementMesh(): A_OpenGlMesh(), ebo_(0) {  }
-    virtual ~OpenGL_ElementMesh() {  }
-
-    virtual void draw();
-
-protected:
-    void setElement(GLuint *indices_vector, GLuint nbPoint);
-
-    GLuint ebo_;
-};
-
-class OpenGL_Mesh : public A_OpenGlMesh {
-public:
-    OpenGL_Mesh(): A_OpenGlMesh() {  }
-    ~OpenGL_Mesh() {  }
-
-    virtual void draw();
+    DrawType type_;
 };
 
 #endif//OPENGLMESH

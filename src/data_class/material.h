@@ -3,7 +3,7 @@
 
 #include "material_element.h"
 #include "texture.h"
-#include "shader.h"
+#include "shader/shader.h"
 #include "src/glm_include.h"
 
 

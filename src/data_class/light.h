@@ -2,7 +2,7 @@
 #define LIGHT_H
 
 #include "src/glm_include.h"
-#include "shader.h"
+#include "shader/shader.h"
 
 class Light {
 public:

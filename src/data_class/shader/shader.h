@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "opengl_object/opengl_shader.h"
+#include "src/data_class/opengl_object/opengl_shader.h"
 #include "shader_code.h"
 
 class Shader : public OpenGlShader {

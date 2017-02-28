@@ -1,28 +1,31 @@
 #include "nodeview.h"
 
+#include <QGraphicsScene>
 #include <QPainter>
 
-#include "src/node_widget/core/node.h"
-#include "src/node_widget/gui/dockview.h"
+#include "src/node_widget/node.h"
+#include "src/node_widget/dockview.h"
 
 namespace nodegraph {
 
 namespace gui {
 
-NodeView::NodeView(Node *node, QGraphicsItem* parent):
-    QGraphicsItem(parent)
-{
+NodeView::NodeView(Node *node): QGraphicsItem(nullptr) {
     this->proxy_ = new QGraphicsProxyWidget(this);
     this->proxy_->setWidget(node);
+
+    this->setFlag(QGraphicsItem::ItemIsMovable, true);
+    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
     this->proxy_->setPos(20., 5.);
 
     for(unsigned int i = 0; i < node->getNbInputChannel(); ++i) {
-        this->input_dock_.push_back(new DockView(this));
+        this->input_dock_.push_back(new DockView(DockView::INPUT, this));
     }
 
     for(unsigned int i = 0; i < node->getNbOutputChannel(); ++i) {
-        this->input_dock_.push_back(new DockView(this));
+        this->output_dock_.push_back(new DockView(DockView::OUTPUT, this));
     }
 
     this->calculateDockPos();
@@ -71,6 +74,32 @@ void NodeView::calculateDockPos() {
     for(int i = 0; i  < output_dock_.size(); ++i) {
         output_dock_[i]->setPos(boundingRect().width() - 5, size - 10 - 15 * i);
     }
+}
+
+
+Node* NodeView::getNode() {
+    return (Node*)this->proxy_->widget();
+}
+
+unsigned int NodeView::getInputDockPos(DockView* dock) {
+    std::vector<DockView*>::iterator it;
+    it = std::find(this->input_dock_.begin(), this->input_dock_.end(), dock);
+
+    return std::distance(this->input_dock_.begin(), it);
+}
+
+unsigned int NodeView::getOutputDockPos(DockView* dock) {
+    std::vector<DockView*>::iterator it;
+    it = std::find(this->output_dock_.begin(), this->output_dock_.end(), dock);
+
+    return std::distance(this->output_dock_.begin(), it);
+}
+
+QVariant NodeView::itemChange(GraphicsItemChange change, const QVariant &value) {
+    if (change == ItemPositionChange)
+        this->scene()->update();
+
+    return QGraphicsItem::itemChange(change, value);
 }
 
 }//namespace gui

@@ -2,25 +2,36 @@
 
 #include <iostream>
 
-A_OpenGlMesh::A_OpenGlMesh() : vbo_(0) {
+OpenGLMesh::OpenGLMesh(DrawType type) : vbo_(0), ebo_(0), type_(type) {
     this->initializeOpenGLFunctions();
 
     glGenVertexArrays(1, &this->vao_);
 }
 
-A_OpenGlMesh::~A_OpenGlMesh() {
+OpenGLMesh::~OpenGLMesh() {
     glDeleteVertexArrays(1, &this->vao_);
 }
 
-void A_OpenGlMesh::bind() {
+void OpenGLMesh::bind() const{
     glBindVertexArray(this->vao_);
 }
 
-void A_OpenGlMesh::unbind() {
+void OpenGLMesh::unbind() const{
     glBindVertexArray(0);
 }
 
-void A_OpenGlMesh::setData(GLfloat *data_vector, GLuint nbPoint, GLuint data_size) {
+void OpenGLMesh::draw() const{
+    switch(this->type_) {
+    case DRAW_ARRAY :
+        glDrawArrays(GL_TRIANGLES, 0, this->nbPoint_);
+        break;
+    case DRAW_ELEMENT :
+        glDrawElements(GL_TRIANGLES, this->nbPoint_, GL_UNSIGNED_INT, 0);
+        break;
+    }
+}
+
+void OpenGLMesh::setData(GLfloat *data_vector, GLuint nbPoint, GLuint data_size) {
     if(this->vbo_ == 0) {
         glGenBuffers(1, &this->vbo_);
     }
@@ -33,17 +44,7 @@ void A_OpenGlMesh::setData(GLfloat *data_vector, GLuint nbPoint, GLuint data_siz
     this->nbPoint_ = nbPoint;
 }
 
-void A_OpenGlMesh::defineDataSet(GLuint index, GLuint size, GLenum type,
-                   GLboolean normalized, GLsizei stride, GLvoid* pointer)
-{
-    glBindVertexArray(this->vao_);
-    glBindBuffer(GL_ARRAY_BUFFER, this->vbo_);
-        glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-        glEnableVertexAttribArray(index);
-    glBindVertexArray(0);
-}
-
-void OpenGL_ElementMesh::setElement(GLuint *indices_vector, GLuint nbPoint) {
+void OpenGLMesh::setElement(GLuint *indices_vector, GLuint nbPoint) {
     if(this->ebo_ == 0) {
         glGenBuffers(1, &this->ebo_);
     }
@@ -56,11 +57,12 @@ void OpenGL_ElementMesh::setElement(GLuint *indices_vector, GLuint nbPoint) {
     this->nbPoint_ = nbPoint;
 }
 
-void OpenGL_ElementMesh::draw() {
-    glDrawElements(GL_TRIANGLES, this->nbPoint_, GL_UNSIGNED_INT, 0);
+void OpenGLMesh::defineDataSet(GLuint index, GLuint size, GLenum type,
+                   GLboolean normalized, GLsizei stride, GLvoid* pointer)
+{
+    glBindVertexArray(this->vao_);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo_);
+        glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        glEnableVertexAttribArray(index);
+    glBindVertexArray(0);
 }
-
-void OpenGL_Mesh::draw() {
-    glDrawArrays(GL_TRIANGLES, 0, this->nbPoint_);
-}
-

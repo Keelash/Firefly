@@ -9,16 +9,28 @@
 #include "src/data_class/material.h"
 #include "src/data_class/mesh.h"
 
-typedef struct Object_Data_s {
-    Material* material_;
-    G_Mesh* mesh_;
-    glm::mat4 transform_;
-} Object_Data;
-
-class Model : public std::map<int, std::vector<Object_Data>> {
+class Model {
 public:
+    typedef struct Node_s {
+        std::vector<unsigned int> meshes;
+        std::vector<struct Node_s*> nexts;
+
+        glm::mat4 transform_;
+    } Node;
+
     Model();
     ~Model();
+
+    const Node* getRoot() const;
+
+    const G_Mesh* getMesh(unsigned int id) const;
+    const Material* getMaterial(unsigned int id) const;
+
+private:
+    std::vector<G_Mesh*> mesh_;
+    std::vector<Material*> material_;
+
+    Node root_;
 };
 
 #endif//MODEL_H

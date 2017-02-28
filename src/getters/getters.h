@@ -3,20 +3,19 @@
 
 #include <iostream>
 
-#include "src/engine/core/node.h"
-#include "src/engine/core/datatype.h"
+#include "src/node_widget/node.h"
 
-class Getters {
+using namespace nodegraph;
+
+class Getters : public Node {
 public:
-    virtual void update() = 0;
-
-    virtual void setInput(const Data *data, unsigned int input) {
+    virtual void setInput(const QVariant *data, unsigned int input) {
         std::cerr << "[GETTERS] : Input definition in a no-input class" << std::endl;
     }
 
-    virtual DataType getInputDataType(unsigned int input) const {
+    virtual QVariant::Type getInputDataType(unsigned int input) const {
         std::cerr << "[GETTERS] : getInputDataType used in a no-input class" << std::endl;
-        return DataType::DATA_ERR_NOTYPE;
+        return QVariant::Type::Invalid;
     }
 
     virtual unsigned int getNbInputChannel() const { return 0; }

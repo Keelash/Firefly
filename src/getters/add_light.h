@@ -1,35 +1,36 @@
 #ifndef GUI_GET_LIGHT_H
 #define GUI_GET_LIGHT_H
 
-#include <QGraphicsItem>
-#include <QGraphicsProxyWidget>
-
 #include "ui_add_light.h"
+
+#include "src/node_widget/node.h"
+#include "getters.h"
 
 namespace Ui {
 class Add_light;
 }
 
-namespace gui {
 
-class W_Add_light : public QWidget
-{
+class Add_light : public Getters {
     Q_OBJECT
-
 public:
-    explicit W_Add_light(QWidget *parent = 0)
-        : QWidget(parent), ui(new Ui::Add_light)
-    {
+    explicit Add_light() : Getters(), ui(new Ui::Add_light) {
         this->ui->setupUi(this);
     }
 
-    ~W_Add_light() {
+    ~Add_light() {
         delete this->ui;
     }
+
+    const QVariant* getOutput(unsigned int output) const { return nullptr; }
+    QVariant::Type getOutputDataType(unsigned int output) const { return QVariant::Type::Int; }
+    unsigned int getNbOutputChannel() const { return 1; }
+
+public slots:
+    virtual void updateNode() {  }
+
 private:
     Ui::Add_light *ui;
 };
-
-}//namespace gui
 
 #endif // GUI_GET_LIGHT_H

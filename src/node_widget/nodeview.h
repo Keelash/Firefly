@@ -14,8 +14,19 @@ class DockView;
 
 class NodeView : public QGraphicsItem {
 public:
-    NodeView(Node *node, QGraphicsItem* parent = 0);
+    NodeView(Node *node);
     ~NodeView();
+
+    enum { Type = UserType + 2 };
+    int type() const override { return Type; }
+
+    Node* getNode();
+
+    unsigned int getInputDockPos(DockView* dock);
+    unsigned int getOutputDockPos(DockView* dock);
+
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
