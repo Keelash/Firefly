@@ -3,8 +3,9 @@
 
 #include "ui_add_light.h"
 
-#include "src/node_widget/node.h"
-#include "getters.h"
+#include "src/node_widget/node_widget.h"
+#include "src/graphic_node/getters.h"
+#include "src/graphic_node/graphic_node.h"
 
 namespace Ui {
 class Add_light;
@@ -22,8 +23,8 @@ public:
         delete this->ui;
     }
 
-    const QVariant* getOutput(unsigned int output) const { return nullptr; }
-    QVariant::Type getOutputDataType(unsigned int output) const { return QVariant::Type::Int; }
+    const QVariant getOutput(unsigned int output) const { return QVariant(); }
+    unsigned int getOutputDataType(unsigned int output) const { return GraphicNode_DataType::Int; }
     unsigned int getNbOutputChannel() const { return 1; }
 
 public slots:

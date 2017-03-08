@@ -6,7 +6,7 @@
 
 namespace nodegraph {
 
-class Node;
+class I_Node;
 
 namespace gui {
 
@@ -14,13 +14,13 @@ class DockView;
 
 class NodeView : public QGraphicsItem {
 public:
-    NodeView(Node *node);
+    NodeView(I_Node *node);
     ~NodeView();
 
     enum { Type = UserType + 2 };
     int type() const override { return Type; }
 
-    Node* getNode();
+    I_Node* getNode();
 
     unsigned int getInputDockPos(DockView* dock);
     unsigned int getOutputDockPos(DockView* dock);

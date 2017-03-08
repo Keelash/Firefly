@@ -2,13 +2,11 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
-#include <iostream>
 
-#include "node.h"
-
-#include "src/node_widget/nodeview.h"
-#include "src/node_widget/dockview.h"
-#include "src/node_widget/edgeview.h"
+#include "node/node.h"
+#include "nodeview.h"
+#include "dockview.h"
+#include "edgeview.h"
 
 namespace nodegraph {
 
@@ -20,18 +18,18 @@ NodeGraph::~NodeGraph() {
 
 }
 
-void NodeGraph::addNode(Node* node) {
+void NodeGraph::addNode(I_Node* node) {
     this->addItem(new gui::NodeView(node));
     this->node_.push_back(node);
 }
 
-const std::vector<Node*> NodeGraph::getNodes() const {
+const std::vector<I_Node*> NodeGraph::getNodes() const {
     return this->node_;
 }
 
-bool NodeGraph::connectNode(Node* node_o, unsigned int output, Node* node_i, unsigned int input) {
-    std::vector<Node*>::iterator i, o;
-    Connection c;
+bool NodeGraph::connectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input) {
+    std::vector<I_Node*>::iterator i, o;
+    I_Node::Connection c;
 
     i = std::find(this->node_.begin(), this->node_.end(), node_i);
     o = std::find(this->node_.begin(), this->node_.end(), node_o);
@@ -40,19 +38,14 @@ bool NodeGraph::connectNode(Node* node_o, unsigned int output, Node* node_i, uns
             || node_o->getOutputDataType(output) != node_i->getInputDataType(input))
         return false;
 
-    node_i->setInput(node_o->getOutput(output), input);
-    c.node_i = std::distance(this->node_.begin(), i);
-    c.node_o = std::distance(this->node_.begin(), o);
+    c.node = node_o;
     c.input = input; c.output = output;
 
+    node_i->setInput(c);
+    node_i->updateNode();
     connect(node_o, SIGNAL(outputChanged()), node_i, SLOT(updateNode()));
 
-    this->connection_.push_back(c);
     return true;
-}
-
-const std::vector<NodeGraph::Connection> NodeGraph::getConnection() const {
-    return this->connection_;
 }
 
 void NodeGraph::mousePressEvent(QGraphicsSceneMouseEvent *e) {
@@ -129,6 +122,10 @@ void NodeGraph::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
                     this->curr_edge_->setOutput(d_i);
                     d_i->addEdge(this->curr_edge_);
                     d_o->addEdge(this->curr_edge_);
+                }
+                else {
+                    delete this->curr_edge_;
+                    this->update();
                 }
             }
         }

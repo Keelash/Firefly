@@ -11,11 +11,12 @@ public:
     };
 
     OpenGLMesh(DrawType type = DRAW_ARRAY);
+    OpenGLMesh(OpenGLMesh &other);
     virtual ~OpenGLMesh();
 
-    void bind() const;
-    void unbind() const;
-    virtual void draw() const;
+    void bind();
+    void unbind();
+    virtual void draw();
 
 protected:
     void setData(GLfloat *data_vector, GLuint nbPoint, GLuint data_size);

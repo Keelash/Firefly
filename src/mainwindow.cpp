@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 #include <QPushButton>
 
-#include "node_widget/nodegraph.h"
+#include "node_widget/node_widget.h"
 
 #include "src/test/testinput.h"
 #include "src/test/testoutput.h"
@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->ui->graphicsView->setScene(scene);
 
     scene->addNode(new TestInput());
+    scene->addNode(new TestOUTPUT());
     scene->addNode(new TestOUTPUT());
 }
 

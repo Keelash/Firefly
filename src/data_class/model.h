@@ -6,30 +6,47 @@
 #include <string>
 
 #include "src/glm_include.h"
-#include "src/data_class/material.h"
-#include "src/data_class/mesh.h"
 
-class Model {
+class aiMesh;
+class aiMaterial;
+
+class Mesh;
+class Material;
+class Geometry_Shader;
+
+class I_Model {
 public:
-    typedef struct Node_s {
-        std::vector<unsigned int> meshes;
-        std::vector<struct Node_s*> nexts;
+    virtual void draw(Geometry_Shader *shader) const = 0;
+};
 
+class Model : public I_Model {
+public:
+    Model(std::string path);
+    virtual ~Model();
+
+    virtual void draw(Geometry_Shader *shader) const;
+
+protected:
+    typedef struct Object_s {
+        unsigned int mesh;
+        unsigned int material;
+    } Object;
+
+    class Node {
+    public:
+        Node();
+        ~Node();
+
+        std::vector<Object> objects;
+        std::vector<Node*> nexts;
         glm::mat4 transform_;
-    } Node;
+    };
 
-    Model();
-    ~Model();
+    static Mesh* convertToGMesh(aiMesh* mesh);
+    static Material* convertToMaterial(aiMaterial* material, std::string filePath);
 
-    const Node* getRoot() const;
-
-    const G_Mesh* getMesh(unsigned int id) const;
-    const Material* getMaterial(unsigned int id) const;
-
-private:
-    std::vector<G_Mesh*> mesh_;
-    std::vector<Material*> material_;
-
+    std::vector<Mesh*> meshes_;
+    std::vector<Material*> materials_;
     Node root_;
 };
 

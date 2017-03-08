@@ -3,14 +3,14 @@
 #include <QGraphicsScene>
 #include <QPainter>
 
-#include "src/node_widget/node.h"
-#include "src/node_widget/dockview.h"
+#include "node/node.h"
+#include "dockview.h"
 
 namespace nodegraph {
 
 namespace gui {
 
-NodeView::NodeView(Node *node): QGraphicsItem(nullptr) {
+NodeView::NodeView(I_Node *node): QGraphicsItem(nullptr) {
     this->proxy_ = new QGraphicsProxyWidget(this);
     this->proxy_->setWidget(node);
 
@@ -77,8 +77,8 @@ void NodeView::calculateDockPos() {
 }
 
 
-Node* NodeView::getNode() {
-    return (Node*)this->proxy_->widget();
+I_Node* NodeView::getNode() {
+    return (I_Node*)this->proxy_->widget();
 }
 
 unsigned int NodeView::getInputDockPos(DockView* dock) {

@@ -3,6 +3,18 @@
 #include <iostream>
 #include <QImage>
 
+OpenGlTexture::OpenGlTexture() {
+    this->initializeOpenGLFunctions();
+}
+
+OpenGlTexture::OpenGlTexture(const OpenGlTexture& other) {
+    this->initializeOpenGLFunctions();
+
+    this->width_ = other.width_;
+    this->height_ = other.height_;
+    this->texid_ = other.texid_;
+}
+
 OpenGlTexture::OpenGlTexture(const char* file) {
     this->initializeOpenGLFunctions();
 

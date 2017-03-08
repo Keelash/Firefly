@@ -5,6 +5,8 @@
 
 class OpenGlTexture : protected QOpenGLFunctions_3_3_Core {
 public:
+    OpenGlTexture();
+    OpenGlTexture(const OpenGlTexture& other);
     OpenGlTexture(const char* file);
     OpenGlTexture(int width, int height, GLint internalFormat, GLenum format, GLenum type);
     virtual ~OpenGlTexture();

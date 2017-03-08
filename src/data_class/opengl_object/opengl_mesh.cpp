@@ -8,19 +8,26 @@ OpenGLMesh::OpenGLMesh(DrawType type) : vbo_(0), ebo_(0), type_(type) {
     glGenVertexArrays(1, &this->vao_);
 }
 
+OpenGLMesh::OpenGLMesh(OpenGLMesh &other) :
+    vao_(other.vao_), vbo_(other.vbo_), ebo_(other.ebo_),
+    nbPoint_(other.nbPoint_), type_(other.type_) {
+
+    this->initializeOpenGLFunctions();
+}
+
 OpenGLMesh::~OpenGLMesh() {
     glDeleteVertexArrays(1, &this->vao_);
 }
 
-void OpenGLMesh::bind() const{
+void OpenGLMesh::bind(){
     glBindVertexArray(this->vao_);
 }
 
-void OpenGLMesh::unbind() const{
+void OpenGLMesh::unbind(){
     glBindVertexArray(0);
 }
 
-void OpenGLMesh::draw() const{
+void OpenGLMesh::draw(){
     switch(this->type_) {
     case DRAW_ARRAY :
         glDrawArrays(GL_TRIANGLES, 0, this->nbPoint_);
