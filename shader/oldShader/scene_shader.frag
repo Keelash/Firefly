@@ -74,5 +74,5 @@ vec3 getNormal() {
 void main() {
     voxel_position = vec4(position_vertex.xyz, getReflection());
     voxel_normal_metalpart = vec4(getNormal(), getMetalPart());
-    voxel_color_roughtness = vec4(getColor(), getRoughtness());
+    voxel_color_roughtness = vec4(getNormal(), getRoughtness());
 }
