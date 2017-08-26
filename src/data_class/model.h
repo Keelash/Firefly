@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <QVariant>
 
 #include "src/glm_include.h"
 
@@ -12,21 +13,26 @@ class aiMaterial;
 
 class Mesh;
 class Material;
-class Geometry_Shader;
+class Camera;
+class GeometryShader;
 
 class I_Model {
 public:
-    virtual void draw(Geometry_Shader *shader) const = 0;
+    virtual void draw(GeometryShader *shader, const Camera *camera) const = 0;
 };
 
 class Model : public I_Model {
 public:
-    Model(std::string path);
+    static Model* createModel(std::string path);
+
     virtual ~Model();
 
-    virtual void draw(Geometry_Shader *shader) const;
+    virtual void draw(GeometryShader *shader, const Camera *camera) const;
+    static unsigned int Type() { return QVariant::Type::UserType + 2; }
 
 protected:
+    Model();
+
     typedef struct Object_s {
         unsigned int mesh;
         unsigned int material;
@@ -49,5 +55,7 @@ protected:
     std::vector<Material*> materials_;
     Node root_;
 };
+
+Q_DECLARE_METATYPE(const Model*)
 
 #endif//MODEL_H

@@ -5,7 +5,7 @@
 
 class ShaderCode {
 public:
-    ShaderCode(std::string &vertex, std::string &fragment);
+    ShaderCode(const std::string &vertex, const std::string &fragment);
     ShaderCode();
     ~ShaderCode() {  }
 

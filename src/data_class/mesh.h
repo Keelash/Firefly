@@ -37,8 +37,6 @@ public:
     virtual ~Mesh() {  }
 };
 
-Q_DECLARE_METATYPE(Mesh);
-
 
 class UVMesh : public OpenGLMesh {
 public:

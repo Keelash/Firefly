@@ -20,11 +20,11 @@ private:
     std::map<int, Shader*> shader_var_;
 };
 
-class Geometry_Shader : public Modular_Shader {
+class GeometryShader : public Modular_Shader {
 public:
-    Geometry_Shader(std::string vert_path, std::string frag_path)
+    GeometryShader(std::string vert_path, std::string frag_path)
         : vertex_path_(vert_path), fragment_path_(frag_path) {  }
-    virtual ~Geometry_Shader() {  }
+    virtual ~GeometryShader() {  }
 
     virtual void addMod(int key);
 

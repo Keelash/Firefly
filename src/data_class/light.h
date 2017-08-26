@@ -1,6 +1,8 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
+#include <QVariant>
+
 #include "src/glm_include.h"
 #include "shader/shader.h"
 
@@ -11,6 +13,8 @@ public:
     Light(glm::vec3 position = glm::vec3(0.0f), float temperature = 6000.0f, float intensity = 1.0f);
     Light(glm::vec3 position = glm::vec3(0.0f), glm::vec3 colour = glm::vec3(1.0f), float intensity = 1.0f);
     ~Light() {  }
+
+    static unsigned int Type() { return QVariant::Type::UserType + 3; }
 
     inline void setTemperature(float temperature) {
         this->colour_hue_ = RGBfromTemp(temperature);
@@ -32,5 +36,7 @@ private:
     glm::vec3 colour_hue_;
     float intensity_;
 };
+
+Q_DECLARE_METATYPE(const Light*);
 
 #endif

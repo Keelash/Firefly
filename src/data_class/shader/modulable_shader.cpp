@@ -27,7 +27,7 @@ Shader* Modular_Shader::getMod(int key) {
     return nullptr;
 }
 
-void Geometry_Shader::addMod(int key) {
+void GeometryShader::addMod(int key) {
         ShaderCode shader_code;
         shader_code.createFromFile(this->vertex_path_, this->fragment_path_);
 

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-ShaderCode::ShaderCode(std::string &vertex, std::string &fragment)
+ShaderCode::ShaderCode(const std::string &vertex, const std::string &fragment)
     : vertex_code_(vertex), fragment_code_(fragment) {
 
     this->define_ = "#version 330 core \n";

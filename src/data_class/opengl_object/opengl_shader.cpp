@@ -103,30 +103,30 @@ void OpenGlShader::unbindShader() {
     glUseProgram(0);
 }
 
-void OpenGlShader::setUniformLocation(const char *name, int value) {
+void OpenGlShader::setUniformLocation(const char *name, const int value) {
     glUniform1i(glGetUniformLocation(this->program_, name), value);
 }
 
-void OpenGlShader::setUniformLocation(const char *name, float value) {
+void OpenGlShader::setUniformLocation(const char *name, const float value) {
     glUniform1f(glGetUniformLocation(this->program_, name), value);
 }
 
-void OpenGlShader::setUniformLocation(const char *name, glm::vec2 &value) {
+void OpenGlShader::setUniformLocation(const char *name, const glm::vec2 &value) {
     glUniform2fv(glGetUniformLocation(this->program_, name), 1, glm::value_ptr(value));
 }
 
-void OpenGlShader::setUniformLocation(const char *name, glm::vec3 &value) {
+void OpenGlShader::setUniformLocation(const char *name, const glm::vec3 &value) {
     glUniform3fv(glGetUniformLocation(this->program_, name), 1, glm::value_ptr(value));
 }
 
-void OpenGlShader::setUniformLocation(const char *name, glm::vec4 &value) {
+void OpenGlShader::setUniformLocation(const char *name, const glm::vec4 &value) {
     glUniform4fv(glGetUniformLocation(this->program_, name), 1,  glm::value_ptr(value));
 }
 
-void OpenGlShader::setTextureLocation(const char* name, int texUnit){
+void OpenGlShader::setTextureLocation(const char* name, const int texUnit){
     glUniform1i(glGetUniformLocation(this->program_, name), texUnit);
 }
 
-void OpenGlShader::setUniformLocation(const char* name, glm::mat4 &mat){
+void OpenGlShader::setUniformLocation(const char* name, const glm::mat4 &mat){
     glUniformMatrix4fv(glGetUniformLocation(this->program_, name), 1, GL_FALSE, glm::value_ptr(mat));
 }

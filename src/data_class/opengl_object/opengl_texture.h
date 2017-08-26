@@ -11,7 +11,7 @@ public:
     OpenGlTexture(int width, int height, GLint internalFormat, GLenum format, GLenum type);
     virtual ~OpenGlTexture();
 
-    inline bool isValid() { return this->texid_ != 0; }
+    inline bool isValid() const { return this->texid_ != 0; }
 
     void bindTexture();
     void unbindTexture();
@@ -20,8 +20,8 @@ public:
     void getPixel(int level, float* pixel);
     void generateMipMap();
 
-    unsigned int getWidht() { return this->width_; }
-    unsigned int getHeight() { return this->height_; }
+    unsigned int getWidht() const { return this->width_; }
+    unsigned int getHeight() const { return this->height_; }
 
     GLuint getTextureId() { return this->texid_; }
 

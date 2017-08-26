@@ -11,18 +11,21 @@ class TestInput;
 
 class TestInput : public nodegraph::ReadersNode {
     Q_OBJECT
-
 public:
-    explicit TestInput();
+    explicit TestInput(nodegraph::NodeGraph *graph);
     ~TestInput();
 
     unsigned int getInputDataType(unsigned int input) const;
     unsigned int getNbInputChannel() const;
+    virtual QString getInputName(unsigned int input) const { return QString(); }
 
-public slots:
-    void updateNode();
+protected:
+    virtual void setInput(unsigned int input, QVariant data);
+
+    virtual void processData();
 
 private:
+    int a, b;
     Ui::TestInput *ui;
 };
 

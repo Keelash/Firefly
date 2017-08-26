@@ -2,35 +2,31 @@
 #include "ui_testoutput.h"
 
 #include <QFileDialog>
-#include <iostream>
 
-TestOUTPUT::TestOUTPUT() : ui(new Ui::TestOUTPUT) {
+TestOutput::TestOutput(nodegraph::NodeGraph *graph)
+    : nodegraph::WritersNode(graph), ui(new Ui::TestOUTPUT) {
     ui->setupUi(this);
 }
 
-TestOUTPUT::~TestOUTPUT() {
+TestOutput::~TestOutput() {
     delete ui;
 }
 
-const QVariant TestOUTPUT::getOutput(unsigned int output) const {
+const QVariant TestOutput::getOutput(unsigned int output) const {
     if (output == 0) {
         return this->ui->spinBox->value();
     }
 }
 
-unsigned int TestOUTPUT::getOutputDataType(unsigned int output) const {
+unsigned int TestOutput::getOutputDataType(unsigned int output) const {
     return QVariant::Type::Int;
 }
 
-unsigned int TestOUTPUT::getNbOutputChannel() const {
+unsigned int TestOutput::getNbOutputChannel() const {
     return 1;
 }
 
-void TestOUTPUT::updateNode() {
-
-}
-
-void TestOUTPUT::on_spinBox_valueChanged(int arg1)
-{
-    emit this->outputChanged();
+void TestOutput::on_spinBox_valueChanged(int arg1) {
+    this->graph_->setNodeToUpdate(this);
+    this->graph_->updateGraph();
 }

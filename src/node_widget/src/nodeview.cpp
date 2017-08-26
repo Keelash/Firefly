@@ -2,6 +2,9 @@
 
 #include <QGraphicsScene>
 #include <QPainter>
+#include <QLayout>
+
+#include <iostream>
 
 #include "node/node.h"
 #include "dockview.h"
@@ -18,15 +21,24 @@ NodeView::NodeView(I_Node *node): QGraphicsItem(nullptr) {
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
-    this->proxy_->setPos(20., 5.);
-
     for(unsigned int i = 0; i < node->getNbInputChannel(); ++i) {
-        this->input_dock_.push_back(new DockView(DockView::INPUT, this));
+        this->input_dock_.push_back(new DockView(DockView::INPUT,
+                                                 node->getInputName(i), this));
     }
 
     for(unsigned int i = 0; i < node->getNbOutputChannel(); ++i) {
-        this->output_dock_.push_back(new DockView(DockView::OUTPUT, this));
+        this->output_dock_.push_back(new DockView(DockView::OUTPUT,
+                                                  node->getOutputName(i), this));
     }
+
+    if(node->getNbInputChannel() != 0) {
+        DockView *d = this->input_dock_[0];
+
+        this->proxy_->setPos(d->boundingRect().right() + node->layout()->spacing(),
+                             node->layout()->spacing());
+    }
+    else
+        this->proxy_->setPos(node->layout()->spacing(), node->layout()->spacing());
 
     this->calculateDockPos();
 }
@@ -46,11 +58,11 @@ NodeView::~NodeView() {
 QRectF NodeView::boundingRect() const {
     QRectF bound = this->proxy_->boundingRect();
     int max_dock = std::max(input_dock_.size(), output_dock_.size());
-    unsigned int size = std::max(15 * max_dock, 5 + (int)this->proxy_->boundingRect().height());
+    unsigned int size = std::max(5 + 55 * max_dock, 5 + (int)this->proxy_->boundingRect().height());
 
     bound.setX(0);
     bound.setY(0);
-    bound.setWidth(bound.width() + 40.);
+    bound.setWidth(bound.width() + 80.);
     bound.setHeight(size + 5);
 
     return bound;
@@ -60,19 +72,24 @@ void NodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     QRectF bound = this->boundingRect();
 
     painter->setBrush(this->proxy_->widget()->palette().color(QPalette::Background));
-    painter->drawRect(5, 0, bound.width() - 5, bound.height());
+    painter->drawRect(5, 0, bound.width(), bound.height());
 }
 
 void NodeView::calculateDockPos() {
     int max_dock = std::max(input_dock_.size(), output_dock_.size());
-    unsigned int size = std::max(15 * max_dock, (int)this->proxy_->boundingRect().height());
 
     for(int i = 0; i < input_dock_.size(); ++i) {
-        input_dock_[i]->setPos(0, 5 + 15 * i);
+        input_dock_[i]->setPos(0, 5. + input_dock_[i]->boundingRect().height() * i);
     }
 
-    for(int i = 0; i  < output_dock_.size(); ++i) {
-        output_dock_[i]->setPos(boundingRect().width() - 5, size - 10 - 15 * i);
+    if(output_dock_.size() != 0) {
+        QRectF r = output_dock_[0]->boundingRect();
+        unsigned int size =
+                (int)std::max(r.height() * max_dock, this->proxy_->boundingRect().height());
+
+        for(int i = 0; i  < output_dock_.size(); ++i) {
+            output_dock_[i]->setPos(boundingRect().right(), size - 5. - r.height() * i);
+        }
     }
 }
 

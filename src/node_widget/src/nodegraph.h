@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <vector>
+#include <stack>
 
 namespace nodegraph {
 
@@ -20,16 +21,24 @@ public:
     virtual ~NodeGraph();
 
     void addNode(I_Node* node);
+    void updateNode(I_Node* node);
+
+    void setNodeToUpdate(I_Node* node);
+    void updateGraph();
+
     const std::vector<I_Node*> getNodes() const;
 
-    bool connectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input);
+    void drawBackground(QPainter *painter, const QRectF &rect);
 
     void mousePressEvent(QGraphicsSceneMouseEvent *e);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *e);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *e);
 
 protected:
-    std::vector<I_Node*> node_;
+    bool connectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input);
+
+    std::vector<I_Node*> nodes_;
+    std::stack<I_Node*> updateStack_;
 
     gui::EdgeView* curr_edge_;
     unsigned int state_;

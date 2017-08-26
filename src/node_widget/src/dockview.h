@@ -15,7 +15,7 @@ public:
     typedef enum Dock_Type_e { INPUT, OUTPUT } Dock_Type;
     enum { Type = UserType + 1 };
 
-    DockView(Dock_Type type, QGraphicsItem *parent = 0);
+    DockView(Dock_Type type, QString name, QGraphicsItem *parent = 0);
     virtual ~DockView();
 
     Dock_Type getDockType() const { return this->type_; }
@@ -28,6 +28,7 @@ public:
 
 private:
     Dock_Type type_;
+    QString name_;
 
     std::vector<EdgeView*> edge_;
 };

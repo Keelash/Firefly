@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <QVariant>
+
 #include "../glm_include.h"
 
 enum Camera_Mode {
@@ -10,12 +12,14 @@ enum Camera_Mode {
 class Camera {
 public:
     Camera(Camera_Mode mode = MODE_TRACKBALL_H,
-           glm::vec3 position = glm::vec3(1.0),
+           glm::vec3 position = glm::vec3(3.0, 3.0, 3.0),
            glm::vec3 look_at = glm::vec3(0.0),
            float fov = 80.0,
-           float heigth = 600,
-           float width = 400);
+           float heigth = 400,
+           float width = 600);
     ~Camera() { }
+
+    static unsigned int Type() { return QVariant::Type::UserType + 4; }
 
     void setMode(Camera_Mode mode) { this->mode_ = mode; }
 
@@ -24,7 +28,7 @@ public:
 
     glm::vec3 getDirection() const { return this->direction_; }
     glm::vec3 getPosition() const { return this->position_; }
-    void resize(float height, float width);
+    void resize(float width, float height);
 
     void translateLocal(glm::vec3 vec);
     void rotateAroundUp(float angle);
@@ -47,5 +51,7 @@ private:
     glm::vec3 up_;
     float fov_;
 };
+
+Q_DECLARE_METATYPE(const Camera*)
 
 #endif // CAMERA_H

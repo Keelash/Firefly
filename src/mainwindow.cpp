@@ -4,23 +4,83 @@
 #include <QGraphicsScene>
 #include <QPushButton>
 
+#include <QToolButton>
+#include <QWidgetAction>
+
+#include <iostream>
+
 #include "node_widget/node_widget.h"
 
 #include "src/test/testinput.h"
 #include "src/test/testoutput.h"
 
+#include "src/graphic_node/getter/cameragetter.h"
+#include "src/graphic_node/getter/modelgetter.h"
+
+#include "src/graphic_node/extractor/dataextractor.h"
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     this->ui->setupUi(this);
+    this->scene_ = new nodegraph::NodeGraph(this);
 
-    nodegraph::NodeGraph *scene = new nodegraph::NodeGraph(this);
+    this->ui->graphicsView->setScene(this->scene_);
+    this->createSceneToolBar();
 
-    this->ui->graphicsView->setScene(scene);
-
-    scene->addNode(new TestInput());
-    scene->addNode(new TestOUTPUT());
-    scene->addNode(new TestOUTPUT());
+    this->ui->openGLWidget->setDataBase(&this->database_);
+    this->ui->openGLWidget->setNodeGraph(this->scene_);
 }
 
 MainWindow::~MainWindow() {
     delete this->ui;
+}
+
+void MainWindow::createSceneToolBar() {
+    QToolBar *bar = new QToolBar(this->ui->frame);
+    QToolButton *gettersButton = new QToolButton(bar);
+    QWidgetAction* gettersAction = new QWidgetAction(bar);
+
+    gettersButton->setText("Add Getters");
+    gettersButton->setPopupMode(QToolButton::InstantPopup);
+
+    QMenu *gettersMenu = new QMenu(bar);
+    QAction *getCameraAction = gettersMenu->addAction("Add Camera Getters");
+    QAction *getModelAction = gettersMenu->addAction("add Model Getters");
+
+    connect(getCameraAction, SIGNAL(triggered(bool)), this, SLOT(on_createCameraGettersTrig(bool)));
+    connect(getModelAction, SIGNAL(triggered(bool)), this, SLOT(on_createModelGettersTrig(bool)));
+
+    gettersButton->setMenu(gettersMenu);
+    gettersAction->setDefaultWidget(gettersButton);
+
+    bar->addAction(gettersAction);
+
+    QToolButton *extractorButton = new QToolButton(bar);
+    QWidgetAction *extractorAction = new QWidgetAction(bar);
+
+    extractorButton->setText("Add Extractor");
+    extractorButton->setPopupMode(QToolButton::InstantPopup);
+
+    QMenu *extractorMenu = new QMenu(bar);
+    QAction *fullExtractorAction = extractorMenu->addAction("Add full Extractor");
+
+    connect(fullExtractorAction, SIGNAL(triggered(bool)), this, SLOT(on_createFullExtrTrig(bool)));
+
+    extractorButton->setMenu(extractorMenu);
+    extractorAction->setDefaultWidget(extractorButton);
+
+    bar->addAction(extractorAction);
+
+    this->ui->frame->layout()->addWidget(bar);
+}
+
+void MainWindow::on_createCameraGettersTrig(bool checked) {
+    this->scene_->addNode(new CameraGetter(&this->database_, this->scene_));
+}
+
+void MainWindow::on_createModelGettersTrig(bool checked) {
+    this->scene_->addNode(new ModelGetter(&this->database_, this->scene_));
+}
+
+void MainWindow::on_createFullExtrTrig(bool checked) {
+    this->scene_->addNode(new DataExtractor(600, 400, this->scene_));
 }

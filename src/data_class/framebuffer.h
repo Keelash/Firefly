@@ -19,8 +19,8 @@ public:
 
     A_Framebuffer* getFrameBuffer(){ return &this->framebuffer_; }
 
-    Texture* getRenderTexture() { return this->framebuffer_.getTexture(0); }
-    Texture* getBrightTexture() { return this->framebuffer_.getTexture(1); }
+    Texture* getRenderTexture() { return (Texture *)this->framebuffer_.getTexture(0); }
+    Texture* getBrightTexture() { return (Texture *)this->framebuffer_.getTexture(1); }
 
 private:
     FramebufferObject framebuffer_;
@@ -40,7 +40,7 @@ public:
     }
     ~GeometryBuffer() {  }
 
-    inline Texture* getTexture(F_TexType type) { return this->framebuffer_.getTexture(type); }
+    inline Texture* getTexture(F_TexType type) { return (Texture*) this->framebuffer_.getTexture(type); }
     inline A_Framebuffer* getFramebuffer() { return &this->framebuffer_; }
 
 private:

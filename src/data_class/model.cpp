@@ -9,6 +9,7 @@
 
 #include "src/data_class/material.h"
 #include "src/data_class/mesh.h"
+#include "src/data_class/camera.h"
 #include "src/data_class/shader/modulable_shader.h"
 
 Model::Node::Node() {
@@ -20,29 +21,31 @@ Model::Node::~Node() {
         delete this->nexts[i];
 }
 
-Model::Model(std::string path) {
+Model* Model::createModel(std::string path) {
     typedef std::pair<aiNode*, Model::Node*> StackElem;
 
     Assimp::Importer importer;
     std::string filePath;
     std::stack<StackElem> nodeStack;
+    Model* model = new Model();
     const aiScene* scene;
 
     scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        return nullptr;
     }
 
     filePath = path.substr(0, path.find_last_of('/'));
-    nodeStack.push(StackElem(scene->mRootNode, &this->root_));
+    nodeStack.push(StackElem(scene->mRootNode, &model->root_));
 
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        this->meshes_.push_back(convertToGMesh(scene->mMeshes[i]));
+        model->meshes_.push_back(convertToGMesh(scene->mMeshes[i]));
     }
 
     for (unsigned int i = 0; i < scene->mNumMaterials; ++i) {
-        this->materials_.push_back(convertToMaterial(scene->mMaterials[i], filePath));
+        model->materials_.push_back(convertToMaterial(scene->mMaterials[i], filePath));
     }
 
     while (nodeStack.size() != 0) {
@@ -69,11 +72,12 @@ Model::Model(std::string path) {
             nodeStack.push(StackElem(node.first->mChildren[i], n));
         }
     }
+
+    return model;
 }
 
-Model::~Model() {
-
-}
+Model::Model() {  }
+Model::~Model() {  }
 
 Mesh* Model::convertToGMesh(aiMesh* mesh) {
     std::vector<Mesh::G_Mesh_Vertex> vertex_vector;
@@ -142,7 +146,7 @@ Material* Model::convertToMaterial(aiMaterial* material, std::string filePath) {
     return m;
 }
 
-void Model::draw(Geometry_Shader *shader) const  {
+void Model::draw(GeometryShader *shader, const Camera *camera) const  {
     typedef std::pair<Model::Node*, glm::mat4> StackElem;
 
     std::stack<StackElem> stack;
@@ -166,9 +170,15 @@ void Model::draw(Geometry_Shader *shader) const  {
 
             Shader* s = shader->getMod(material->getShaderKey());
 
+            s->bindShader();
             mesh->bind();
             material->bind(s);
+
             s->setUniformLocation("matrix_model", currTransform);
+            s->setUniformLocation("matrix_view", camera->getViewMatrix());
+            s->setUniformLocation("matrix_view_projection",
+                                  camera->getProjectionMatrix() * camera->getViewMatrix());
+
             mesh->draw();
         }
 

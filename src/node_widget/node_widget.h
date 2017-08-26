@@ -4,7 +4,6 @@
 #include "src/node/node.h"
 #include "src/node/readers_node.h"
 #include "src/node/writers_node.h"
-#include "src/node/RW_node.h"
 
 #include "src/nodegraph.h"
 

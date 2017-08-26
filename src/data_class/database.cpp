@@ -13,11 +13,24 @@ DataBase::~DataBase() {
 
 void DataBase::setCamera(Camera &camera) {
     this->camera_ = camera;
+
+    for(int i = 0; i < this->camera_observers_.size(); ++i) {
+        this->camera_observers_[i]->update();
+    }
 }
 
+void DataBase::addCameraObserver(DataObserver *observer) {
+    this->camera_observers_.push_back(observer);
+}
 
-unsigned int DataBase::addModel(std::string path) {
-    this->models_.push_back(new Model(path));
+int DataBase::addModel(std::string path) {
+    Model* model = Model::createModel(path);
+
+    if(model == nullptr) {
+        return -1;
+    }
+
+    this->models_.push_back(model);
 
     return this->models_.size() - 1;
 }
