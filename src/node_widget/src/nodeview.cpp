@@ -58,7 +58,7 @@ NodeView::~NodeView() {
 QRectF NodeView::boundingRect() const {
     QRectF bound = this->proxy_->boundingRect();
     int max_dock = std::max(input_dock_.size(), output_dock_.size());
-    unsigned int size = std::max(5 + 55 * max_dock, 5 + (int)this->proxy_->boundingRect().height());
+    unsigned int size = std::max(5 + 30 * max_dock, 5 + (int)this->proxy_->boundingRect().height());
 
     bound.setX(0);
     bound.setY(0);
@@ -88,7 +88,8 @@ void NodeView::calculateDockPos() {
                 (int)std::max(r.height() * max_dock, this->proxy_->boundingRect().height());
 
         for(int i = 0; i  < output_dock_.size(); ++i) {
-            output_dock_[i]->setPos(boundingRect().right(), size - 5. - r.height() * i);
+            unsigned int pos = output_dock_.size() - 1 - i;
+            output_dock_[pos]->setPos(boundingRect().right(), size - 5. - r.height() * i);
         }
     }
 }

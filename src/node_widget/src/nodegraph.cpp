@@ -108,7 +108,7 @@ bool NodeGraph::connectNode(I_Node* node_o, unsigned int output, I_Node* node_i,
     if(!(i == this->nodes_.end() || o == this->nodes_.end()) &&
                         node_o->addReader(output, input, node_i))
     {
-        node_i->addWriter(input, node_o);
+        node_i->setWriter(input, node_o);
         this->setNodeToUpdate(node_o);
         this->updateGraph();
 

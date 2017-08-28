@@ -12,7 +12,7 @@ enum Camera_Mode {
 class Camera {
 public:
     Camera(Camera_Mode mode = MODE_TRACKBALL_H,
-           glm::vec3 position = glm::vec3(3.0, 3.0, 3.0),
+           glm::vec3 position = glm::vec3(3.0, 0.0, 3.0),
            glm::vec3 look_at = glm::vec3(0.0),
            float fov = 80.0,
            float heigth = 400,

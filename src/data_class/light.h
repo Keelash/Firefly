@@ -29,7 +29,7 @@ public:
     inline void setPosition(glm::vec3 &position) { this->position_ = position; }
     inline glm::vec3& getPosition() { return this->position_; }
 
-    void bindLight(Shader *shader, glm::mat4 transform);
+    void bindLight(Shader *shader, glm::mat4 transform) const;
 private:
 
     glm::vec3 position_;

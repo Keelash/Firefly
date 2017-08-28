@@ -12,11 +12,15 @@ I_Node::~I_Node() {
 
 }
 
-void I_Node::addWriter(unsigned int input, I_Node* writer) {
+void I_Node::setWriter(unsigned int input, I_Node* writer) {
     if(this->writers_.size() < this->getNbInputChannel())
         this->writers_.resize(this->getNbInputChannel());
 
     this->writers_[input] = writer;
+
+    if(writer == nullptr) {
+        this->setInput(input, QVariant());
+    }
 }
 
 bool I_Node::addReader(unsigned int output, unsigned int readers_input, I_Node* reader) {

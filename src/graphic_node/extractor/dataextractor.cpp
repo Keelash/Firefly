@@ -11,7 +11,8 @@
 
 DataExtractor::DataExtractor(unsigned int w_res, unsigned int h_res,
                              nodegraph::NodeGraph *graph)
-    : nodegraph::I_Node(graph), ui(new Ui::DataExtractor), w_res_(w_res), h_res_(h_res) {
+    : nodegraph::I_Node(graph), ui(new Ui::DataExtractor), w_res_(w_res), h_res_(h_res),
+      camera_(nullptr), model_(nullptr) {
 
     ui->setupUi(this);
 
@@ -19,9 +20,11 @@ DataExtractor::DataExtractor(unsigned int w_res, unsigned int h_res,
     this->shader_ = new GeometryShader("shader/shader_extract.vert",
                                        "shader/shader_extract.frag");
 
-    this->framebuffer_->addTextureAsOutput(0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-    this->framebuffer_->addTextureAsOutput(1, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-    this->framebuffer_->addTextureAsOutput(2, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    this->framebuffer_->addTextureAsOutput(0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);  //COLOR TEXTURE
+    this->framebuffer_->addTextureAsOutput(1, GL_RGBA16F, GL_RGBA, GL_FLOAT);       //POSITION TEXTURE
+    this->framebuffer_->addTextureAsOutput(2, GL_RGBA16F, GL_RGBA, GL_FLOAT);       //NORMAL TEXTURE
+    this->framebuffer_->addTextureAsOutput(3, GL_R16F, GL_RED, GL_FLOAT);       //ROUGHNESS TEXTURE
+    this->framebuffer_->addTextureAsOutput(4, GL_R16F, GL_RED, GL_FLOAT);       //METALPART TEXTURE
     this->framebuffer_->addRBO(GL_DEPTH24_STENCIL8);
 }
 
@@ -76,6 +79,10 @@ const QVariant DataExtractor::getOutput(unsigned int output) const {
             break;
     case 2: var.setValue((Texture*) this->framebuffer_->getTexture(2));
             break;
+    case 3: var.setValue((Texture*) this->framebuffer_->getTexture(3));
+            break;
+    case 4: var.setValue((Texture*) this->framebuffer_->getTexture(4));
+            break;
 
     default : break;
     }
@@ -87,14 +94,16 @@ unsigned int DataExtractor::getOutputDataType(unsigned int output) const {
     switch(output) {
     case 0:
     case 1:
-    case 2: return Texture::Type();
+    case 2:
+    case 3:
+    case 4: return Texture::Type();
 
     default: return QVariant::Invalid;
     }
 }
 
 unsigned int DataExtractor::getNbOutputChannel() const {
-    return 3;
+    return 5;
 }
 
 QString DataExtractor::getOutputName(unsigned int output) const {
@@ -102,6 +111,8 @@ QString DataExtractor::getOutputName(unsigned int output) const {
     case 0 : return tr("Col");
     case 1 : return tr("Pos");
     case 2 : return tr("Nor");
+    case 3 : return tr("Rou");
+    case 4 : return tr("Met");
 
     default: return tr("");
     }

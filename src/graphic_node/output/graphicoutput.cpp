@@ -12,7 +12,7 @@ const std::string OUTPUTSHADER_VERT("shader/shader_output.vert");
 const std::string OUTPUTSHADER_FRAG("shader/shader_output.frag");
 
 GraphicOutput::GraphicOutput(nodegraph::NodeGraph *graph)
-    : nodegraph::ReadersNode(graph), ui(new Ui::GraphicOutput) {
+    : nodegraph::ReadersNode(graph), ui(new Ui::GraphicOutput), render_(nullptr) {
     ShaderCode code;
     ui->setupUi(this);
 
@@ -65,7 +65,7 @@ void GraphicOutput::processData() {
         screen.setViewport(0, 0, 600, 400);
         screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         screen.disableBlending();
-        screen.enableDepthTest();
+        screen.disableDepthTest();
 
         this->output_shader->bindShader();
         quad->bind();

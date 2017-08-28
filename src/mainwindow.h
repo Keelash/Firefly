@@ -25,7 +25,11 @@ public:
 private slots:
     void on_createCameraGettersTrig(bool checked);
     void on_createModelGettersTrig(bool checked);
+    void on_createLightGettersTrig(bool checked);
+
     void on_createFullExtrTrig(bool checked);
+
+    void on_createPBRShaderTrig(bool checked);
 
 private:
     void createSceneToolBar();

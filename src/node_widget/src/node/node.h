@@ -17,7 +17,7 @@ public:
     I_Node(NodeGraph *graph);
     virtual ~I_Node();
 
-    virtual void addWriter(unsigned int input, I_Node* writer);
+    virtual void setWriter(unsigned int input, I_Node* writer);
     virtual bool addReader(unsigned int output, unsigned int readers_input, I_Node* reader);
     const ReadersMap* getReadersMap() const { return &this->readers_; }
 

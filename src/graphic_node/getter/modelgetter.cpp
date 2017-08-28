@@ -63,11 +63,11 @@ void ModelGetter::on_indexChanged(int index) {
             this->ui->comboBox->insertItem(0, fileName.fileName());
             this->current_ = this->database_->getModels(mod_index);
             this->ui->comboBox->setCurrentIndex(mod_index);
-            //Tell the master to update
+            this->graph_->setNodeToUpdate(this);
         }
     }
     else {
         this->current_ = this->database_->getModels(index);
-        //Tell the master to update
+        this->graph_->setNodeToUpdate(this);
     }
 }

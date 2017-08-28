@@ -129,11 +129,11 @@ Material* Model::convertToMaterial(aiMaterial* material, std::string filePath) {
         material->GetTexture(aiTextureType_SHININESS, 0, &path);
 
         texturePath = filePath + '/' + std::string(path.C_Str());
-        m->addTexture(texturePath.c_str(), MATERIAL_TEXTURE_ROUGHTNESS);
+        m->addTexture(texturePath.c_str(), MATERIAL_TEXTURE_ROUGHNESS);
     }
     else {
         material->Get(AI_MATKEY_SHININESS, value);
-        m->setRoughtness(glm::max(value, 0.5f));
+        m->setRoughtness(glm::max(value, 0.05f));
     }
 
     if(material->GetTextureCount(aiTextureType_NORMALS) != 0) {

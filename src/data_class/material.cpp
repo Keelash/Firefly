@@ -7,8 +7,8 @@ Material::Material() {
     this->diffColor_[1] = 1.0f;
     this->diffColor_[2] = 1.0f;
 
-    this->metalpart_ = 1.0f;
-    this->roughtness_ = 0.1f;
+    this->metalpart_ = 0.0f;
+    this->roughness_ = 0.05f;
     this->reflection_ = 0.0f;
 
     this->shaderKey_ = 0;
@@ -41,7 +41,7 @@ void Material::addTexture(const char *path, MTex type){
             if(this->texture_[0] != nullptr) delete this->texture_[0];
             this->texture_[0] = new Texture(path);
             break;
-        case MATERIAL_TEXTURE_ROUGHTNESS :
+        case MATERIAL_TEXTURE_ROUGHNESS :
             if(this->texture_[1] != nullptr) delete this->texture_[1];
             this->texture_[1] = new Texture(path);
             break;
@@ -71,12 +71,12 @@ void Material::bind(Shader *shader){
         shader->setUniformLocation("color_diffuse", this->diffColor_);
 
     //-------------------------------------------------------------------
-    if (this->shaderKey_ & MATERIAL_TEXTURE_ROUGHTNESS) {
+    if (this->shaderKey_ & MATERIAL_TEXTURE_ROUGHNESS) {
         this->texture_[1]->bindAsActiveTexture(1);
-        shader->setTextureLocation("texture_roughtness", 1);                   //Roughtness Texture Binding
+        shader->setTextureLocation("texture_roughness", 1);                   //Roughness Texture Binding
     }
     else
-        shader->setUniformLocation("value_roughtness", this->roughtness_);
+        shader->setUniformLocation("value_roughness", this->roughness_);
 
     //-------------------------------------------------------------------
     if (this->shaderKey_ & MATERIAL_TEXTURE_METALPART) {                      //Metalpart Texture Binding

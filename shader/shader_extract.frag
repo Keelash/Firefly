@@ -5,9 +5,9 @@ uniform vec3 color_diffuse;
 #endif
 
 #ifdef ROUGHNESS_TEXTURE
-uniform sampler2D texture_roughtness;
+uniform sampler2D texture_roughness;
 #else
-uniform float value_roughtness;
+uniform float value_roughness;
 #endif
 
 #ifdef METAL_TEXTURE
@@ -29,6 +29,8 @@ uniform float value_reflection;
 layout (location = 0) out vec4 voxel_color;
 layout (location = 1) out vec4 voxel_position;
 layout (location = 2) out vec4 voxel_normal;
+layout (location = 3) out float voxel_roughness;
+layout (location = 4) out float voxel_metal;
 
 in vec2 uvcoord_vertex;
 in vec4 position_vertex;
@@ -43,11 +45,11 @@ vec3 getColor() {
 #endif
 }
 
-float getRoughtness() {
+float getRoughness() {
 #ifdef ROUGHNESS_TEXTURE
-    return texture(texture_roughtness, uvcoord_vertex).r;
+    return texture(texture_roughness, uvcoord_vertex).r;
 #else
-    return value_roughtness;
+    return value_roughness;
 #endif
 }
 
@@ -75,4 +77,6 @@ void main() {
     voxel_color = vec4(getColor(), 1.0f);
     voxel_position = vec4(position_vertex.xyz, 1.0f);
     voxel_normal = vec4(getNormal(), 1.0f);
+    voxel_roughness = getRoughness();
+    voxel_metal = getMetalPart();
 }

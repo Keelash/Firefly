@@ -26,7 +26,7 @@ void DockView::updateEdge() {
 }
 
 QRectF DockView::boundingRect() const {
-    return QRectF(0., 0., 55., 55.);
+    return QRectF(0., 0., 55., 30.);
 }
 
 void DockView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

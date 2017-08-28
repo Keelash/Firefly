@@ -15,7 +15,7 @@ public:
     void deleteMaterial();
 
     void setDiffColor(GLfloat red, GLfloat blue, GLfloat green);
-    void setRoughtness(GLfloat rough) { this->roughtness_ = rough; }
+    void setRoughtness(GLfloat rough) { this->roughness_ = rough; }
     void setMetalpart(GLfloat met) { this->metalpart_ = met; }
     void setReflection(GLfloat ref) { this->reflection_ = ref; }
     void addTexture(const char *path, MTex type);
@@ -28,7 +28,7 @@ private:
     unsigned int shaderKey_;
 
     glm::vec3 diffColor_;
-    GLfloat roughtness_;
+    GLfloat roughness_;
     GLfloat metalpart_;
     GLfloat reflection_;
 

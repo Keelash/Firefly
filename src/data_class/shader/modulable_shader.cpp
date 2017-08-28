@@ -32,7 +32,7 @@ void GeometryShader::addMod(int key) {
         shader_code.createFromFile(this->vertex_path_, this->fragment_path_);
 
         if (key & MATERIAL_TEXTURE_DIFFUSE) shader_code.addDefine("DIFFUSE_TEXTURE");
-        if (key & MATERIAL_TEXTURE_ROUGHTNESS) shader_code.addDefine("ROUGHTNESS_TEXTURE");
+        if (key & MATERIAL_TEXTURE_ROUGHNESS) shader_code.addDefine("ROUGHTNESS_TEXTURE");
         if (key & MATERIAL_TEXTURE_METALPART) shader_code.addDefine("METAL_TEXTURE");
         if (key & MATERIAL_TEXTURE_NORMAL) shader_code.addDefine("NORMAL_TEXTURE");
         if (key & MATERIAL_TEXTURE_REFLECTION) shader_code.addDefine("REFLECT_TEXTURE");
