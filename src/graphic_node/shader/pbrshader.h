@@ -2,11 +2,15 @@
 #define PBRSHADER_H
 
 #include <QWidget>
+
 #include "src/node_widget/node_widget.h"
-#include "src/data_class/shader/shader.h"
+#include "src/graphic_node/graphicnode.h"
+
+#include "src/data_class/database.h"
+#include "src/data_class/shader/modulable_shader.h"
 #include "src/data_class/framebuffer.h"
 
-#define PBRSHADER_NB_INPUT 6
+#define PBRSHADER_NB_INPUT 5
 #define PBRSHADER_NB_OUTPUT 1
 
 namespace Ui {
@@ -16,11 +20,11 @@ class PBRShader;
 class Texture;
 class Light;
 
-class PBRShader : public nodegraph::I_Node {
+class PBRShader : public nodegraph::I_Node, GraphicNode {
     Q_OBJECT
 
 public:
-    explicit PBRShader(nodegraph::NodeGraph *graph, unsigned int w_res, unsigned int h_res);
+    explicit PBRShader(DataBase* database, nodegraph::NodeGraph *graph);
     ~PBRShader();
 
     unsigned int getInputDataType(unsigned int input) const;
@@ -37,14 +41,27 @@ protected:
 
     void processData();
 
+private slots:
+    void on_roughness_spinbox_valueChanged(double arg1);
+    void on_metalpart_spinbox_valueChanged(double arg1);
+
 private:
+    enum TextureType {
+        POSITION_TEXTURE, NORMAL_TEXTURE, COLOUR_TEXTURE, ROUGHNESS_TEXTURE, METALPART_TEXTURE, NB_TEXTURE
+    };
+
+    unsigned int genCurrentShaderKey();
+    void addNewShaderMod();
+
     Ui::PBRShader *ui;
 
-    Texture* data_textures_[PBRSHADER_NB_INPUT];
-    const Light* light_;
-
     FramebufferObject* buffer_;
-    Shader* shader_;
+    ModularShader* shader_;
+
+    Texture* data_textures_[NB_TEXTURE];
+    glm::vec3 colour_;
+    float roughness_;
+    float metalpart_;
 };
 
 #endif // PBRSHADER_H

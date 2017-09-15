@@ -19,6 +19,7 @@ public:
 
     virtual void setWriter(unsigned int input, I_Node* writer);
     virtual bool addReader(unsigned int output, unsigned int readers_input, I_Node* reader);
+    virtual void suppReader(unsigned int output, unsigned int readers_input, I_Node* reader);
     const ReadersMap* getReadersMap() const { return &this->readers_; }
 
     bool isValid() const { return isValid_; }

@@ -1,6 +1,7 @@
 #include "graphicoutput.h"
 #include "ui_graphicoutput.h"
 
+#include "src/data_class/database.h"
 #include "src/data_class/texture.h"
 #include "src/data_class/framebuffer.h"
 #include "src/data_class/shader/shader.h"
@@ -8,21 +9,25 @@
 
 #include <iostream>
 
-const std::string OUTPUTSHADER_VERT("shader/shader_output.vert");
+const std::string OUTPUTSHADER_VERT("shader/shader_quadprint.vert");
 const std::string OUTPUTSHADER_FRAG("shader/shader_output.frag");
 
-GraphicOutput::GraphicOutput(nodegraph::NodeGraph *graph)
-    : nodegraph::ReadersNode(graph), ui(new Ui::GraphicOutput), render_(nullptr) {
+GraphicOutput::GraphicOutput(DataBase *database, nodegraph::NodeGraph *graph)
+    : nodegraph::ReadersNode(graph), GraphicNode(database),
+      ui(new Ui::GraphicOutput), render_(nullptr)
+{
     ShaderCode code;
+
     ui->setupUi(this);
 
     code.createFromFile(OUTPUTSHADER_VERT, OUTPUTSHADER_FRAG);
-
     this->output_shader = new Shader(code);
 }
 
 GraphicOutput::~GraphicOutput() {
     delete ui;
+
+    delete this->output_shader;
 }
 
 void GraphicOutput::setInput(unsigned int input, QVariant data) {
@@ -57,12 +62,21 @@ QString GraphicOutput::getInputName(unsigned int input) const {
 }
 
 void GraphicOutput::processData() {
+    float x, y;
+    int w, h;
+    glm::ivec2 w_res = database_->getWinRes();
     ScreenFramebuffer screen;
     QuadMesh *quad = QuadMesh::getInstance();
 
+    x = std::max((float)w_res.x / 600.0f, 1.0f);
+    y = std::max((float)w_res.y / 400.0f, 1.0f);
+
+    w = 600.0f * std::max(x, y);
+    h = 400.0f * std::max(x, y);
+
     if(this->render_) {
         screen.bind();
-        screen.setViewport(0, 0, 600, 400);
+        screen.setViewport(w_res.x - w, w_res.y - h, w, h);
         screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         screen.disableBlending();
         screen.disableDepthTest();

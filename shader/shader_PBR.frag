@@ -2,9 +2,24 @@ in vec2 TexCoords;
 
 uniform sampler2D position_texture;
 uniform sampler2D normal_texture;
-uniform sampler2D color_texture;
+
+#ifdef COLOUR_TEXTURE
+uniform sampler2D colour_texture;
+#else
+uniform vec3 colour_data;
+#endif
+
+#ifdef ROUGHNESS_TEXTURE
 uniform sampler2D roughness_texture;
+#else
+uniform float roughness_data;
+#endif
+
+#ifdef METALPART_TEXTURE
 uniform sampler2D metalpart_texture;
+#else
+uniform float metalpart_data;
+#endif
 
 uniform vec4 light_position;
 uniform vec3 light_colour;
@@ -22,16 +37,28 @@ vec3 getPosition() {
     return texture(position_texture, TexCoords).xyz;
 }
 
-vec3 getColor() {
-    return texture(color_texture, TexCoords).rgb;
+vec3 getColour() {
+#ifdef COLOUR_TEXTURE
+    return texture(colour_texture, TexCoords).rgb;
+#else
+    return colour_data;
+#endif
 }
 
 float getRoughness() {
+#ifdef ROUGHNESS_TEXTURE
     return texture(roughness_texture, TexCoords).a;
+#else
+    return roughness_data;
+#endif
 }
 
 float getMetalPart() {
+#ifdef METALPART_TEXTURE
     return texture(metalpart_texture, TexCoords).a;
+#else
+    return metalpart_data;
+#endif
 }
 
 vec3 F_Schlick(vec3 f0, float f90, float u) {
@@ -81,7 +108,7 @@ void main() {
     float roughness = getRoughness();
     float linearRoughness = pow(roughness, 4);
     float metallic = getMetalPart();
-    vec3 m_colour = getColor();
+    vec3 m_colour = getColour();
 
     vec3 F0 = vec3(0.04);
     F0 = (1.0f - metallic) * F0 + metallic * m_colour;

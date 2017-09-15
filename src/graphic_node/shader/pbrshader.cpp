@@ -7,36 +7,48 @@
 
 #include <iostream>
 
-PBRShader::PBRShader(nodegraph::NodeGraph *graph, unsigned int w_res, unsigned int h_res) :
-    nodegraph::I_Node(graph), ui(new Ui::PBRShader) {
+#define PBRSHADER_COLOUR_TEXKEY        0b001
+#define PBRSHADER_ROUGHNESS_TEXKEY     0b010
+#define PBRSHADER_METALPART_TEXKEY     0b100
 
+const std::string PBR_SHADER_VERT("shader/shader_quadprint.vert");
+const std::string PBR_SHADER_FRAG("shader/shader_PBR.frag");
+
+
+PBRShader::PBRShader(DataBase* database, nodegraph::NodeGraph *graph) :
+    nodegraph::I_Node(graph), ui(new Ui::PBRShader), GraphicNode(database) {
     ShaderCode code;
 
-    this->light_ = nullptr;
-    for(unsigned int i = 0; i < PBRSHADER_NB_INPUT - 1; ++i)
-        this->data_textures_[i] == nullptr;
+    for(unsigned int i = 0; i < PBRSHADER_NB_INPUT; ++i)
+        this->data_textures_[i] = nullptr;
 
     this->ui->setupUi(this);
 
-    code.createFromFile("shader/shader_PBR.vert", "shader/shader_PBR.frag");
-    this->shader_ = new Shader(code);
+    code.createFromFile(PBR_SHADER_VERT, PBR_SHADER_FRAG);
+    this->shader_ = new ModularShader();
+    this->shader_->addMod(0, code);
 
-    this->buffer_ = new FramebufferObject(w_res, h_res);
-    this->buffer_->addTextureAsOutput(0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+    this->buffer_ = new FramebufferObject(database->getTexRes().x, database->getTexRes().y);
+    this->buffer_->addTextureAsOutput(0, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+
+    this->roughness_ = this->metalpart_ = 0.05f;
+    this->colour_ = glm::vec3(0.5f);
 }
 
 PBRShader::~PBRShader() {
     delete this->ui;
+
+    delete this->buffer_;
+    delete this->shader_;
 }
 
 unsigned int PBRShader::getInputDataType(unsigned int input) const {
     switch(input) {
-    case 0: return Light::Type();
+    case 0:
     case 1:
     case 2:
     case 3:
-    case 4:
-    case 5: return Texture::Type();
+    case 4: return Texture::Type();
 
     default: return QVariant::Invalid;
     }
@@ -48,12 +60,11 @@ unsigned int PBRShader::getNbInputChannel() const {
 
 QString PBRShader::getInputName(unsigned int input) const {
     switch(input) {
-    case 0 : return tr("Lig.");
-    case 1 : return tr("Col.");
-    case 2 : return tr("Pos.");
-    case 3 : return tr("Nor.");
-    case 4 : return tr("Rou.");
-    case 5 : return tr("Met.");
+    case 0 : return tr("Pos.");
+    case 1 : return tr("Nor.");
+    case 2 : return tr("Col.");
+    case 3 : return tr("Rou.");
+    case 4 : return tr("Met.");
     }
 
     return tr("");
@@ -80,17 +91,16 @@ QString PBRShader::getOutputName(unsigned int output) const {
 }
 
 void PBRShader::setInput(unsigned int input, QVariant data) {
-
     switch(input) {
-    case 0 :
-        this->light_ = data.value<const Light*>();
-        break;
+    case 0:
     case 1:
+        this->data_textures_[input] = data.value<Texture*>();
+        break;
     case 2:
     case 3:
     case 4:
-    case 5:
-        this->data_textures_[input - 1] = data.value<Texture*>();
+        this->data_textures_[input] = data.value<Texture*>();
+        this->addNewShaderMod();
         break;
     }
 }
@@ -105,42 +115,89 @@ const QVariant PBRShader::getOutput(unsigned int output) const {
     return var;
 }
 
+unsigned int PBRShader::genCurrentShaderKey() {
+    unsigned int key = 0;
+
+    for(int i = 0; i < 3; ++i)
+        if(this->data_textures_[i+2] != nullptr) key |= 1 << i;
+
+    return key;
+}
+
+void PBRShader::addNewShaderMod() {
+    unsigned int key = this->genCurrentShaderKey();
+    ShaderCode code;
+
+    if(!this->shader_->hasKey(key)) {
+        code.createFromFile("shader/shader_PBR.vert", "shader/shader_PBR.frag");
+
+        if(key & PBRSHADER_COLOUR_TEXKEY) code.addDefine("COLOUR_TEXTURE");
+        if(key & PBRSHADER_METALPART_TEXKEY) code.addDefine("METALPART_TEXTURE");
+        if(key & PBRSHADER_ROUGHNESS_TEXKEY) code.addDefine("ROUGHNESS_TEXTURE");
+
+        this->shader_->addMod(key, code);
+    }
+}
+
 void PBRShader::processData() {
     QuadMesh *quad = QuadMesh::getInstance();
+    std::vector<Light*> lights = this->database_->getLights();
     unsigned int i;
 
-    for(i = 0; i < PBRSHADER_NB_INPUT - 1; ++i) {
-        if(this->data_textures_[i] == nullptr) {
-            return;
-        }
-    }
+    if(!this->data_textures_[POSITION_TEXTURE] && !this->data_textures_[NORMAL_TEXTURE])
+        return;
 
-    if(this->light_ != nullptr) {
+    if(lights.size() != 0) {
+        Shader *shader = this->shader_->getMod(this->genCurrentShaderKey());
+        glm::vec2 res = database_->getTexRes();
+
         this->buffer_->bind();
+        this->buffer_->setViewport(0, 0, res.x, res.y);
         this->buffer_->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         this->buffer_->enableBlending();
         this->buffer_->setBlendingFunction(GL_SRC_ALPHA, GL_ONE);
         this->buffer_->disableDepthTest();
 
-        this->shader_->bindShader();
+        shader->bindShader();
         quad->bind();
-        for(i = 0; i < PBRSHADER_NB_INPUT-1; ++i)
-            this->data_textures_[i]->bindAsActiveTexture(i);
+        for(i = 0; i < TextureType::NB_TEXTURE; ++i)
+            if(this->data_textures_[i]) this->data_textures_[i]->bindAsActiveTexture(i);
 
-        this->shader_->setTextureLocation("color_texture", 0);
-        this->shader_->setTextureLocation("position_texture", 1);
-        this->shader_->setTextureLocation("normal_texture", 2);
-        this->shader_->setTextureLocation("roughness_texture", 3);
-        this->shader_->setTextureLocation("metalpart_texture", 4);
+        shader->setTextureLocation("position_texture", POSITION_TEXTURE);
+        shader->setTextureLocation("normal_texture", NORMAL_TEXTURE);
 
-        this->light_->bindLight(this->shader_, glm::mat4(1.0f));
+        if(this->data_textures_[COLOUR_TEXTURE])
+            shader->setTextureLocation("colour_texture", COLOUR_TEXTURE);
+        else
+            shader->setUniformLocation("colour_data", this->colour_);
 
-        quad->draw();
+        if(this->data_textures_[ROUGHNESS_TEXTURE])
+            shader->setTextureLocation("roughness_texture", ROUGHNESS_TEXTURE);
+        else
+            shader->setUniformLocation("roughness_data", this->roughness_);
 
-        for(i = 0; i < PBRSHADER_NB_INPUT-1; ++i)
-            this->data_textures_[i]->unbindTexture();
+        if(this->data_textures_[METALPART_TEXTURE])
+            shader->setTextureLocation("metalpart_texture", METALPART_TEXTURE);
+        else
+            shader->setUniformLocation("metalpart_data", this->metalpart_);
+
+        for(int i = 0; i < lights.size(); ++i) {
+            lights[i]->bindLight(shader, glm::mat4(1.0f));
+            quad->draw();
+        }
+
+        for(i = 0; i < TextureType::NB_TEXTURE; ++i)
+            if(this->data_textures_[i]) this->data_textures_[i]->unbindTexture();
         quad->unbind();
-        this->shader_->unbindShader();
+        shader->unbindShader();
         this->buffer_->unbind();
     }
+}
+
+void PBRShader::on_roughness_spinbox_valueChanged(double arg1) {
+    this->roughness_ = (float)arg1;
+}
+
+void PBRShader::on_metalpart_spinbox_valueChanged(double arg1) {
+    this->metalpart_ = arg1;
 }

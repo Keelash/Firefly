@@ -35,6 +35,17 @@ bool I_Node::addReader(unsigned int output, unsigned int readers_input, I_Node* 
     return false;
 }
 
+void I_Node::suppReader(unsigned int output, unsigned int readers_input, I_Node* reader) {
+    auto range = this->readers_.equal_range(output);
+    ReadersMap::iterator it;
+
+    for(it = range.first; it != range.second; ++it) {
+        if(it->second.first == readers_input && it->second.second == reader) {
+            this->readers_.erase(it);
+        }
+    }
+}
+
 void I_Node::updateNode() {
     for(int i = 0; i < this->getNbInputChannel(); ++i) {
         if(this->writers_.size() != 0 && (this->writers_[i] && !this->writers_[i]->isValid()))

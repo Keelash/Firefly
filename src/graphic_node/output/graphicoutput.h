@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "src/node_widget/node_widget.h"
+#include "src/graphic_node/graphicnode.h"
 
 namespace Ui {
 class GraphicOutput;
@@ -11,12 +12,13 @@ class GraphicOutput;
 
 class Shader;
 class Texture;
+class DataBase;
 
-class GraphicOutput : public nodegraph::ReadersNode {
+class GraphicOutput : public nodegraph::ReadersNode, GraphicNode {
     Q_OBJECT
 
 public:
-    explicit GraphicOutput(nodegraph::NodeGraph *graph);
+    explicit GraphicOutput(DataBase* database, nodegraph::NodeGraph *graph);
     ~GraphicOutput();
 
     unsigned int getInputDataType(unsigned int input) const;

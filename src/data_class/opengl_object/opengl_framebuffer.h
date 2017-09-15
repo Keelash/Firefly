@@ -43,7 +43,7 @@ public:
     OpenGlFramebufferObject(int width, int height);
     virtual ~OpenGlFramebufferObject();
 
-    inline OpenGlTexture* getTexture(int pos) { return this->attachments_[pos]; }
+    inline OpenGlTexture* getTexture(unsigned int pos) { return this->attachments_[pos]; }
 
     int addTextureAsOutput(int attachment, GLint internalFormat, GLenum format, GLenum type);
     void addRBO(GLenum format);

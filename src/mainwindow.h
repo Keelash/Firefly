@@ -23,20 +23,12 @@ public:
     virtual ~MainWindow();
 
 private slots:
-    void on_createCameraGettersTrig(bool checked);
-    void on_createModelGettersTrig(bool checked);
-    void on_createLightGettersTrig(bool checked);
-
-    void on_createFullExtrTrig(bool checked);
-
-    void on_createPBRShaderTrig(bool checked);
+    void on_actionLoad_File_triggered();
 
 private:
     void createSceneToolBar();
 
     Ui::MainWindow *ui;
-    nodegraph::NodeGraph *scene_;
-    DataBase database_;
 };
 
 #endif //MAINWINDOW_H

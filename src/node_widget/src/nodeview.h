@@ -11,6 +11,7 @@ class I_Node;
 namespace gui {
 
 class DockView;
+class EdgeView;
 
 class NodeView : public QGraphicsItem {
 public:
@@ -25,6 +26,14 @@ public:
     unsigned int getInputDockPos(DockView* dock);
     unsigned int getOutputDockPos(DockView* dock);
 
+    void addInputEdge(unsigned int input, EdgeView *edge);
+    EdgeView* getInputEdge(unsigned int input);
+    void delInputEdge(unsigned int input);
+
+    void addOutputEdge(unsigned int output, EdgeView* edge);
+    std::vector<EdgeView*> getOutputEdge(unsigned int output);
+    void delOutputEdge(unsigned int output, EdgeView *edge);
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -38,6 +47,9 @@ private:
 
     std::vector<DockView*> input_dock_;
     std::vector<DockView*> output_dock_;
+
+    std::vector<std::vector<EdgeView*>> output_edge_;
+    std::vector<EdgeView*> input_edge_;
 };
 
 }//namespace gui

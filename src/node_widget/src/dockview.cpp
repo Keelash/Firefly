@@ -5,24 +5,19 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include "edgeview.h"
+#include "nodeview.h"
 
 namespace nodegraph {
 
 namespace gui {
 
-DockView::DockView(Dock_Type type, QString name, QGraphicsItem *parent)
-    : QGraphicsItem(parent), name_(name), type_(type) {
+DockView::DockView(NodeView *parent, Dock_Type type, unsigned int pos, QString name)
+    : QGraphicsItem(parent), name_(name), type_(type), pos_(pos) {
 
 }
 
 DockView::~DockView() {
 
-}
-
-void DockView::updateEdge() {
-    for(int i = 0; i < this->edge_.size(); ++i) {
-        this->edge_[i]->update();
-    }
 }
 
 QRectF DockView::boundingRect() const {

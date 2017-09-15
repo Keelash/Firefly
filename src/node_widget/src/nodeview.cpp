@@ -8,6 +8,7 @@
 
 #include "node/node.h"
 #include "dockview.h"
+#include "edgeview.h"
 
 namespace nodegraph {
 
@@ -21,14 +22,18 @@ NodeView::NodeView(I_Node *node): QGraphicsItem(nullptr) {
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
+    this->input_edge_.resize(node->getNbInputChannel());
+    this->output_edge_.resize(node->getNbOutputChannel());
+
     for(unsigned int i = 0; i < node->getNbInputChannel(); ++i) {
-        this->input_dock_.push_back(new DockView(DockView::INPUT,
-                                                 node->getInputName(i), this));
+        this->input_dock_.push_back(new DockView(this, DockView::INPUT, i,
+                                                 node->getInputName(i)));
+        this->input_edge_[i] = nullptr;
     }
 
     for(unsigned int i = 0; i < node->getNbOutputChannel(); ++i) {
-        this->output_dock_.push_back(new DockView(DockView::OUTPUT,
-                                                  node->getOutputName(i), this));
+        this->output_dock_.push_back(new DockView(this, DockView::OUTPUT, i,
+                                                  node->getOutputName(i)));
     }
 
     if(node->getNbInputChannel() != 0) {
@@ -48,11 +53,11 @@ NodeView::~NodeView() {
 
     for(unsigned int i = 0; i < this->input_dock_.size(); ++i) {
         delete this->input_dock_[i];
+        if(this->input_edge_[i]) delete this->input_edge_[i];
     }
 
-    for(unsigned int i = 0; i < this->output_dock_.size(); ++i) {
+    for(unsigned int i = 0; i < this->output_dock_.size(); ++i)
         delete this->output_dock_[i];
-    }
 }
 
 QRectF NodeView::boundingRect() const {
@@ -111,6 +116,38 @@ unsigned int NodeView::getOutputDockPos(DockView* dock) {
     it = std::find(this->output_dock_.begin(), this->output_dock_.end(), dock);
 
     return std::distance(this->output_dock_.begin(), it);
+}
+
+void NodeView::addInputEdge(unsigned int input, EdgeView *edge) {
+    if(this->input_edge_[input] != nullptr)
+        delete this->input_edge_[input];
+
+    this->input_edge_[input] = edge;
+}
+
+EdgeView* NodeView::getInputEdge(unsigned int input) {
+    return this->input_edge_[input];
+}
+
+void NodeView::delInputEdge(unsigned int input) {
+    delete this->input_edge_[input];
+    this->input_edge_[input] = nullptr;
+}
+
+void NodeView::addOutputEdge(unsigned int output, EdgeView* edge) {
+    this->output_edge_[output].push_back(edge);
+}
+
+std::vector<EdgeView*> NodeView::getOutputEdge(unsigned int output) {
+    return this->output_edge_[output];
+}
+
+void NodeView::delOutputEdge(unsigned int output, EdgeView* edge) {
+    auto it = std::find(this->output_edge_[output].begin(), this->output_edge_[output].end(), edge);
+
+    if(it != this->output_edge_[output].end()) {
+        this->output_edge_[output].erase(it);
+    }
 }
 
 QVariant NodeView::itemChange(GraphicsItemChange change, const QVariant &value) {

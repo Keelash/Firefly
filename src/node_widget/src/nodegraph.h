@@ -21,12 +21,9 @@ public:
     virtual ~NodeGraph();
 
     void addNode(I_Node* node);
-    void updateNode(I_Node* node);
 
     void setNodeToUpdate(I_Node* node);
     void updateGraph();
-
-    const std::vector<I_Node*> getNodes() const;
 
     void drawBackground(QPainter *painter, const QRectF &rect);
 
@@ -36,6 +33,7 @@ public:
 
 protected:
     bool connectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input);
+    bool disconnectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input);
 
     std::vector<I_Node*> nodes_;
     std::stack<I_Node*> updateStack_;

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataExtractor</class>
- <widget class="QWidget" name="DataExtractor">
+ <class>ObjectData</class>
+ <widget class="QWidget" name="ObjectData">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>136</width>
-    <height>46</height>
+    <width>100</width>
+    <height>35</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Data Extractor</string>
+      <string>Object Data</string>
      </property>
     </widget>
    </item>

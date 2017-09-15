@@ -1,82 +1,89 @@
-#ifdef DIFFUSE_TEXTURE
-uniform sampler2D texture_diffuse;
-#else
-uniform vec3 color_diffuse;
+
+layout (location = 0) out vec4 voxel_position;
+layout (location = 1) out vec4 voxel_normal;
+
+
+#ifdef USER_TEXTURE_0
+uniform sampler2D user_texture_0;
+layout (location = 2) out vec4 voxel_user_0;
 #endif
 
-#ifdef ROUGHNESS_TEXTURE
-uniform sampler2D texture_roughness;
-#else
-uniform float value_roughness;
+#ifdef USER_TEXTURE_1
+uniform sampler2D user_texture_1;
+layout (location = 3) out vec4 voxel_user_1;
 #endif
 
-#ifdef METAL_TEXTURE
-uniform sampler2D texture_metalpart;
-#else
-uniform float value_metalpart;
+#ifdef USER_TEXTURE_2
+uniform sampler2D user_texture_2;
+layout (location = 4) out vec4 voxel_user_2;
 #endif
 
-#ifdef NORMAL_TEXTURE
-uniform sampler2D  texture_normal;
+#ifdef USER_TEXTURE_3
+uniform sampler2D user_texture_3;
+layout (location = 5) out vec4 voxel_user_3;
 #endif
 
-#ifdef REFLECT_TEXTURE
-uniform sampler2D texture_reflection;
-#else
-uniform float value_reflection;
+#ifdef USER_TEXTURE_4
+uniform sampler2D user_texture_4;
+layout (location = 6) out vec4 voxel_user_4;
 #endif
 
-layout (location = 0) out vec4 voxel_color;
-layout (location = 1) out vec4 voxel_position;
-layout (location = 2) out vec4 voxel_normal;
-layout (location = 3) out float voxel_roughness;
-layout (location = 4) out float voxel_metal;
+#ifdef USER_TEXTURE_5
+uniform sampler2D user_texture_5;
+layout (location = 7) out vec4 voxel_user_5;
+#endif
+
+#ifdef USER_TEXTURE_6
+uniform sampler2D user_texture_6;
+layout (location = 8) out vec4 voxel_user_6;
+#endif
+
+#ifdef USER_TEXTURE_7
+uniform sampler2D user_texture_7;
+layout (location = 9) out vec4 voxel_user_7;
+#endif
 
 in vec2 uvcoord_vertex;
 in vec4 position_vertex;
 in vec4 normal_vertex;
-
-
-vec3 getColor() {
-#ifdef DIFFUSE_TEXTURE
-    return texture(texture_diffuse, uvcoord_vertex).rgb;
-#else
-    return color_diffuse;
-#endif
-}
-
-float getRoughness() {
-#ifdef ROUGHNESS_TEXTURE
-    return texture(texture_roughness, uvcoord_vertex).r;
-#else
-    return value_roughness;
-#endif
-}
-
-float getMetalPart() {
-#ifdef METAL_TEXTURE
-    return texture(texture_metalpart, uvcoord_vertex).r;
-#else
-    return value_metalpart;
-#endif
-}
-
-float getReflection() {
-#ifdef REFLECT_TEXTURE
-    return texture(texture_reflection, uvcoord_vertex).r;
-#else
-    return value_reflection;
-#endif
-}
 
 vec3 getNormal() {
     return normal_vertex.xyz;
 }
 
 void main() {
-    voxel_color = vec4(getColor(), 1.0f);
     voxel_position = vec4(position_vertex.xyz, 1.0f);
     voxel_normal = vec4(getNormal(), 1.0f);
-    voxel_roughness = getRoughness();
-    voxel_metal = getMetalPart();
+
+#ifdef USER_TEXTURE_0
+    voxel_user_0 = texture(user_texture_0, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_1
+    voxel_user_1 = texture(user_texture_1, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_2
+    voxel_user_2 = texture(user_texture_2, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_3
+    voxel_user_3 = texture(user_texture_3, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_4
+    voxel_user_4 = texture(user_texture_4, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_5
+    voxel_user_5 = texture(user_texture_5, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_6
+    voxel_user_6 = texture(user_texture_6, uvcoord_vertex);
+#endif
+
+#ifdef USER_TEXTURE_7
+    voxel_user_7 = texture(user_texture_7, uvcoord_vertex);
+#endif
 }

@@ -35,6 +35,12 @@ public:
     Mesh() : OpenGLMesh(DRAW_ELEMENT) {  }
     Mesh(const Mesh& other) : OpenGLMesh((OpenGLMesh&)other) {  }
     virtual ~Mesh() {  }
+
+    void setTransform(glm::mat4 transform) { this->transform_ = transform; }
+    glm::mat4 getTransform() const { return this->transform_; }
+
+private:
+    glm::mat4 transform_;
 };
 
 

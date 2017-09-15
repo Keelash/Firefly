@@ -25,46 +25,12 @@ void NodeGraph::addNode(I_Node* node) {
     this->nodes_.push_back(node);
 }
 
-void NodeGraph::updateNode(I_Node* node) {
-    std::vector<I_Node*>::iterator it_n;
-
-    it_n = std::find(this->nodes_.begin(), this->nodes_.end(), node);
-
-    if(it_n != this->nodes_.end()) {
-        std::stack<I_Node*> s;
-        s.push(node);
-
-        while(s.size() != 0) {
-            I_Node* curr = s.top();s.pop();
-            const I_Node::ReadersMap *rm = curr->getReadersMap();
-
-            for(auto it = rm->begin(); it != rm->end(); ++it) {
-                s.push(it->second.second);
-            }
-
-            curr->setInvalid();
-        }
-
-        s.push(node);
-        while(s.size() != 0) {
-            I_Node* curr = s.top(); s.pop();
-            const I_Node::ReadersMap *rm = curr->getReadersMap();
-
-            for(auto it = rm->begin(); it != rm->end(); ++it) {
-                s.push(it->second.second);
-            }
-
-            curr->updateNode();
-        }
-    }
-}
-
 void NodeGraph::setNodeToUpdate(I_Node* node) {
     std::vector<I_Node*>::iterator it_n;
 
     it_n = std::find(this->nodes_.begin(), this->nodes_.end(), node);
 
-    if(it_n != this->nodes_.end()) {
+    if(it_n != this->nodes_.end() && node->isValid()) {
         std::stack<I_Node*> s;
         s.push(node);
 
@@ -95,10 +61,6 @@ void NodeGraph::updateGraph() {
     }
 }
 
-const std::vector<I_Node*> NodeGraph::getNodes() const {
-    return this->nodes_;
-}
-
 bool NodeGraph::connectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input) {
     std::vector<I_Node*>::iterator i, o;
 
@@ -110,6 +72,25 @@ bool NodeGraph::connectNode(I_Node* node_o, unsigned int output, I_Node* node_i,
     {
         node_i->setWriter(input, node_o);
         this->setNodeToUpdate(node_o);
+        this->updateGraph();
+
+        return true;
+    }
+
+    return false;
+}
+
+bool NodeGraph::disconnectNode(I_Node* node_o, unsigned int output, I_Node* node_i, unsigned int input) {
+    std::vector<I_Node*>::iterator i, o;
+
+    i = std::find(this->nodes_.begin(), this->nodes_.end(), node_i);
+    o = std::find(this->nodes_.begin(), this->nodes_.end(), node_o);
+
+    if(i != this->nodes_.end() && o != this->nodes_.end()) {
+        node_i->setWriter(input, nullptr);
+        node_o->suppReader(output, input, node_i);
+
+        this->setNodeToUpdate(node_i);
         this->updateGraph();
 
         return true;
@@ -157,6 +138,22 @@ void NodeGraph::mousePressEvent(QGraphicsSceneMouseEvent *e) {
 
             this->update();
         }
+        else if (d && d->getDockType() == gui::DockView::INPUT) {
+            this->state_ = 0;
+
+            gui::NodeView *ni, *no;
+            gui::EdgeView *e;
+
+            ni = qgraphicsitem_cast<gui::NodeView*>(d->parentItem());
+            e = ni->getInputEdge(d->getDockPos());
+            no = qgraphicsitem_cast<gui::NodeView*>(e->getInput()->parentItem());
+
+            this->disconnectNode(no->getNode(), e->getInput()->getDockPos(), ni->getNode(), d->getDockPos());
+            ni->delInputEdge(d->getDockPos());
+            no->delOutputEdge(e->getInput()->getDockPos(), e);
+
+            this->update();
+        }
         break;
     case 1:
         //Nothing to do
@@ -164,8 +161,6 @@ void NodeGraph::mousePressEvent(QGraphicsSceneMouseEvent *e) {
     default :
         break;
     }
-
-
 }
 
 void NodeGraph::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
@@ -208,12 +203,24 @@ void NodeGraph::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
             no = qgraphicsitem_cast<gui::NodeView*>(d_o->parentItem());
 
             if(ni && no) {
+                gui::EdgeView *e = ni->getInputEdge(d_i->getDockPos());
+
+                if(e != nullptr) {
+                    gui::NodeView *ne = qgraphicsitem_cast<gui::NodeView*>(e->getInput()->parentItem());
+
+                    this->disconnectNode(ne->getNode(), e->getInput()->getDockPos(), ni->getNode(), d_i->getDockPos());
+                    ne->delOutputEdge(e->getInput()->getDockPos(), e);
+                    ni->delInputEdge(d_i->getDockPos());
+
+                    this->update();
+                }
+
                 if (connectNode(no->getNode(), no->getOutputDockPos(d_o),
                                           ni->getNode(), ni->getInputDockPos(d_i))) {
 
                     this->curr_edge_->setOutput(d_i);
-                    d_i->addEdge(this->curr_edge_);
-                    d_o->addEdge(this->curr_edge_);
+                    ni->addInputEdge(d_i->getDockPos(), this->curr_edge_);
+                    no->addOutputEdge(d_o->getDockPos(), this->curr_edge_);
                 }
                 else {
                     delete this->curr_edge_;
