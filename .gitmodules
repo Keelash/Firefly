@@ -1,0 +1,3 @@
+[submodule "lib/openMesh"]
+	path = lib/openMesh
+	url = https://www.graphics.rwth-aachen.de:9000/OpenMesh/OpenMesh.git

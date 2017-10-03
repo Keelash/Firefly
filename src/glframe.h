@@ -2,14 +2,17 @@
 #define GLFRAME_H
 
 #include <QtOpenGL/QGLWidget>
-#include <QKeyEvent>
 #include <QTimer>
-#include <string>
-#include <vector>
+#include <QObject>
 
-#include "engine/engine_graphic.h"
-#include "engine/engine_interaction.h"
-#include "src/data_class/database.h"
+#include "data_class/database.h"
+#include "node_widget/node_widget.h"
+#include "data_class/shader/modulable_shader.h"
+
+#include "graphic_node/dataextractor.h"
+
+#define RESOLUTION_WIDTH 600
+#define RESOLUTION_HEIGHT 400
 
 class GLFrame : public QGLWidget {
     Q_OBJECT
@@ -21,24 +24,19 @@ public:
     virtual void resizeGL(int w, int h);
     virtual void paintGL();
 
-    inline Engine_Graphic* getGraphicEngine() { return this->engine_g; }
-    inline Engine_Interaction* getInteractionEngine() { return this->engine_i; }
-    inline DataBase* getDatabase() { return this->data_base_; }
+    DataBase* getDataBase() { return this->database_; }
+    nodegraph::NodeGraph* getNodeGraph() { return this->graph_; }
 
-    bool setEnvmap(const char *path);
-    bool loadFile(std::string path);
-    void changeCamera(int mode) { this->data_base_->changeCameraMode((Camera_Mode)mode); }
-
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
+public slots:
+    void on_createMeshDataTrig(bool checked);
+    void on_createPBRShaderTrig(bool checked);
 
 private:
-    Engine_Graphic *engine_g;
-    Engine_Interaction *engine_i;
-
-    DataBase *data_base_;
-
     QTimer *timer_;
+
+    DataBase *database_;
+    nodegraph::NodeGraph* graph_;
+    DataExtractor *extractor_;
 };
 
-#endif //GLFRAME_H
+#endif // GLFRAME_H

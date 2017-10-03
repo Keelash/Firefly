@@ -1,59 +1,63 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <string>
-#include <iostream>
 #include <vector>
+#include <string>
 
-#include "src/data_class/graphic_part/mesh.h"
-#include "src/data_class/graphic_part/material.h"
-#include "src/data_class/graphic_part/texture.h"
-#include "src/data_class/graphic_part/light.h"
-#include "src/data_class/camera.h"
-#include "scene.h"
-#include "instance.h"
+#include "loader.h"
+#include "camera.h"
+#include "texture.h"
+#include "light.h"
+
+class Mesh;
 
 class DataBase {
 public:
-    DataBase();
+    class DataObserver {
+    public:
+        virtual void update() = 0;
+    };
+
+    DataBase(glm::ivec2 texture_res, glm::ivec2 window_res);
     ~DataBase();
 
-    G_Mesh* addMesh(std::vector<G_Mesh::G_Mesh_Vertex> &vertex_vector, std::vector<G_Mesh::G_Mesh_Face> &indice_vector);
-    inline G_Mesh* getMesh(int mesh_id) const { return this->vector_mesh_[mesh_id]; }
+    void setCamera(Camera &camera);
+    const Camera* getCamera() { return &this->camera_; }
+    void addCameraObserver(DataObserver *observer);
 
-    Material* addMaterial();
-    inline Material* getMaterial(int mat_id) const { return this->vector_material_[mat_id]; }
+    bool LoadFile(std::string path);
+    Mesh* getMesh(unsigned int id) { return this->meshes_[id]; }
 
-    Instance* addInstance(unsigned int id_mesh, unsigned int id_mat, glm::mat4 transform);
-    inline Instance* getInstance(int inst_id) const { return this->vector_instance_[inst_id]; }
+    bool hasInstance() const { return this->instances_.size() != 0; }
+    Instance getInstance(unsigned int id) const { return this->instances_[id]; }
 
-    Light* addLight(glm::vec3 position, glm::vec3 colour = glm::vec3(0.0f), float intensity = 1.0f);
-    Light* addLight(glm::vec3 position, float temperature = 6000.0f, float intensity = 0.0f);
-    inline Light* getLight(int light_id) const { return this->vector_light_[light_id]; }
-    inline const std::vector<Light*>* getLights() const { return &this->vector_light_; }
+    void addLight(glm::vec3 position, glm::vec3 colour, float intensity);
+    void addLight(glm::vec3 position, float temperature, float intensity);
+    std::vector<Light*> getLights();
 
-    void setCamera(Camera &c) { this->camera_ = c; }
-    void changeCameraMode(Camera_Mode mode) { this->camera_.setMode(mode); }
-    const Camera* getCamera() const { return &this->camera_; }
+    unsigned int addTexture(const char* file);
+    unsigned int getNbTexture() { return this->textures_.size(); }
+    Texture* getTexture(unsigned int id);
 
-    void setEnvMap(std::string path);
-    Texture* getEnvMap() const { return this->env_map_; }
+    void setProcessedTexture(unsigned int id, Texture *tex);
+    Texture* getProcessedTexture(unsigned int id);
+    void addProcessedTextureObserver(DataObserver *observer);
 
-    inline const Scene* getScene() const { return &this->scene_; }
-
-    void clear();
+    glm::ivec2 windowRes_;
+    const glm::ivec2 textureRes_;
 
 private:
-    std::vector<Material*> vector_material_;
-    std::vector<G_Mesh*> vector_mesh_;
-    std::vector<Instance*> vector_instance_;
-    std::vector<Light*> vector_light_;
+    std::vector<Mesh*> meshes_;
+    std::vector<Instance> instances_;
+    std::vector<Texture*> textures_;
+    std::vector<Light*> light_;
 
-    Scene scene_;
+    Texture* processed_textures_[10];
+
+    std::vector<DataObserver*> camera_observers_;
+    std::vector<DataObserver*> processedTexture_observers_;
+
     Camera camera_;
-    Texture *env_map_;
-
-
 };
 
-#endif //DATABASE_H
+#endif//DATABASE_H

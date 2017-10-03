@@ -1,49 +1,67 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QGraphicsScene>
+#include <QPushButton>
+#include <QToolButton>
+#include <QWidgetAction>
 #include <QFileDialog>
+
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     this->ui->setupUi(this);
-
-    connect(this->ui->actionLoad_File, SIGNAL(triggered(bool)), this, SLOT(loadFile_Activated()));
-
-    connect(this->ui->actionHorizontal_Trackball,SIGNAL(toggled(bool)),
-            this, SLOT(actionHTrackball_toggled(bool)));
-    connect(this->ui->action3D_Trackball, SIGNAL(toggled(bool)),
-            this, SLOT(action3DTrackball_toggled(bool)));
+    this->ui->graphicsView->setScene(this->ui->openGLWidget->getNodeGraph());
+    this->createSceneToolBar();
 }
 
 MainWindow::~MainWindow() {
     delete this->ui;
 }
 
-void MainWindow::loadFile_Activated() {
-    bool fileLoaded;
-    QString path = QFileDialog::getOpenFileName(this,
-                                                    tr("Open object file"),
-                                                    "."
-                                                    );
+void MainWindow::createSceneToolBar() {
+    GLFrame *frame = this->ui->openGLWidget;
+    QToolBar *bar = new QToolBar(this->ui->frame);
+    QToolButton *gettersButton = new QToolButton(bar);
+    QWidgetAction* gettersAction = new QWidgetAction(bar);
 
-    fileLoaded = this->ui->openGLWidget->loadFile(path.toStdString());
+    gettersButton->setText("Add Getters");
+    gettersButton->setPopupMode(QToolButton::InstantPopup);
 
-    if(!fileLoaded) {
-        QMessageBox::warning(this, tr("Firefly"),
-                             tr("An error occured while loading the file"),
-                             QMessageBox::Ok);
-    }
+    QMenu *gettersMenu = new QMenu(bar);
+    QAction *getMeshDataAction = gettersMenu->addAction("Add Mesh Data");
+
+    connect(getMeshDataAction, SIGNAL(triggered(bool)), frame, SLOT(on_createMeshDataTrig(bool)));
+
+    gettersButton->setMenu(gettersMenu);
+    gettersAction->setDefaultWidget(gettersButton);
+
+    bar->addAction(gettersAction);
+
+    QToolButton *shaderButton = new QToolButton(bar);
+    QWidgetAction *shaderAction = new QWidgetAction(bar);
+
+    shaderButton->setText("Add Shader");
+    shaderButton->setPopupMode(QToolButton::InstantPopup);
+
+    QMenu *shaderMenu = new QMenu(bar);
+    QAction *PBRShaderAction = shaderMenu->addAction("Add PBR shader");
+
+    connect(PBRShaderAction, SIGNAL(triggered(bool)), frame, SLOT(on_createPBRShaderTrig(bool)));
+
+    shaderButton->setMenu(shaderMenu);
+    shaderAction->setDefaultWidget(shaderButton);
+
+    bar->addAction(shaderAction);
+
+    this->ui->frame->layout()->addWidget(bar);
 }
 
-void MainWindow::actionHTrackball_toggled(bool value) {
-    if(value) {
-        this->ui->openGLWidget->changeCamera(0);
-        this->ui->action3D_Trackball->setChecked(false);
-    }
-}
+void MainWindow::on_actionLoad_File_triggered() {
+    QUrl fileName =
+             QFileDialog::getOpenFileUrl(nullptr, tr("Open Model File"));
 
-void MainWindow::action3DTrackball_toggled(bool value) {
-    if(value) {
-        this->ui->openGLWidget->changeCamera(1);
-        this->ui->actionHorizontal_Trackball->setChecked(false);
-    }
+    this->ui->openGLWidget->getDataBase()->LoadFile(fileName.path().toStdString());
+
+    this->ui->listWidget->addItem(fileName.fileName());
 }

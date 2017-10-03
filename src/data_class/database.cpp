@@ -1,69 +1,100 @@
 #include "database.h"
 
-DataBase::DataBase() {
-    this->env_map_ = nullptr;
+#include <iostream>
+#include <stack>
+
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
+#include "src/data_class/mesh.h"
+
+typedef std::pair<aiNode*, glm::mat4> stackNode;
+
+DataBase::DataBase(glm::ivec2 texture_res, glm::ivec2 window_res) :
+    textureRes_(texture_res), windowRes_(window_res)
+{
+
+    for(unsigned int i = 0; i < 10; ++i) {
+        this->processed_textures_[i] = nullptr;
+    }
 }
 
 DataBase::~DataBase() {
-    this->clear();
+    unsigned int i;
+
+    for (i = 0; i < this->meshes_.size(); ++i)
+        delete this->meshes_[i];
+
+    for (i = 0; i < this->light_.size(); ++i)
+        delete this->light_[i];
+
+    for (i = 0; i < this->textures_.size(); ++i)
+        delete this->textures_[i];
+
+    for (i = 0; i < 10; ++i)
+        delete this->processed_textures_[i];
 }
 
-G_Mesh* DataBase::addMesh(std::vector<G_Mesh::G_Mesh_Vertex> &vertex_vector, std::vector<G_Mesh::G_Mesh_Face> &indice_vector) {
-    G_Mesh *new_m = new G_Mesh(this->vector_mesh_.size(), vertex_vector, indice_vector);
+void DataBase::setCamera(Camera &camera) {
+    this->camera_ = camera;
 
-    this->vector_mesh_.push_back(new_m);
-    return new_m;
+    for(int i = 0; i < this->camera_observers_.size(); ++i) {
+        this->camera_observers_[i]->update();
+    }
 }
 
-Material *DataBase::addMaterial() {
-    Material *new_m = new Material(this->vector_material_.size());
-
-    this->vector_material_.push_back(new_m);
-    return new_m;
+void DataBase::addCameraObserver(DataObserver *observer) {
+    this->camera_observers_.push_back(observer);
 }
 
-Instance *DataBase::addInstance(unsigned int id_mesh, unsigned int id_mat, glm::mat4 transform) {
-    Instance *new_i = new Instance(id_mesh, id_mat, transform);
+bool DataBase::LoadFile(std::string path) {
+    Loader loader(path);
 
-    Material *mat = this->vector_material_[id_mat];
-    G_Mesh *mesh = this->vector_mesh_[id_mesh];
+    if(loader.isValid()) {
+        loader.extractInstance(&this->instances_, this->meshes_.size());
+        loader.extractMesh(&this->meshes_);
+    }
 
-    this->vector_instance_.push_back(new_i);
-    this->scene_.addInstance(new_i, mesh, mat);
-
-    return new_i;
+    return loader.isValid();
 }
 
-Light* DataBase::addLight(glm::vec3 position, glm::vec3 colour, float intensity) {
-    Light *new_l = new Light(this->vector_light_.size(), position, colour, intensity);
-
-    this->vector_light_.push_back(new_l);
-    return new_l;
+void DataBase::addLight(glm::vec3 position, glm::vec3 colour, float intensity) {
+    this->light_.push_back(new Light(position, colour, intensity));
 }
 
-Light* DataBase::addLight(glm::vec3 position, float temperature, float intensity) {
-    Light *new_l = new Light(this->vector_light_.size(), position, temperature, intensity);
-
-    this->vector_light_.push_back(new_l);
-    return new_l;
+void DataBase::addLight(glm::vec3 position, float temperature, float intensity) {
+    this->light_.push_back(new Light(position, temperature, intensity));
 }
 
-void DataBase::setEnvMap(std::string path) {
-    if(this->env_map_ != nullptr) delete this->env_map_;
-
-    this->env_map_ = new Texture(path.c_str());
+std::vector<Light*> DataBase::getLights() {
+    return this->light_;
 }
 
-void DataBase::clear() {
-    for(int i = 0; i < this->vector_instance_.size(); ++i) delete this->vector_instance_[i];
-    for(int i = 0; i < this->vector_material_.size(); ++i) delete this->vector_material_[i];
-    for(int i = 0; i < this->vector_mesh_.size(); ++i) delete this->vector_mesh_[i];
-    for(int i = 0; i < this->vector_light_.size(); ++i) delete this->vector_light_[i];
+unsigned int DataBase::addTexture(const char* file) {
+    this->textures_.push_back(new Texture(file));
 
-    this->vector_instance_.clear();
-    this->vector_material_.clear();
-    this->vector_mesh_.clear();
-    this->vector_light_.clear();
+    return this->textures_.size() - 1;
+}
 
-    this->scene_.clear();
+Texture* DataBase::getTexture(unsigned int id) {
+    return this->textures_[id];
+}
+
+void DataBase::setProcessedTexture(unsigned int id, Texture* tex) {
+    if(id < 10) {
+        this->processed_textures_[id] = tex;
+
+        for(int i = 0; i < this->processedTexture_observers_.size(); ++i) {
+            this->processedTexture_observers_[i]->update();
+        }
+    }
+}
+
+Texture* DataBase::getProcessedTexture(unsigned int id) {
+    return this->processed_textures_[id];
+}
+
+void DataBase::addProcessedTextureObserver(DataObserver *observer) {
+    this->processedTexture_observers_.push_back(observer);
 }

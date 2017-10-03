@@ -9,7 +9,8 @@
 #include <QLineEdit>
 #include <QMenuBar>
 
-#include "glframe.h"
+#include "node_widget/node_widget.h"
+#include "data_class/database.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,13 +22,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
-public slots:
-    void loadFile_Activated();
-
-    void actionHTrackball_toggled(bool value);
-    void action3DTrackball_toggled(bool value);
+private slots:
+    void on_actionLoad_File_triggered();
 
 private:
+    void createSceneToolBar();
+
     Ui::MainWindow *ui;
 };
 

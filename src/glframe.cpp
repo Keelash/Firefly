@@ -1,22 +1,23 @@
 #include "glframe.h"
 
-#include <QGLFormat>
-#include <iostream>
+#include "data_class/framebuffer.h"
 
-#include "data_class/data_maker/procedural_landscape.h"
-#include "src/data_class/loader.h"
+#include "node_widget/node_widget.h"
+#include "src/graphic_node/output/graphicoutput.h"
+#include "src/graphic_node/getter/meshdata.h"
+#include "src/graphic_node/shader/pbrshader.h"
 
-#include "data_class/camera.h"
+GLFrame::GLFrame(QWidget* parent): QGLWidget(parent){
+    QGLFormat format;
 
-GLFrame::GLFrame(QWidget *parent): QGLWidget(parent) {
-    QGLFormat glFormat;
+    this->graph_ = new nodegraph::NodeGraph(this);
+    this->database_ = new DataBase(glm::ivec2(1280, 720), glm::ivec2(this->size().width(), this->size().height()));
 
-    glFormat.setVersion(3, 3);
-    glFormat.setProfile(QGLFormat::CoreProfile);
-    glFormat.setSampleBuffers(true);
-    this->setFormat(glFormat);
+    format.setVersion(3, 3);
+    format.setProfile(QGLFormat::CoreProfile);
+    format.setSampleBuffers(true);
+    this->setFormat(format);
 
-    this->setFixedSize(800, 600);
     this->setFocus();
 
     this->timer_ = new QTimer(this);
@@ -25,74 +26,51 @@ GLFrame::GLFrame(QWidget *parent): QGLWidget(parent) {
 }
 
 GLFrame::~GLFrame() {
-    delete this->timer_;
-    delete this->engine_g;
-    delete this->engine_i;
-    delete this->data_base_;
-
+    delete this->graph_;
+    delete this->extractor_;
+    delete this->database_;
 }
 
 void GLFrame::initializeGL() {
-    glm::mat4 *matrix = new glm::mat4(1.0);
+    ScreenFramebuffer screen;
 
-    this->data_base_ = new DataBase();
-    this->engine_g = new Engine_Graphic(this->width(), this->height());
-    this->engine_i = new Engine_Interaction();
+    screen.bind();
+    screen.setViewport(0, 0, RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
+    screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-    //Voire pour jeter tout cela dans un fichier qui creer une scene de base.
-    Camera c = Camera::createBaseCamera(this->height(), this->width());
-    this->data_base_->setCamera(c);
-
-    Procedural_Landscape::CreateLandscape(this->data_base_, 128);
-    this->data_base_->addLight(glm::vec3(1.0), glm::vec3(1.0, 0.0, 0.0), 0.5f);
-    this->data_base_->addLight(glm::vec3(1.0, -1.0, 0.0), glm::vec3(0.0, 1.0, 0.0), 0.75f);
-}
-
-void GLFrame::paintGL() {
-    this->engine_i->update(this->data_base_);
-    this->engine_g->update(this->data_base_);
+    this->graph_->addNode(new GraphicOutput(this->database_, this->graph_));
+    this->extractor_ = new DataExtractor(1280, 720);
+    this->database_->addLight(glm::vec3(0.0f), 6000.0f, 0.5f);
 }
 
 void GLFrame::resizeGL(int w, int h) {
-    this->engine_g->resize(w, h);
-    //this->data_base_->getCamera().resize(h, w);
+    ScreenFramebuffer screen;
+
+    screen.bind();
+    screen.setViewport(0, 0, w, h);
+    screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    this->database_->windowRes_ = glm::ivec2(w, h);
 }
 
-void GLFrame::mousePressEvent(QMouseEvent *e) {
+void GLFrame::paintGL() {
+    if(database_->hasInstance()) {
+        Camera c = *this->database_->getCamera();
 
-    if(e->button() == Qt::LeftButton) {
-        this->engine_i->mousePressLeftEventHandler();
-    }
-    else {
-        this->engine_i->mousePressRightEventHandler();
-    }
-}
+        c.rotateAroundUp(0.005);
+        this->database_->setCamera(c);
 
-void GLFrame::mouseReleaseEvent(QMouseEvent *e) {
-    if(e->button() == Qt::LeftButton) {
-        this->engine_i->mouseReleaseLeftEventHandler();
-    }
-    else {
-        this->engine_i->mouseReleaseRightEventHandler();
+        this->extractor_->extractData(this->database_);
+
+        this->graph_->updateGraph();
     }
 }
 
-bool GLFrame::setEnvmap(const char* path) {
-    this->data_base_->setEnvMap(path);
-
-    return this->data_base_->getEnvMap()->isValid();
+void GLFrame::on_createMeshDataTrig(bool checked) {
+    this->graph_->addNode(new MeshData(this->database_, this->graph_));
 }
 
-bool GLFrame::loadFile(std::string path) {
-    Loader loader;
-
-    if(loader.loadFile(path)) {
-        this->data_base_->clear();
-        return loader.sceneToData(this->data_base_);
-    }
-
-    return false;
+void GLFrame::on_createPBRShaderTrig(bool checked) {
+    this->graph_->addNode(new PBRShader(this->database_, this->graph_));
 }
-
 
