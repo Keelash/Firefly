@@ -64,7 +64,7 @@ QString GraphicOutput::getInputName(unsigned int input) const {
 void GraphicOutput::processData() {
     float x, y;
     int w, h;
-    glm::ivec2 w_res = database_->getWinRes();
+    glm::ivec2 w_res = database_->windowRes_;
     ScreenFramebuffer screen;
     QuadMesh *quad = QuadMesh::getInstance();
 

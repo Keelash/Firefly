@@ -69,7 +69,10 @@ void OpenGLMesh::defineDataSet(GLuint index, GLuint size, GLenum type,
 {
     glBindVertexArray(this->vao_);
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_);
-        glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        if(type == GL_INT)
+            glVertexAttribIPointer(index, size, type, stride, pointer);
+        else
+            glVertexAttribPointer(index, size, type, normalized, stride, pointer);
         glEnableVertexAttribArray(index);
     glBindVertexArray(0);
 }

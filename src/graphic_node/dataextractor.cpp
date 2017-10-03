@@ -37,9 +37,7 @@ void DataExtractor::extractData(DataBase *data) {
     unsigned int i;
     ShaderCode code;
 
-    code.createFromFile("shader/shader_extract.vert", "shader/shader_extract.frag");
-
-    if((data && data->hasMeshes()) && data->getNbTexture() < EXTRACTOR_USER_MAX_TEXTURE) {
+    if((data && data->hasInstance()) && data->getNbTexture() < EXTRACTOR_USER_MAX_TEXTURE) {
         this->framebuffer_->bind();
         this->framebuffer_->setViewport(0, 0, w_res_, h_res_);
         this->framebuffer_->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,6 +45,8 @@ void DataExtractor::extractData(DataBase *data) {
         this->framebuffer_->enableDepthTest();
 
         if(!this->shader_->hasKey(data->getNbTexture())) {
+            code.createFromFile("shader/shader_extract.vert", "shader/shader_extract.frag");
+
             for(unsigned int i = 0; i < data->getNbTexture(); ++i)
                 code.addDefine("USER_TEXTURE_" + i);
 
@@ -54,7 +54,7 @@ void DataExtractor::extractData(DataBase *data) {
         }
 
         Shader *sh = this->shader_->getMod(data->getNbTexture());
-        Mesh* mesh = data->getMeshes(0);
+        Mesh* mesh = data->getMesh(data->getInstance(0).mesh_);
         const Camera *camera = data->getCamera();
 
         sh->bindShader();
@@ -64,6 +64,7 @@ void DataExtractor::extractData(DataBase *data) {
             sh->setTextureLocation("user_texture_" + i, i);
         }
 
+        sh->setUniformLocation("matrix_mesh", data->getInstance(0).transform_);
         sh->setUniformLocation("matrix_view", camera->getViewMatrix());
         sh->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());
 

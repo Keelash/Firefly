@@ -62,7 +62,7 @@ void MainWindow::on_actionLoad_File_triggered() {
     QUrl fileName =
              QFileDialog::getOpenFileUrl(nullptr, tr("Open Model File"));
 
-    this->ui->openGLWidget->getDataBase()->addMeshes(fileName.path().toStdString());
+    this->ui->openGLWidget->getDataBase()->LoadFile(fileName.path().toStdString());
 
     this->ui->listWidget->addItem(fileName.fileName());
 }

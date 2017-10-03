@@ -12,7 +12,7 @@ ToneMappingOperator::ToneMappingOperator(DataBase *data, nodegraph::NodeGraph *g
         ui->label->setText(name);
 
         this->shader_ = new Shader(code);
-        this->framebuffer_ = new FramebufferObject(data->getTexRes().x, data->getTexRes().y);
+        this->framebuffer_ = new FramebufferObject(data->textureRes_.x, data->textureRes_.y);
         this->framebuffer_->addTextureAsOutput(0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 }
 
@@ -90,7 +90,7 @@ const QVariant ToneMappingOperator::getOutput(unsigned int output) const {
 
 void ToneMappingOperator::processData() {
     QuadMesh *quad = QuadMesh::getInstance();
-    glm::ivec2 res = this->database_->getTexRes();
+    glm::ivec2 res = this->database_->textureRes_;
 
     if(this->input_ != nullptr) {
         this->framebuffer_->bind();

@@ -28,7 +28,7 @@ PBRShader::PBRShader(DataBase* database, nodegraph::NodeGraph *graph) :
     this->shader_ = new ModularShader();
     this->shader_->addMod(0, code);
 
-    this->buffer_ = new FramebufferObject(database->getTexRes().x, database->getTexRes().y);
+    this->buffer_ = new FramebufferObject(database->textureRes_.x, database->textureRes_.y);
     this->buffer_->addTextureAsOutput(0, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 
     this->roughness_ = this->metalpart_ = 0.05f;
@@ -149,7 +149,7 @@ void PBRShader::processData() {
 
     if(lights.size() != 0) {
         Shader *shader = this->shader_->getMod(this->genCurrentShaderKey());
-        glm::vec2 res = database_->getTexRes();
+        glm::vec2 res = database_->textureRes_;
 
         this->buffer_->bind();
         this->buffer_->setViewport(0, 0, res.x, res.y);

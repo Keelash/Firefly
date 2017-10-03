@@ -51,13 +51,12 @@ void GLFrame::resizeGL(int w, int h) {
     screen.setViewport(0, 0, w, h);
     screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    this->database_->setWindowResolution(glm::ivec2(w, h));
+    this->database_->windowRes_ = glm::ivec2(w, h);
 }
 
 void GLFrame::paintGL() {
-    if(database_->hasMeshes()) {
+    if(database_->hasInstance()) {
         Camera c = *this->database_->getCamera();
-        Mesh *m = this->database_->getMeshes(0);
 
         c.rotateAroundUp(0.005);
         this->database_->setCamera(c);

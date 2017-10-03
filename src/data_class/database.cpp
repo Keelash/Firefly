@@ -1,6 +1,7 @@
 #include "database.h"
 
 #include <iostream>
+#include <stack>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -8,9 +9,11 @@
 
 #include "src/data_class/mesh.h"
 
-DataBase::DataBase(glm::ivec2 texture_res, glm::ivec2 window_res) {
-    this->texture_res_ = texture_res;
-    this->window_res_ = window_res;
+typedef std::pair<aiNode*, glm::mat4> stackNode;
+
+DataBase::DataBase(glm::ivec2 texture_res, glm::ivec2 window_res) :
+    textureRes_(texture_res), windowRes_(window_res)
+{
 
     for(unsigned int i = 0; i < 10; ++i) {
         this->processed_textures_[i] = nullptr;
@@ -33,18 +36,6 @@ DataBase::~DataBase() {
         delete this->processed_textures_[i];
 }
 
-void DataBase::setWindowResolution(glm::ivec2 res) {
-    this->window_res_ = res;
-}
-
-glm::ivec2 DataBase::getWinRes() const {
-    return this->window_res_;
-}
-
-glm::ivec2 DataBase::getTexRes() const {
-    return this->texture_res_;
-}
-
 void DataBase::setCamera(Camera &camera) {
     this->camera_ = camera;
 
@@ -57,47 +48,15 @@ void DataBase::addCameraObserver(DataObserver *observer) {
     this->camera_observers_.push_back(observer);
 }
 
-bool DataBase::addMeshes(std::string path) {
-    Assimp::Importer importer;
-    const aiScene* scene;
+bool DataBase::LoadFile(std::string path) {
+    Loader loader(path);
 
-    scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);
-    if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-    {
-        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-        return false;
+    if(loader.isValid()) {
+        loader.extractInstance(&this->instances_, this->meshes_.size());
+        loader.extractMesh(&this->meshes_);
     }
 
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        aiMesh *mesh = scene->mMeshes[i];
-        std::vector<Mesh::G_Mesh_Vertex> vertex_vector;
-        std::vector<Mesh::G_Mesh_Face> indices_vector;
-        Mesh::G_Mesh_Vertex v;
-        Mesh::G_Mesh_Face t;
-
-        for (int j = 0; j < mesh->mNumVertices; ++j) {
-            v.pos = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
-            v.normal = glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z);
-
-            if (mesh->mTextureCoords[0])
-                v.uv = glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y);
-            else
-                v.uv = glm::vec2(0.0f, 0.0f);
-
-            vertex_vector.push_back(v);
-        }
-
-        for (int j = 0; j < mesh->mNumFaces; ++j) {
-            aiFace face = mesh->mFaces[j];
-
-            t.vertices = glm::ivec3(face.mIndices[0], face.mIndices[1], face.mIndices[2]);
-            indices_vector.push_back(t);
-        }
-
-        this->meshes_.push_back(new Mesh(vertex_vector, indices_vector));
-    }
-
-    return true;
+    return loader.isValid();
 }
 
 void DataBase::addLight(glm::vec3 position, glm::vec3 colour, float intensity) {
