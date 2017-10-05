@@ -1,4 +1,4 @@
-# Firefly : Module gui #
+# Firefly #
 
 ## About the Project
 Firefly is a rendering engine I create for my Informatics courses. It's prone to be enhanced in a short lapse of time.
@@ -14,10 +14,9 @@ rendering technique.
       - Add a way to switch between the "Test version" and an "Optimized version"
 
 ## Building Firefly
-Cmake is the building tools used for this project, with a minimum version of 2.8.
-If you don"t have Cmake, you can download it at http://www.cmake.org/.
+Cmake 2.8 is the minimum building tools required for this project. You can grab it at http://www.cmake.org/.
 
-The project need multiple library, some are just linked via git, but somme (Assimp) are quite heavy. So I zip it in the lib folder.
+The project need multiple library, some are just linked via git, but somme (Assimp) are quite heavy. So I zip it in the lib folder, it just need to be unzip to build.
 
 #### Unix:
 
@@ -28,7 +27,7 @@ The project need multiple library, some are just linked via git, but somme (Assi
 
   
 ## Acknowledgment:
-Firefly is based on the Assimp and the GLM Library. You can get them at :
+Firefly is based on some tierce library. You can get them at :
 
     Assimp : http://www.assimp.org/
     GLM : http://glm.g-truc.net/
