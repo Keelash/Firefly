@@ -6,6 +6,7 @@
 #include <QToolButton>
 #include <QWidgetAction>
 #include <QFileDialog>
+#include <QListWidget>
 
 #include <iostream>
 
@@ -58,10 +59,17 @@ void MainWindow::createSceneToolBar() {
 }
 
 void MainWindow::on_actionLoad_File_triggered() {
+    DataBase* db = this->ui->openGLWidget->getDataBase();
     QUrl fileName =
              QFileDialog::getOpenFileUrl(nullptr, tr("Open Model File"));
 
-    this->ui->openGLWidget->getDataBase()->LoadFile(fileName.path().toStdString());
 
-    this->ui->listWidget->addItem(fileName.fileName());
+    if(db->LoadFile(fileName.path().toStdString())) {
+        this->ui->listWidget->clear();
+        db->curr_inst_ = 0;
+
+        for(unsigned int i = 0; i < db->getNbInstance(); ++i) {
+            this->ui->listWidget->addItem(db->getInstance(i).name_.c_str());
+        }
+    }
 }

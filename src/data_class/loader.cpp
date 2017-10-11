@@ -53,7 +53,7 @@ void Loader::extractVertex(unsigned int meshId, std::vector<Mesh::G_Mesh_Vertex>
         output->push_back(v);
     }
 
-    for(unsigned int j = 0; j < mesh->mNumBones; ++j)
+    for(unsigned int j = 0; j < mesh->mNumBones; ++j) {
         for(unsigned int k = 0; k < mesh->mBones[j]->mNumWeights; ++k) {
             unsigned int l = 0;
             unsigned int id = mesh->mBones[j]->mWeights[k].mVertexId;
@@ -65,45 +65,98 @@ void Loader::extractVertex(unsigned int meshId, std::vector<Mesh::G_Mesh_Vertex>
                 (*output)[id].boneId[l] = j;
             }
         }
+    }
 }
 
-void Loader::extractBones(unsigned int meshId, Mesh* new_mesh) {
+void Loader::extractAnimationData(unsigned int meshId, AnimationsData *output) {
     const aiScene* scene = this->importer_.GetScene();
     aiMesh* mesh = scene->mMeshes[meshId];
     std::map<std::string, unsigned int> nameMap;
     std::queue<aiNode*> boneQueue;
 
-    new_mesh->bones_.clear();
+    output->bones_.clear();
+    output->animations_.clear();
+
+    output->inverseTrans_ = glm::inverse(convertMatrix(scene->mRootNode->mTransformation));
 
     for(unsigned int i = 0; i < mesh->mNumBones; ++i) {
-        Mesh::Bones b;
+        Bone b;
         nameMap[mesh->mBones[i]->mName.C_Str()] = i;
 
         b.offset_ = convertMatrix(mesh->mBones[i]->mOffsetMatrix);
-        new_mesh->bones_.push_back(b);
+        output->bones_.push_back(b);
     }
 
     boneQueue.push(scene->mRootNode);
     while(boneQueue.size() != 0) {
         aiNode* curr = boneQueue.front();
+
         boneQueue.pop();
+        for(unsigned int i  = 0; i < curr->mNumChildren; ++i)
+            boneQueue.push(curr->mChildren[i]);
 
         if(nameMap.count(curr->mName.C_Str()) != 0) {
             unsigned int id = nameMap[curr->mName.C_Str()];
-            Mesh::Bones b = new_mesh->bones_[id];
+            Bone b = output->bones_[id];
 
-            if(new_mesh->boneRoot_ == -1) new_mesh->boneRoot_ = id;
+            if(output->boneRoot_ == -1)
+                output->boneRoot_ = id;
+
             b.toParent_ = glm::inverse(convertMatrix(curr->mTransformation));
 
             for(unsigned int i  = 0; i < curr->mNumChildren; ++i)
                 if(nameMap.count(curr->mChildren[i]->mName.C_Str()) != 0)
                     b.children_.push_back(nameMap[curr->mChildren[i]->mName.C_Str()]);
 
-            new_mesh->bones_[id] = b;
+            output->bones_[id] = b;
         }
+    }
 
-        for(unsigned int i  = 0; i < curr->mNumChildren; ++i)
-            boneQueue.push(curr->mChildren[i]);
+    output->animations_.resize(scene->mNumAnimations);
+    for(unsigned int i = 0; i < scene->mNumAnimations; ++i) {
+        output->animations_[i].ticksPerSecond_ = scene->mAnimations[i]->mTicksPerSecond;
+        output->animations_[i].duration_ = scene->mAnimations[i]->mDuration;
+
+        output->animations_[i].channels_.resize(scene->mAnimations[i]->mNumChannels);
+
+        for(unsigned int j = 0; j < scene->mAnimations[i]->mNumChannels; ++j) {
+            aiNodeAnim* node = scene->mAnimations[i]->mChannels[j];
+
+            if(nameMap.count(node->mNodeName.C_Str()) != 0) {
+                Channel *c = &(output->animations_[i].channels_[nameMap[node->mNodeName.C_Str()]]);
+                struct KeyData_s<glm::vec3> k_vdata;
+                aiVector3D v; aiQuaternion q;
+
+                struct KeyData_s<glm::quat> k_qdata;
+
+                for(unsigned int k = 0; k < node->mNumPositionKeys; ++k) {
+                    v = node->mPositionKeys[k].mValue;
+
+                    k_vdata.value_ = glm::vec3(v.x, v.y, v.z);
+                    k_vdata.time_ = node->mPositionKeys[k].mTime;
+
+                    c->translation_.push_back(k_vdata);
+                }
+
+                for(unsigned int k = 0; k < node->mNumScalingKeys; ++k) {
+                    v = node->mScalingKeys[k].mValue;
+
+                    k_vdata.value_ = glm::vec3(v.x, v.y, v.z);
+                    k_vdata.time_ = node->mScalingKeys[k].mTime;
+
+                    c->scaling_.push_back(k_vdata);
+                }
+
+                for(unsigned int k = 0; k < node->mNumRotationKeys; ++k) {
+                    q = node->mRotationKeys[k].mValue;
+
+                    k_qdata.value_ = glm::quat(q.w, q.x, q.y, q.z);
+                    k_qdata.time_ = node->mRotationKeys[k].mTime;
+
+                    c->rotation_.push_back(k_qdata);
+                }
+            }
+        }
     }
 }
 
@@ -112,6 +165,8 @@ void Loader::extractMesh(std::vector<Mesh*> *output) {
     std::vector<Mesh::G_Mesh_Vertex> vertex_vector;
     std::vector<Mesh::G_Mesh_Face> indices_vector;
     Mesh* new_mesh;
+
+    output->clear();
 
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         aiMesh *mesh = scene->mMeshes[i];
@@ -129,7 +184,10 @@ void Loader::extractMesh(std::vector<Mesh*> *output) {
 
         new_mesh = new Mesh(vertex_vector, indices_vector);
 
-        this->extractBones(i, new_mesh);
+        if(mesh->HasBones()) {
+            new_mesh->animations_ = new AnimationsData();
+            this->extractAnimationData(i, new_mesh->animations_);
+        }
 
         output->push_back(new_mesh);
     }
@@ -138,7 +196,7 @@ void Loader::extractMesh(std::vector<Mesh*> *output) {
 
 typedef std::pair<aiNode*, glm::mat4> stackNode;
 
-void Loader::extractInstance(std::vector<Instance> *output, unsigned int offset) {
+void Loader::extractInstance(std::vector<Instance> *output) {
     const aiScene* scene = this->importer_.GetScene();
 
     std::stack<stackNode> stack;
@@ -153,7 +211,8 @@ void Loader::extractInstance(std::vector<Instance> *output, unsigned int offset)
         inst.transform_ = inst.transform_ * curr.second;
 
         for(unsigned int i = 0; i < curr.first->mNumMeshes; ++i) {
-            inst.mesh_ = offset + curr.first->mMeshes[i];
+            inst.mesh_ = curr.first->mMeshes[i];
+            inst.name_ = curr.first->mName.C_Str();
             output->push_back(inst);
         }
 

@@ -33,7 +33,7 @@ DataExtractor::~DataExtractor() {
     delete this->framebuffer_;
 }
 
-void DataExtractor::extractData(DataBase *data) {
+void DataExtractor::extractData(float time, DataBase *data) {
     unsigned int i;
     ShaderCode code;
 
@@ -54,8 +54,9 @@ void DataExtractor::extractData(DataBase *data) {
         }
 
         Shader *sh = this->shader_->getMod(data->getNbTexture());
-        Mesh* mesh = data->getMesh(data->getInstance(0).mesh_);
+        Mesh* mesh = data->getMesh(data->getInstance(data->curr_inst_).mesh_);
         const Camera *camera = data->getCamera();
+        std::vector<glm::mat4> transform;
 
         sh->bindShader();
         mesh->bind();
@@ -64,6 +65,14 @@ void DataExtractor::extractData(DataBase *data) {
             sh->setTextureLocation("user_texture_" + i, i);
         }
 
+        if(mesh->animations_) {
+            mesh->animations_->getBoneTransform(0, time, &transform);
+            sh->setUniformLocation("animOffset", glm::mat4(0.0f));
+        }
+        else
+            sh->setUniformLocation("animOffset", glm::mat4(1.0f));
+
+        sh->setUniformLocation("bonesTransform", transform);
         sh->setUniformLocation("matrix_mesh", data->getInstance(0).transform_);
         sh->setUniformLocation("matrix_view", camera->getViewMatrix());
         sh->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());

@@ -52,7 +52,7 @@ bool DataBase::LoadFile(std::string path) {
     Loader loader(path);
 
     if(loader.isValid()) {
-        loader.extractInstance(&this->instances_, this->meshes_.size());
+        loader.extractInstance(&this->instances_);
         loader.extractMesh(&this->meshes_);
     }
 

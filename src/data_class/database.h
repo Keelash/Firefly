@@ -29,6 +29,7 @@ public:
     Mesh* getMesh(unsigned int id) { return this->meshes_[id]; }
 
     bool hasInstance() const { return this->instances_.size() != 0; }
+    unsigned int getNbInstance() const { return this->instances_.size(); }
     Instance getInstance(unsigned int id) const { return this->instances_[id]; }
 
     void addLight(glm::vec3 position, glm::vec3 colour, float intensity);
@@ -45,6 +46,8 @@ public:
 
     glm::ivec2 windowRes_;
     const glm::ivec2 textureRes_;
+
+    unsigned int curr_inst_;
 
 private:
     std::vector<Mesh*> meshes_;

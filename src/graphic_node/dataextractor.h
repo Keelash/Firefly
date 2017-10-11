@@ -21,7 +21,7 @@ public:
     DataExtractor(unsigned int res_w, unsigned int res_h);
     ~DataExtractor();
 
-    void extractData(DataBase* data);
+    void extractData(float time, DataBase* data);
 
 private:
     unsigned int w_res_, h_res_;

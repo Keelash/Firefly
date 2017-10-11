@@ -3,6 +3,7 @@
 
 #include <QtOpenGL/QGLWidget>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QObject>
 
 #include "data_class/database.h"
@@ -24,6 +25,9 @@ public:
     virtual void resizeGL(int w, int h);
     virtual void paintGL();
 
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+
     DataBase* getDataBase() { return this->database_; }
     nodegraph::NodeGraph* getNodeGraph() { return this->graph_; }
 
@@ -32,7 +36,11 @@ public slots:
     void on_createPBRShaderTrig(bool checked);
 
 private:
+    int state_;
+    QPoint pos_left, pos_right;
+
     QTimer *timer_;
+    QElapsedTimer *e_timer_;
 
     DataBase *database_;
     nodegraph::NodeGraph* graph_;

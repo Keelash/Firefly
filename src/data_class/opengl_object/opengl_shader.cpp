@@ -127,6 +127,10 @@ void OpenGlShader::setTextureLocation(const char* name, const int texUnit){
     glUniform1i(glGetUniformLocation(this->program_, name), texUnit);
 }
 
+void OpenGlShader::setUniformLocation(const char* name, std::vector<glm::mat4> &mats) {
+    glUniformMatrix4fv(glGetUniformLocation(this->program_, name), mats.size(), GL_FALSE, reinterpret_cast<GLfloat *>(mats.data()));
+}
+
 void OpenGlShader::setUniformLocation(const char* name, const glm::mat4 &mat){
     glUniformMatrix4fv(glGetUniformLocation(this->program_, name), 1, GL_FALSE, glm::value_ptr(mat));
 }

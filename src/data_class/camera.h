@@ -5,14 +5,9 @@
 
 #include "../glm_include.h"
 
-enum Camera_Mode {
-    MODE_TRACKBALL_H, MODE_TRACKBALL_3D, MODE_FPS
-};
-
 class Camera {
 public:
-    Camera(Camera_Mode mode = MODE_TRACKBALL_H,
-           glm::vec3 position = glm::vec3(3.0, 0.0, 3.0),
+    Camera(glm::vec3 position = glm::vec3(0.0, 0.0, 3.0),
            glm::vec3 look_at = glm::vec3(0.0),
            float fov = 80.0,
            float heigth = 400,
@@ -20,8 +15,6 @@ public:
     ~Camera() { }
 
     static unsigned int Type() { return QVariant::Type::UserType + 4; }
-
-    void setMode(Camera_Mode mode) { this->mode_ = mode; }
 
     glm::mat4 getViewMatrix() const { return this->view_; }
     glm::mat4 getProjectionMatrix() const { return this->projection_; }
@@ -40,8 +33,6 @@ public:
 
 private:
     void createViewMatric();
-
-    Camera_Mode mode_;
 
     glm::mat4 view_;
     glm::mat4 projection_;

@@ -6,8 +6,11 @@
 #include "src/glm_include.h"
 
 #include "mesh.h"
+#include "animation.h"
 
 typedef struct Instance_s {
+    std::string name_;
+
     unsigned int mesh_;
     glm::mat4 transform_;
 } Instance;
@@ -20,11 +23,11 @@ public:
     bool isValid() { return this->valid_; }
 
     void extractMesh(std::vector<Mesh*> *output);
-    void extractInstance(std::vector<Instance> *output, unsigned int offset = 0);
+    void extractInstance(std::vector<Instance> *output);
 
 private:
     void extractVertex(unsigned int meshId, std::vector<Mesh::G_Mesh_Vertex>* output);
-    void extractBones(unsigned int meshId, Mesh* new_mesh);
+    void extractAnimationData(unsigned int meshId, AnimationsData *output);
 
     bool valid_;
 

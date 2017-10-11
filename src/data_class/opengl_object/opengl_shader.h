@@ -20,6 +20,7 @@ public:
     void setUniformLocation(const char* name, const glm::vec2 &value);
     void setUniformLocation(const char* name, const glm::vec3 &value);
     void setUniformLocation(const char* name, const glm::vec4 &value);
+    void setUniformLocation(const char* name, std::vector<glm::mat4> &mats);
     void setUniformLocation(const char* name, const glm::mat4 &mat);
     void setTextureLocation(const char* name, const int texUnit);
 
