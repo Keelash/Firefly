@@ -7,14 +7,11 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "src/data_class/mesh.h"
-
-typedef std::pair<aiNode*, glm::mat4> stackNode;
+#include "src/data_class/model/model.h"
 
 DataBase::DataBase(glm::ivec2 texture_res, glm::ivec2 window_res) :
     textureRes_(texture_res), windowRes_(window_res)
 {
-
     for(unsigned int i = 0; i < 10; ++i) {
         this->processed_textures_[i] = nullptr;
     }
@@ -23,8 +20,8 @@ DataBase::DataBase(glm::ivec2 texture_res, glm::ivec2 window_res) :
 DataBase::~DataBase() {
     unsigned int i;
 
-    for (i = 0; i < this->meshes_.size(); ++i)
-        delete this->meshes_[i];
+    for (i = 0; i < this->models_.size(); ++i)
+        delete this->models_[i];
 
     for (i = 0; i < this->light_.size(); ++i)
         delete this->light_[i];
@@ -52,8 +49,11 @@ bool DataBase::LoadFile(std::string path) {
     Loader loader(path);
 
     if(loader.isValid()) {
-        loader.extractInstance(&this->instances_);
-        loader.extractMesh(&this->meshes_);
+        loader.extractModel(&this->models_);
+    }
+
+    for(unsigned int i = 0; i < this->models_.size(); ++i) {
+
     }
 
     return loader.isValid();

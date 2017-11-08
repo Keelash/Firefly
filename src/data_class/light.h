@@ -3,10 +3,12 @@
 
 #include <QVariant>
 
+#include "sceneobject.h"
+
 #include "src/glm_include.h"
 #include "shader/shader.h"
 
-class Light {
+class Light : public SceneObject {
 public:
     static glm::vec3 RGBfromTemp(float temp);
 
@@ -26,12 +28,10 @@ public:
     inline void setIntensity(float intensity) { this->intensity_ = intensity; }
     inline float getIntensity() { return this->intensity_; }
 
-    inline void setPosition(glm::vec3 &position) { this->position_ = position; }
-    inline glm::vec3& getPosition() { return this->position_; }
-
     void bindLight(Shader *shader, glm::mat4 transform) const;
-private:
 
+    virtual void draw(Shader* shader, float timeInSecond = 0.f) { }
+private:
     glm::vec3 position_;
     glm::vec3 colour_hue_;
     float intensity_;

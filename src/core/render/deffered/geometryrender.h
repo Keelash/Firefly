@@ -1,5 +1,5 @@
-#ifndef DATAEXTRACTOR_H
-#define DATAEXTRACTOR_H
+#ifndef GEOMETRYRENDER_H
+#define GEOMETRYRENDER_H
 
 #include "src/data_class/framebuffer.h"
 #include "src/data_class/texture.h"
@@ -9,17 +9,17 @@
 class ModularShader;
 class DataBase;
 
-class DataExtractor {
+class GeometryRender {
 public:
-    enum EXTRACTOR_TEXTURE {
+    enum GEOMETRY_FRAMEBUFFER_TEXTURE {
         POSITION_TEXTURE, NORMAL_TEXTURE,
         USER_TEXTURE_0, USER_TEXTURE_1, USER_TEXTURE_2, USER_TEXTURE_3,
         USER_TEXTURE_4, USER_TEXTURE_5, USER_TEXTURE_6, USER_TEXTURE_7,
         NB_TEXTURE
     };
 
-    DataExtractor(unsigned int res_w, unsigned int res_h);
-    ~DataExtractor();
+    GeometryRender(unsigned int res_w, unsigned int res_h);
+    ~GeometryRender();
 
     void extractData(float time, DataBase* data);
 
@@ -30,4 +30,4 @@ private:
     ModularShader *shader_;
 };
 
-#endif // DATAEXTRACTOR_H
+#endif // GEOMETRYRENDER_H

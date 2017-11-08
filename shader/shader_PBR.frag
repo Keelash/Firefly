@@ -1,4 +1,4 @@
-in vec2 TexCoords;
+in vec2 texCoords;
 
 uniform sampler2D position_texture;
 uniform sampler2D normal_texture;
@@ -30,16 +30,16 @@ uniform float M_PI = 3.1415926535897932384626433832795;
 layout (location = 0) out vec4 out_colour;
 
 vec3 getNormal() {
-    return texture(normal_texture, TexCoords).xyz;
+    return texture(normal_texture, texCoords).xyz;
 }
 
 vec3 getPosition() {
-    return texture(position_texture, TexCoords).xyz;
+    return texture(position_texture, texCoords).xyz;
 }
 
 vec3 getColour() {
 #ifdef COLOUR_TEXTURE
-    return texture(colour_texture, TexCoords).rgb;
+    return texture(colour_texture, texCoords).rgb;
 #else
     return colour_data;
 #endif
@@ -47,7 +47,7 @@ vec3 getColour() {
 
 float getRoughness() {
 #ifdef ROUGHNESS_TEXTURE
-    return texture(roughness_texture, TexCoords).a;
+    return texture(roughness_texture, texCoords).a;
 #else
     return roughness_data;
 #endif
@@ -55,7 +55,7 @@ float getRoughness() {
 
 float getMetalPart() {
 #ifdef METALPART_TEXTURE
-    return texture(metalpart_texture, TexCoords).a;
+    return texture(metalpart_texture, texCoords).a;
 #else
     return metalpart_data;
 #endif
@@ -116,7 +116,7 @@ void main() {
     float NdotV = abs(dot(N , V )) + 1e-5f; // avoid artifact
     vec3 H = normalize(V + L);
     float LdotH = max(dot(L , H), 0.0f);
-    float NdotH = max(dot(N , H), 0.0f);
+    float NdotH = abs(dot(N , H));
     float NdotL = max(dot(N , L), 0.0f);
 
     //Specular

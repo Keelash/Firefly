@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>636</width>
+    <width>902</width>
     <height>626</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="GLFrame" name="openGLWidget">
+        <widget class="GLFrame" name="openGlViewer_frame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -59,7 +59,22 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame_3">
+        <widget class="QFrame" name="scenePanel_Frame">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -67,47 +82,18 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QListWidget" name="listWidget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTabWidget" name="tabWidget">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="object_tab">
-             <attribute name="title">
-              <string>Object</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QGroupBox" name="animation_box">
-                <property name="title">
-                 <string>Animation</string>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QComboBox" name="animation_comboBox"/>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="material_tab">
-             <attribute name="title">
-              <string>Material</string>
-             </attribute>
-            </widget>
-           </widget>
-          </item>
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <property name="bottomMargin">
+           <number>3</number>
+          </property>
          </layout>
         </widget>
        </item>
@@ -115,7 +101,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="nodeView_frame">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
@@ -139,7 +125,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QGraphicsView" name="graphicsView"/>
+        <widget class="QGraphicsView" name="nodeViewer"/>
        </item>
       </layout>
      </widget>
@@ -159,7 +145,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>636</width>
+     <width>902</width>
      <height>25</height>
     </rect>
    </property>

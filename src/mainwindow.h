@@ -8,9 +8,11 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QMenuBar>
+#include <QTreeWidget>
 
 #include "node_widget/node_widget.h"
 #include "data_class/database.h"
+#include "gui/scenedatapannel.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +30,7 @@ private slots:
 private:
     void createSceneToolBar();
 
+    SceneDataPannel *datapannel_;
     Ui::MainWindow *ui;
 };
 

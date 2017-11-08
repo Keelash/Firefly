@@ -119,6 +119,10 @@ void OpenGlShader::setUniformLocation(const char *name, const glm::vec3 &value) 
     glUniform3fv(glGetUniformLocation(this->program_, name), 1, glm::value_ptr(value));
 }
 
+void OpenGlShader::setUniformLocation(const char* name, const std::vector<glm::vec3> &vec) {
+   glUniform3fv(glGetUniformLocation(this->program_, name), vec.size(), reinterpret_cast<const GLfloat*>(vec.data()));
+}
+
 void OpenGlShader::setUniformLocation(const char *name, const glm::vec4 &value) {
     glUniform4fv(glGetUniformLocation(this->program_, name), 1,  glm::value_ptr(value));
 }
@@ -127,8 +131,8 @@ void OpenGlShader::setTextureLocation(const char* name, const int texUnit){
     glUniform1i(glGetUniformLocation(this->program_, name), texUnit);
 }
 
-void OpenGlShader::setUniformLocation(const char* name, std::vector<glm::mat4> &mats) {
-    glUniformMatrix4fv(glGetUniformLocation(this->program_, name), mats.size(), GL_FALSE, reinterpret_cast<GLfloat *>(mats.data()));
+void OpenGlShader::setUniformLocation(const char* name, const std::vector<glm::mat4> &mats) {
+    glUniformMatrix4fv(glGetUniformLocation(this->program_, name), mats.size(), GL_FALSE, reinterpret_cast<const GLfloat*>(mats.data()));
 }
 
 void OpenGlShader::setUniformLocation(const char* name, const glm::mat4 &mat){

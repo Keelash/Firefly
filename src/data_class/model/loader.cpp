@@ -8,7 +8,11 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include "gpumesh.h"
 #include "mesh.h"
+#include "model.h"
+
+#include "src/core/geometry/loopsubdivision.h"
 
 glm::mat4 convertMatrix(aiMatrix4x4 mat) {
     glm::mat4 n_mat;
@@ -22,7 +26,12 @@ glm::mat4 convertMatrix(aiMatrix4x4 mat) {
 
 
 Loader::Loader(std::string path_to_file) {
-    const aiScene *scene = importer_.ReadFile(path_to_file, aiProcessPreset_TargetRealtime_Quality);
+    this->importer_.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_NORMALS);
+
+    const aiScene *scene = importer_.ReadFile(path_to_file,
+                                              aiProcessPreset_TargetRealtime_Quality |
+                                              aiProcess_RemoveComponent
+                                              );
     this->valid_ = scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode;
 
     if(!this->valid_) {
@@ -34,13 +43,11 @@ Loader::~Loader() {
 
 }
 
-void Loader::extractVertex(unsigned int meshId, std::vector<Mesh::G_Mesh_Vertex>* output) {
-    aiMesh *mesh = this->importer_.GetScene()->mMeshes[meshId];
-
+void Loader::extractVertex(aiMesh* mesh, std::vector<MVertex> *output) {
     output->clear();
 
     for (unsigned int j = 0; j < mesh->mNumVertices; ++j) {
-        Mesh::G_Mesh_Vertex v;
+        MVertex v;
 
         v.pos = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
         v.normal = glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z);
@@ -68,11 +75,30 @@ void Loader::extractVertex(unsigned int meshId, std::vector<Mesh::G_Mesh_Vertex>
     }
 }
 
-void Loader::extractAnimationData(unsigned int meshId, AnimationsData *output) {
+void Loader::extractFaces(aiMesh* mesh, std::vector<MFace>* output) {
+    output->clear();
+
+    for (int j = 0; j < mesh->mNumFaces; ++j) {
+        MFace t;
+        aiFace face = mesh->mFaces[j];
+
+        t.vertices = glm::ivec3(face.mIndices[0], face.mIndices[1], face.mIndices[2]);
+
+        output->push_back(t);
+
+    }
+}
+
+AnimationsData* Loader::extractAnimationData(unsigned int meshId) {
     const aiScene* scene = this->importer_.GetScene();
     aiMesh* mesh = scene->mMeshes[meshId];
     std::map<std::string, unsigned int> nameMap;
     std::queue<aiNode*> boneQueue;
+
+    if(!mesh->HasBones())
+        return nullptr;
+
+    AnimationsData* output = new AnimationsData();
 
     output->bones_.clear();
     output->animations_.clear();
@@ -116,6 +142,7 @@ void Loader::extractAnimationData(unsigned int meshId, AnimationsData *output) {
     for(unsigned int i = 0; i < scene->mNumAnimations; ++i) {
         output->animations_[i].ticksPerSecond_ = scene->mAnimations[i]->mTicksPerSecond;
         output->animations_[i].duration_ = scene->mAnimations[i]->mDuration;
+        output->animations_[i].name_ = scene->mAnimations[i]->mName.C_Str();
 
         output->animations_[i].channels_.resize(scene->mAnimations[i]->mNumChannels);
 
@@ -158,66 +185,48 @@ void Loader::extractAnimationData(unsigned int meshId, AnimationsData *output) {
             }
         }
     }
-}
 
-void Loader::extractMesh(std::vector<Mesh*> *output) {
-    const aiScene *scene = this->importer_.GetScene();
-    std::vector<Mesh::G_Mesh_Vertex> vertex_vector;
-    std::vector<Mesh::G_Mesh_Face> indices_vector;
-    Mesh* new_mesh;
-
-    output->clear();
-
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        aiMesh *mesh = scene->mMeshes[i];
-
-        this->extractVertex(i, &vertex_vector);
-        indices_vector.clear();
-
-        for (int j = 0; j < mesh->mNumFaces; ++j) {
-            Mesh::G_Mesh_Face t;
-            aiFace face = mesh->mFaces[j];
-
-            t.vertices = glm::ivec3(face.mIndices[0], face.mIndices[1], face.mIndices[2]);
-            indices_vector.push_back(t);
-        }
-
-        new_mesh = new Mesh(vertex_vector, indices_vector);
-
-        if(mesh->HasBones()) {
-            new_mesh->animations_ = new AnimationsData();
-            this->extractAnimationData(i, new_mesh->animations_);
-        }
-
-        output->push_back(new_mesh);
-    }
+    return output;
 }
 
 
 typedef std::pair<aiNode*, glm::mat4> stackNode;
-
-void Loader::extractInstance(std::vector<Instance> *output) {
+void Loader::extractModel(std::vector<Model *> *output) {
+    std::vector<MVertex> vertex_vector;
+    std::vector<MFace> faces_vector;
     const aiScene* scene = this->importer_.GetScene();
-
     std::stack<stackNode> stack;
+
     stack.push(stackNode(scene->mRootNode, glm::mat4(1.0f)));
 
     while(stack.size() != 0) {
         stackNode curr = stack.top();
-        Instance inst;
+        glm::mat4 transf;
         stack.pop();
 
-        inst.transform_ = convertMatrix(curr.first->mTransformation);
-        inst.transform_ = inst.transform_ * curr.second;
+        transf = convertMatrix(curr.first->mTransformation);
+        transf = transf * curr.second;
 
         for(unsigned int i = 0; i < curr.first->mNumMeshes; ++i) {
-            inst.mesh_ = curr.first->mMeshes[i];
-            inst.name_ = curr.first->mName.C_Str();
-            output->push_back(inst);
+            aiMesh *mesh = scene->mMeshes[curr.first->mMeshes[i]];
+            AnimationsData* animData = nullptr;
+
+            this->extractVertex(mesh, &vertex_vector);
+            this->extractFaces(mesh, &faces_vector);
+            animData = this->extractAnimationData(i);
+
+            Model* new_model = new Model(vertex_vector, faces_vector, animData);
+
+            new_model->transform_ = transf;
+            new_model->setName(mesh->mName.C_Str());
+
+            new_model->addTransformation(LoopSubdivision::getTransformName());
+
+            output->push_back(new_model);
         }
 
         for(unsigned int i = 0; i < curr.first->mNumChildren; ++i) {
-            stack.push(stackNode(curr.first->mChildren[i], inst.transform_));
+            stack.push(stackNode(curr.first->mChildren[i], transf));
         }
     }
 }

@@ -53,7 +53,7 @@ NodeView::~NodeView() {
 
     for(unsigned int i = 0; i < this->input_dock_.size(); ++i) {
         delete this->input_dock_[i];
-        if(this->input_edge_[i]) delete this->input_edge_[i];
+        //if(this->input_edge_[i]) delete this->input_edge_[i];
     }
 
     for(unsigned int i = 0; i < this->output_dock_.size(); ++i)

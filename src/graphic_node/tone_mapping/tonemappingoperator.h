@@ -10,6 +10,10 @@
 #include "src/data_class/shader/shader.h"
 #include "src/data_class/texture.h"
 
+
+#include "src/core/render/aftereffect/blurr.h"
+#include "src/core/render/aftereffect/threshold.h"
+
 #define TONEMAPPINGOP_NB_INPUT 1
 #define TONEMAPPINGOP_NB_OUTPUT 1
 
@@ -23,13 +27,7 @@ class ToneMappingOperator : public nodegraph::I_Node, GraphicNode {
     Q_OBJECT
 
 public:
-    explicit ToneMappingOperator(
-            DataBase *data,
-            nodegraph::NodeGraph *graph,
-            ShaderCode &code,
-            QString name
-            );
-
+    explicit ToneMappingOperator(DataBase *data, nodegraph::NodeGraph *graph);
     ~ToneMappingOperator();
 
     unsigned int getInputDataType(unsigned int input) const;
@@ -49,8 +47,14 @@ protected:
 private:
     Ui::ToneMappingOperator *ui;
 
+    int minMipMapLevel_;
+    float brightnessKey_;
+
     FramebufferObject *framebuffer_;
     Shader *shader_;
+    Threshold* threshold_effect;
+    Blurr* blurr_effect;
+
     Texture *input_;
 };
 

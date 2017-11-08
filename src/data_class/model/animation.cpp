@@ -14,14 +14,14 @@ AnimationsData::~AnimationsData() {
 
 }
 
-void AnimationsData::getBoneTransform(int animId, float timeInSecond, std::vector<glm::mat4> *output) {
-    Animation anim = this->animations_[animId];
+ const std::vector<glm::mat4>& AnimationsData::getBoneTransform(int animation, float timeInSecond) {
+    Animation anim = this->animations_[animation];
     float timeInTicks = timeInSecond * anim.ticksPerSecond_;
     float animTime = std::fmod(timeInTicks, anim.duration_);
     std::stack<StackNode> boneStack;
 
-    output->clear();
-    output->resize(this->bones_.size());
+    this->curr_transform.clear();
+    this->curr_transform.resize(this->bones_.size());
 
     glm::mat4 transform = glm::inverse(this->bones_[this->boneRoot_].offset_);
     boneStack.push(StackNode(this->boneRoot_, glm::mat4(1.0f)));
@@ -37,12 +37,14 @@ void AnimationsData::getBoneTransform(int animId, float timeInSecond, std::vecto
         transform = t * r * s;
 
         transform = curr.second * transform;
-        (*output)[curr.first] = this->inverseTrans_ * transform * b.offset_;
+        this->curr_transform[curr.first] = this->inverseTrans_ * transform * b.offset_;
 
         boneStack.pop();
         for(unsigned int i = 0; i < b.children_.size(); ++i)
             boneStack.push(StackNode(b.children_[i], transform));
     }
+
+    return this->curr_transform;
 }
 
 glm::vec3 AnimationsData::CalcInterpolatedTranslation(float time, Channel &channel) {

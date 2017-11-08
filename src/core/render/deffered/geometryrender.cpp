@@ -1,15 +1,16 @@
-#include "dataextractor.h"
+#include "geometryrender.h"
 
 #include <iostream>
 
 #include "src/data_class/database.h"
-#include "src/data_class/mesh.h"
 
 #include "src/data_class/shader/modulable_shader.h"
 #include "src/data_class/shader/shader_code.h"
 #include "src/data_class/shader/shader.h"
 
-DataExtractor::DataExtractor(unsigned int res_w, unsigned int res_h) {
+#include "src/data_class/model/model.h"
+
+GeometryRender::GeometryRender(unsigned int res_w, unsigned int res_h) {
     this->h_res_ = res_h; this->w_res_ = res_w;
     this->framebuffer_ = new FramebufferObject(res_w, res_h);
     this->shader_ = new ModularShader();
@@ -28,16 +29,16 @@ DataExtractor::DataExtractor(unsigned int res_w, unsigned int res_h) {
 
 }
 
-DataExtractor::~DataExtractor() {
+GeometryRender::~GeometryRender() {
     delete this->shader_;
     delete this->framebuffer_;
 }
 
-void DataExtractor::extractData(float time, DataBase *data) {
+void GeometryRender::extractData(float time, DataBase *data) {
     unsigned int i;
     ShaderCode code;
 
-    if((data && data->hasInstance()) && data->getNbTexture() < EXTRACTOR_USER_MAX_TEXTURE) {
+    if((data && data->hasModels()) && data->getNbTexture() < EXTRACTOR_USER_MAX_TEXTURE) {
         this->framebuffer_->bind();
         this->framebuffer_->setViewport(0, 0, w_res_, h_res_);
         this->framebuffer_->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -54,38 +55,29 @@ void DataExtractor::extractData(float time, DataBase *data) {
         }
 
         Shader *sh = this->shader_->getMod(data->getNbTexture());
-        Mesh* mesh = data->getMesh(data->getInstance(data->curr_inst_).mesh_);
+        Model* model = data->getModel(data->curr_mesh_);
         const Camera *camera = data->getCamera();
-        std::vector<glm::mat4> transform;
 
         sh->bindShader();
-        mesh->bind();
         for(i = 0; i < data->getNbTexture(); ++i) {
             data->getTexture(i)->bindAsActiveTexture(i);
             sh->setTextureLocation("user_texture_" + i, i);
         }
 
-        if(mesh->animations_) {
-            mesh->animations_->getBoneTransform(0, time, &transform);
-            sh->setUniformLocation("animOffset", glm::mat4(0.0f));
-        }
-        else
-            sh->setUniformLocation("animOffset", glm::mat4(1.0f));
-
-        sh->setUniformLocation("bonesTransform", transform);
-        sh->setUniformLocation("matrix_mesh", data->getInstance(0).transform_);
+        sh->setUniformLocation("matrix_mesh", model->transform_);
         sh->setUniformLocation("matrix_view", camera->getViewMatrix());
         sh->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());
 
-        mesh->draw();
+        model->draw(sh, time);
 
         for(i = 0; i < data->getNbTexture(); ++i)
             data->getTexture(i)->unbindTexture();
-        mesh->unbind();
         sh->unbindShader();
 
         for(i = 0; i < data->getNbTexture() + 2; ++i) {
             data->setProcessedTexture(i, (Texture*)this->framebuffer_->getTexture(i));
         }
     }
+
+    this->framebuffer_->setPolygonMode(GL_FILL);
 }

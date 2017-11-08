@@ -38,7 +38,7 @@ public:
     AnimationsData();
     ~AnimationsData();
 
-    void getBoneTransform(int animation, float timeInSecond, std::vector<glm::mat4> *output);
+    const std::vector<glm::mat4> &getBoneTransform(int animation, float timeInSecond);
 
     glm::mat4 inverseTrans_;
 
@@ -54,6 +54,8 @@ protected:
     unsigned int findTranslation(float time, Channel &channel);
     unsigned int findRotation(float time, Channel &channel);
     unsigned int findScaling(float time, Channel &channel);
+
+    std::vector<glm::mat4> curr_transform;
 };
 
 #endif//ANIMATION_H

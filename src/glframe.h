@@ -10,7 +10,7 @@
 #include "node_widget/node_widget.h"
 #include "data_class/shader/modulable_shader.h"
 
-#include "graphic_node/dataextractor.h"
+#include "core/render/deffered/geometryrender.h"
 
 #define RESOLUTION_WIDTH 600
 #define RESOLUTION_HEIGHT 400
@@ -34,6 +34,8 @@ public:
 public slots:
     void on_createMeshDataTrig(bool checked);
     void on_createPBRShaderTrig(bool checked);
+    void on_createAOShaderTrig(bool checked);
+    void on_createToneMapTrig(bool checked);
 
 private:
     int state_;
@@ -44,7 +46,7 @@ private:
 
     DataBase *database_;
     nodegraph::NodeGraph* graph_;
-    DataExtractor *extractor_;
+    GeometryRender *extractor_;
 };
 
 #endif // GLFRAME_H

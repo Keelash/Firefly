@@ -3,7 +3,7 @@
 
 #include "src/data_class/texture.h"
 #include "src/data_class/light.h"
-#include "src/data_class/quadmesh.h"
+#include "src/data_class/model/quadmesh.h"
 
 #include <iostream>
 
@@ -182,7 +182,7 @@ void PBRShader::processData() {
             shader->setUniformLocation("metalpart_data", this->metalpart_);
 
         for(int i = 0; i < lights.size(); ++i) {
-            lights[i]->bindLight(shader, glm::mat4(1.0f));
+            lights[i]->bindLight(shader, this->database_->getCamera()->getViewMatrix());
             quad->draw();
         }
 

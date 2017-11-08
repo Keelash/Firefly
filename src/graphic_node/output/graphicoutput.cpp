@@ -5,7 +5,7 @@
 #include "src/data_class/texture.h"
 #include "src/data_class/framebuffer.h"
 #include "src/data_class/shader/shader.h"
-#include "src/data_class/quadmesh.h"
+#include "src/data_class/model/quadmesh.h"
 
 #include <iostream>
 

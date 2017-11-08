@@ -26,6 +26,10 @@ void A_OpenGlFramebuffer::clear(GLbitfield mask) {
     glClear(mask);
 }
 
+void A_OpenGlFramebuffer::setPolygonMode(GLenum mode) {
+    glPolygonMode(GL_FRONT_AND_BACK, mode);
+}
+
 void A_OpenGlFramebuffer::setViewport(int x, int y, int width, int height) {
     glViewport(x, y, width, height);
 }
@@ -106,6 +110,10 @@ void OpenGlFramebufferObject::addRBO(GLenum format) {
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 
     this->unbind();
+}
+
+void OpenGlFramebufferObject::setFullTextureViewport() {
+    this->setViewport(0, 0, width_, height_);
 }
 
 

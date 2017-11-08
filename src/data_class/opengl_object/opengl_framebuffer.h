@@ -16,8 +16,10 @@ public:
     void enableDepthTest();
     void disableDepthTest();
 
+    void setPolygonMode(GLenum mode);
+
     void clear(GLbitfield mask);
-    void setViewport(int x, int y, int width, int height);
+    virtual void setViewport(int x, int y, int width, int height);
     void getViewport(int &x, int &y, int &width, int &height);
 
     void blitFramebuffer(A_OpenGlFramebuffer &output,
@@ -48,14 +50,16 @@ public:
     int addTextureAsOutput(int attachment, GLint internalFormat, GLenum format, GLenum type);
     void addRBO(GLenum format);
 
+    void setFullTextureViewport();
+
     virtual void bind();
     void unbind();
 
 private:
-    GLuint rbo_;
-
     int width_;
     int height_;
+
+    GLuint rbo_;
 
     std::vector<GLuint> color_attachements_;
     std::vector<OpenGlTexture*> attachments_;
