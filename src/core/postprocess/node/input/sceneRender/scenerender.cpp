@@ -48,10 +48,10 @@ const QVariant SceneRender::getOutput(unsigned int output) const {
         var.setValue(this->dataBase_->getProcessedTexture(3));
         break;
     case 2 :
-        var.setValue(this->dataBase_->getProcessedTexture(1));
+        var.setValue(this->dataBase_->getProcessedTexture(0));
         break;
     case 3 :
-        var.setValue(this->dataBase_->getProcessedTexture(2));
+        var.setValue(this->dataBase_->getProcessedTexture(1));
         break;
     default :
         break;

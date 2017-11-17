@@ -60,6 +60,7 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     this->framebuffer_->disableBlending();
     this->framebuffer_->enableDepthTest();
     this->framebuffer_->enableDepthWrite();
+    //this->framebuffer_->setPolygonMode(GL_LINE);
 
     this->zPassShader_->bindShader();
     this->zPassShader_->setUniformLocation("matrix_view", camera->getViewMatrix());
@@ -87,6 +88,7 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     this->framebuffer_->enableDepthTest();
     this->framebuffer_->setDepthTestFunction(GL_EQUAL);
     this->framebuffer_->disableDepthWrite();
+    //this->framebuffer_->setPolygonMode(GL_LINE);
 
     this->renderShader_->bindShader();
     this->renderShader_->setUniformLocation("matrix_view", camera->getViewMatrix());
@@ -109,5 +111,6 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
 
     this->framebuffer_->enableDepthWrite();
     this->framebuffer_->setDepthTestFunction(GL_LESS);
+    //this->framebuffer_->setPolygonMode(GL_FILL);
     this->framebuffer_->unbind();
 }

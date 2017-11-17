@@ -98,7 +98,7 @@ void LoopSubdivision::smoothVertex(const HalfEdgeMesh::VertexHandle &vh, HalfEdg
         pos += i_m->point(*vvit);
       }
 
-      float B = (valence > 3)? 3 / (8*valence) : 3/16;
+      float B = (1.f / (float)valence) * (5.f/8.f - 3.f/8.f + 0.25f*std::cos(2.f*3.14f /(float)valence) * std::cos(2.f*3.14f/(float)valence));
       pos = i_m->point(vh) * (1.0 - valence * B) + pos * B;
     }
 
