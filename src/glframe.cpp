@@ -7,9 +7,7 @@
 
 #include "node_widget/node_widget.h"
 #include "src/graphic_node/output/graphicoutput.h"
-#include "src/graphic_node/shader/pbrshader.h"
 #include "src/graphic_node/tone_mapping/tonemappingoperator.h"
-#include "src/graphic_node/shader/ambientocclusion.h"
 
 GLFrame::GLFrame(QWidget* parent): QGLWidget(parent){
     QGLFormat format;
@@ -118,21 +116,13 @@ void GLFrame::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void GLFrame::addRenderNode(std::string name) {
-    RenderNodeFactory *fact = RenderNodeFactory::getInstance();
-    A_RenderNode *node = fact->createItem(name);
+    InputNodeFactory *fact = InputNodeFactory::getInstance();
+    A_InputNode *node = fact->createItem(name);
 
     node->setGraph(this->graph_);
-    node->setRenderer(this->renderer_);
+    node->setDataBase(this->database_);
 
     this->graph_->addNode(node);
-}
-
-void GLFrame::on_createPBRShaderTrig(bool checked) {
-    this->graph_->addNode(new PBRShader(this->database_, this->graph_));
-}
-
-void GLFrame::on_createAOShaderTrig(bool checked) {
-    this->graph_->addNode(new AmbientOcclusion(this->database_, this->graph_));
 }
 
 void GLFrame::on_createToneMapTrig(bool checked) {

@@ -9,7 +9,6 @@
 class DataBase;
 class Shader;
 class N_AmbientOcclusion;
-class A_RenderNode;
 
 class Renderer {
 public:
@@ -17,8 +16,6 @@ public:
     ~Renderer();
 
     void drawScene(DataBase* data, float timeInSecond);
-
-    void addNode(A_RenderNode* node) { this->nodes_.push_back(node); }
 
     Texture* getPosition();
     Texture* getNormal();
@@ -32,8 +29,6 @@ private:
     Shader *renderShader_;
 
     N_AmbientOcclusion *ambient_;
-
-    std::vector<A_RenderNode*> nodes_;
 };
 
 #endif//RENDERER_H

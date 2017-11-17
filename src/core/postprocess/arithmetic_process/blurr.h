@@ -1,7 +1,7 @@
 #ifndef BLURR_H
 #define BLURR_H
 
-#include "../a_aftereffect.h"
+#include "a_aftereffect.h"
 
 #include "src/data_class/framebuffer.h"
 #include "src/data_class/shader/shader.h"

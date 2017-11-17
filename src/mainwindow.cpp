@@ -13,7 +13,7 @@
 
 #include "gui/scenedatapannel.h"
 
-#include "src/core/render/node/a_rendernode.h"
+#include "src/core/postprocess/node/input/a_inputnode.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     this->ui->setupUi(this);
@@ -36,10 +36,10 @@ void MainWindow::createSceneToolBar() {
     QWidgetAction *renderAction = new QWidgetAction(bar);
     QMenu *renderMenu = new QMenu(bar);
 
-    renderButton->setText("Render");
+    renderButton->setText("Input");
     renderButton->setPopupMode(QToolButton::InstantPopup);
 
-    RenderNodeFactory* renderFact = RenderNodeFactory::getInstance();
+    InputNodeFactory* renderFact = InputNodeFactory::getInstance();
     for(auto iter = renderFact->begin(); iter != renderFact->end(); ++iter) {
         QAction *currRenderAction = renderMenu->addAction(QString("Add ") + iter->first.c_str());
 
@@ -49,25 +49,6 @@ void MainWindow::createSceneToolBar() {
     renderButton->setMenu(renderMenu);
     renderAction->setDefaultWidget(renderButton);
     bar->addAction(renderAction);
-
-    QToolButton *shaderButton = new QToolButton(bar);
-    QWidgetAction *shaderAction = new QWidgetAction(bar);
-
-    shaderButton->setText("Add Shader");
-    shaderButton->setPopupMode(QToolButton::InstantPopup);
-
-    QMenu *shaderMenu = new QMenu(bar);
-    QAction *PBRShaderAction = shaderMenu->addAction("Add PBR shader");
-    QAction *AOShaderAction = shaderMenu->addAction("Add Ambient Occlusion");
-
-    connect(PBRShaderAction, SIGNAL(triggered(bool)), frame, SLOT(on_createPBRShaderTrig(bool)));
-    connect(AOShaderAction, SIGNAL(triggered(bool)), frame, SLOT(on_createAOShaderTrig(bool)));
-
-    shaderButton->setMenu(shaderMenu);
-    shaderAction->setDefaultWidget(shaderButton);
-
-    bar->addAction(shaderAction);
-
 
     QToolButton *tonemapButton = new QToolButton(bar);
     QWidgetAction *tonemapAction = new QWidgetAction(bar);

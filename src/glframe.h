@@ -12,7 +12,7 @@
 #include "data_class/shader/modulable_shader.h"
 
 #include "core/render/renderer.h"
-#include "core/render/node/a_rendernode.h"
+#include "core/postprocess/node/input/a_inputnode.h"
 
 #define RESOLUTION_WIDTH 600
 #define RESOLUTION_HEIGHT 400
@@ -36,8 +36,6 @@ public:
     nodegraph::NodeGraph* getNodeGraph() { return this->graph_; }
 
 public slots:
-    void on_createPBRShaderTrig(bool checked);
-    void on_createAOShaderTrig(bool checked);
     void on_createToneMapTrig(bool checked);
 
 private:

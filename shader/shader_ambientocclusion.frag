@@ -52,6 +52,6 @@ void main() {
         occlusion += ((sampleDepth >= c_sample.z + bias)? 1.f : 0.f) * rangeCheck;
     }
 
-    occlusion = 1.f - (occlusion / kernelSize);
+    occlusion = (occlusion / kernelSize);
     color = occlusion * vec3(1.f);
 }

@@ -5,8 +5,6 @@
 #include "src/data_class/camera.h"
 #include "src/core/render/ambientocclusion.h"
 
-#include "node/a_rendernode.h"
-
 const std::string FORWARD_SHADER_VERT("shader/shader_extract.vert");
 
 const std::string ZPASS_SHADER_FRAG("shader/shader_zpass.frag");
@@ -112,9 +110,4 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     this->framebuffer_->enableDepthWrite();
     this->framebuffer_->setDepthTestFunction(GL_LESS);
     this->framebuffer_->unbind();
-
-    for(unsigned int i = 0; i < this->nodes_.size(); ++i) {
-        A_RenderNode *n = this->nodes_[i];
-        n->update();
-    }
 }

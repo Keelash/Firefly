@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-SceneRender::SceneRender(Renderer* renderer, nodegraph::NodeGraph *graph) :
-    A_RenderNode(renderer, graph), ui(new Ui::SceneRender)
+SceneRender::SceneRender(DataBase *dataBase, nodegraph::NodeGraph *graph) :
+    A_InputNode(dataBase, graph), ui(new Ui::SceneRender)
 {
     ui->setupUi(this);
 }
@@ -42,16 +42,16 @@ const QVariant SceneRender::getOutput(unsigned int output) const {
 
     switch(output) {
     case 0 :
-        var.setValue(this->renderer_->getRender());
+        var.setValue(this->dataBase_->getProcessedTexture(2));
         break;
     case 1 :
-        var.setValue(this->renderer_->getAo());
+        var.setValue(this->dataBase_->getProcessedTexture(3));
         break;
     case 2 :
-        var.setValue(this->renderer_->getPosition());
+        var.setValue(this->dataBase_->getProcessedTexture(1));
         break;
     case 3 :
-        var.setValue(this->renderer_->getNormal());
+        var.setValue(this->dataBase_->getProcessedTexture(2));
         break;
     default :
         break;
