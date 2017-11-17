@@ -67,7 +67,7 @@ void DataBase::addLight(glm::vec3 position, float temperature, float intensity) 
     this->light_.push_back(new Light(position, temperature, intensity));
 }
 
-std::vector<Light*> DataBase::getLights() {
+std::vector<Light*>& DataBase::getLights() {
     return this->light_;
 }
 

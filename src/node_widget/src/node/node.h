@@ -14,8 +14,10 @@ public:
     typedef std::pair<int, I_Node*> NodeInput;
     typedef std::multimap<int, NodeInput> ReadersMap;
 
-    I_Node(NodeGraph *graph);
+    I_Node(NodeGraph *graph = nullptr);
     virtual ~I_Node();
+
+    void setGraph(NodeGraph* graph) { this->graph_ = graph; }
 
     virtual void setWriter(unsigned int input, I_Node* writer);
     virtual bool addReader(unsigned int output, unsigned int readers_input, I_Node* reader);

@@ -32,7 +32,7 @@ public:
 
     void addLight(glm::vec3 position, glm::vec3 colour, float intensity);
     void addLight(glm::vec3 position, float temperature, float intensity);
-    std::vector<Light*> getLights();
+    std::vector<Light *> &getLights();
 
     unsigned int addTexture(const char* file);
     unsigned int getNbTexture() { return this->textures_.size(); }

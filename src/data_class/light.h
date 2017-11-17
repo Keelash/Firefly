@@ -37,6 +37,6 @@ private:
     float intensity_;
 };
 
-Q_DECLARE_METATYPE(const Light*);
+Q_DECLARE_METATYPE(const Light*)
 
 #endif

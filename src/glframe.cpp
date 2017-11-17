@@ -7,7 +7,6 @@
 
 #include "node_widget/node_widget.h"
 #include "src/graphic_node/output/graphicoutput.h"
-#include "src/graphic_node/getter/meshdata.h"
 #include "src/graphic_node/shader/pbrshader.h"
 #include "src/graphic_node/tone_mapping/tonemappingoperator.h"
 #include "src/graphic_node/shader/ambientocclusion.h"
@@ -35,7 +34,7 @@ GLFrame::GLFrame(QWidget* parent): QGLWidget(parent){
 
 GLFrame::~GLFrame() {
     delete this->graph_;
-    delete this->extractor_;
+    delete this->renderer_;
     delete this->database_;
 }
 
@@ -47,7 +46,7 @@ void GLFrame::initializeGL() {
     screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     this->graph_->addNode(new GraphicOutput(this->database_, this->graph_));
-    this->extractor_ = new GeometryRender(1280, 720);
+    this->renderer_ = new Renderer(1280, 720);
 
     this->database_->addLight(glm::vec3(10.0f), 4000.0f, 5.0f);
     this->database_->addLight(glm::vec3(-4.0f), 8000.0f, 0.5f);
@@ -92,7 +91,12 @@ void GLFrame::paintGL() {
         }
 
         this->database_->setCamera(c);
-        this->extractor_->extractData(time, this->database_);
+        this->renderer_->drawScene(this->database_, time);
+
+        this->database_->setProcessedTexture(0, this->renderer_->getPosition());
+        this->database_->setProcessedTexture(1, this->renderer_->getNormal());
+        this->database_->setProcessedTexture(2, this->renderer_->getRender());
+        this->database_->setProcessedTexture(3, this->renderer_->getAo());
 
         this->graph_->updateGraph();
     }
@@ -113,8 +117,14 @@ void GLFrame::mouseReleaseEvent(QMouseEvent *e) {
         this->state_ = 0;
 }
 
-void GLFrame::on_createMeshDataTrig(bool checked) {
-    this->graph_->addNode(new MeshData(this->database_, this->graph_));
+void GLFrame::addRenderNode(std::string name) {
+    RenderNodeFactory *fact = RenderNodeFactory::getInstance();
+    A_RenderNode *node = fact->createItem(name);
+
+    node->setGraph(this->graph_);
+    node->setRenderer(this->renderer_);
+
+    this->graph_->addNode(node);
 }
 
 void GLFrame::on_createPBRShaderTrig(bool checked) {

@@ -43,6 +43,12 @@ void Model::draw(Shader* shader, float timeInSecond) {
         shader->setUniformLocation("bonesTransform", glm::mat4(0.0f));
     }
 
+    //A ne faire que dans le cas ou on fait un render, pas un draw.
+    /*
+    if(this->material_ != nullptr) {
+        this->material_->bind();
+    }*/
+
     g_mesh->bind();
     g_mesh->draw();
     g_mesh->unbind();
@@ -63,4 +69,14 @@ A_Transform* Model::getTransformation(unsigned int pos) {
     }
 
     return nullptr;
+}
+
+void Model::setMaterial(std::string name) {
+    A_Material *mat = MaterialFactory::getInstance()->createItem(name);
+
+    if(this->material_) {
+        delete this->material_;
+    }
+
+    this->material_ = mat;
 }

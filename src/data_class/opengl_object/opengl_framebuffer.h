@@ -15,6 +15,10 @@ public:
 
     void enableDepthTest();
     void disableDepthTest();
+    void setDepthTestFunction(GLenum func);
+
+    void enableDepthWrite();
+    void disableDepthWrite();
 
     void setPolygonMode(GLenum mode);
 

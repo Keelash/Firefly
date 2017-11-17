@@ -7,7 +7,7 @@ namespace nodegraph {
 
 class ReadersNode : public I_Node {
 public:
-    ReadersNode(NodeGraph *graph) : I_Node(graph) {  }
+    ReadersNode(NodeGraph *graph = nullptr) : I_Node(graph) {  }
 
     bool addReader(unsigned int, unsigned int, I_Node*) final {  }
 

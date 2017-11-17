@@ -13,6 +13,8 @@
 
 #include "gui/scenedatapannel.h"
 
+#include "src/core/render/node/a_rendernode.h"
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     this->ui->setupUi(this);
     this->ui->nodeViewer->setScene(this->ui->openGlViewer_frame->getNodeGraph());
@@ -29,21 +31,24 @@ MainWindow::~MainWindow() {
 void MainWindow::createSceneToolBar() {
     GLFrame *frame = this->ui->openGlViewer_frame;
     QToolBar *bar = new QToolBar(this->ui->nodeView_frame);
-    QToolButton *gettersButton = new QToolButton(bar);
-    QWidgetAction* gettersAction = new QWidgetAction(bar);
 
-    gettersButton->setText("Add Getters");
-    gettersButton->setPopupMode(QToolButton::InstantPopup);
+    QToolButton *renderButton = new QToolButton(bar);
+    QWidgetAction *renderAction = new QWidgetAction(bar);
+    QMenu *renderMenu = new QMenu(bar);
 
-    QMenu *gettersMenu = new QMenu(bar);
-    QAction *getMeshDataAction = gettersMenu->addAction("Add Mesh Data");
+    renderButton->setText("Render");
+    renderButton->setPopupMode(QToolButton::InstantPopup);
 
-    connect(getMeshDataAction, SIGNAL(triggered(bool)), frame, SLOT(on_createMeshDataTrig(bool)));
+    RenderNodeFactory* renderFact = RenderNodeFactory::getInstance();
+    for(auto iter = renderFact->begin(); iter != renderFact->end(); ++iter) {
+        QAction *currRenderAction = renderMenu->addAction(QString("Add ") + iter->first.c_str());
 
-    gettersButton->setMenu(gettersMenu);
-    gettersAction->setDefaultWidget(gettersButton);
+        connect(currRenderAction, &QAction::triggered, [=]() {frame->addRenderNode(iter->first);});
+    }
 
-    bar->addAction(gettersAction);
+    renderButton->setMenu(renderMenu);
+    renderAction->setDefaultWidget(renderButton);
+    bar->addAction(renderAction);
 
     QToolButton *shaderButton = new QToolButton(bar);
     QWidgetAction *shaderAction = new QWidgetAction(bar);
@@ -62,6 +67,7 @@ void MainWindow::createSceneToolBar() {
     shaderAction->setDefaultWidget(shaderButton);
 
     bar->addAction(shaderAction);
+
 
     QToolButton *tonemapButton = new QToolButton(bar);
     QWidgetAction *tonemapAction = new QWidgetAction(bar);

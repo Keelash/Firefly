@@ -16,7 +16,7 @@ public:
     std::string getVertexCode() { return (this->define_ + this->vertex_code_); }
     std::string getFragmentCode() { return (this->define_ + this->fragment_code_); }
 
-private:
+
     std::string define_;
 
     std::string vertex_code_;

@@ -9,7 +9,7 @@
 
 #include "src/data_class/database.h"
 #include "src/data_class/framebuffer.h"
-#include "src/core/render/aftereffect/blurr.h"
+#include "src/core/postprocess/arithmetic_process/blurr.h"
 
 namespace Ui {
 class AmbientOcclusion;

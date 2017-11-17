@@ -22,6 +22,7 @@ public:
 
     A_Item *createItem(const Key &key) {
         typename FactoryMap::iterator it = this->getFactoryMap().find(key);
+
         if(it != this->getFactoryMap().end()) {
             return it->second();
         }

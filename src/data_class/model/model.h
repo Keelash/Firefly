@@ -6,6 +6,7 @@
 
 #include "src/data_class/sceneobject.h"
 #include "src/core/geometry/transformfactory.h"
+#include "src/core/render/material/material.h"
 #include "mesh_struct.h"
 
 class AnimationsData;
@@ -24,13 +25,18 @@ public:
     unsigned int addTransformation(std::string name);
     A_Transform* getTransformation(unsigned int pos);
 
-    std::string getName() { return "test"; }
-    void setName(std::string name) {  }
+    void setMaterial(std::string name);
+
+    std::string getName() { return this->name_; }
+    void setName(std::string name) { this->name_ = name; }
 
 private:
     Mesh* mesh_;
     AnimationsData* animData_;
+    std::string name_;
+
     std::vector<A_Transform*> transformation_;
+    A_Material* material_;
 };
 
 #endif//N_MODEL_H

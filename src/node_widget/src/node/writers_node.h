@@ -8,7 +8,7 @@ namespace nodegraph {
 
 class WritersNode : public I_Node {
 public:
-    WritersNode(NodeGraph *graph) : I_Node(graph) { }
+    WritersNode(NodeGraph *graph = nullptr) : I_Node(graph) { }
 
     virtual void addWriters(unsigned int, I_Node*) final {  }
 

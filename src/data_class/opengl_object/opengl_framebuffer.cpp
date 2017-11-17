@@ -22,6 +22,18 @@ void A_OpenGlFramebuffer::disableDepthTest() {
     glDisable(GL_DEPTH_TEST);
 }
 
+void A_OpenGlFramebuffer::setDepthTestFunction(GLenum func) {
+    glDepthFunc(func);
+}
+
+void A_OpenGlFramebuffer::enableDepthWrite() {
+    glDepthMask(GL_TRUE);
+}
+
+void A_OpenGlFramebuffer::disableDepthWrite() {
+    glDepthMask(GL_FALSE);
+}
+
 void A_OpenGlFramebuffer::clear(GLbitfield mask) {
     glClear(mask);
 }
