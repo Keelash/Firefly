@@ -6,8 +6,9 @@
 #include "data_class/framebuffer.h"
 
 #include "node_widget/node_widget.h"
-#include "src/graphic_node/output/graphicoutput.h"
+#include "src/gui/posprocess_node/output/graphicoutput.h"
 #include "src/graphic_node/tone_mapping/tonemappingoperator.h"
+#include "gui/posprocess_node/input/a_inputnode.h"
 
 GLFrame::GLFrame(QWidget* parent): QGLWidget(parent){
     QGLFormat format;
@@ -43,7 +44,7 @@ void GLFrame::initializeGL() {
     screen.setViewport(0, 0, RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
     screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    this->graph_->addNode(new GraphicOutput(this->database_, this->graph_));
+    this->graph_->addNode(new GraphicOutput(this->graph_));
     this->renderer_ = new Renderer(1280, 720);
 
     this->database_->addLight(glm::vec3(10.0f), 4000.0f, 5.0f);

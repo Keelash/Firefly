@@ -3,9 +3,12 @@
 #include <map>
 
 #include "src/data_class/model/mesh.h"
+#include "src/mesh_transform/loopsubdivision/gui/loopsubdivision_ui.h"
 
 LoopSubdivision::LoopSubdivision() :
     curr_level_(0), max_level_(0) {
+
+    this->ui_ = new LoopSubdivision_UI(this);
 }
 
 LoopSubdivision::~LoopSubdivision() {
@@ -133,4 +136,8 @@ void LoopSubdivision::setBaseMesh(Mesh* mesh) {
 
 Mesh* LoopSubdivision::getMesh() {
     return this->meshes_[this->curr_level_];
+}
+
+QWidget* LoopSubdivision::getGUI() {
+    return this->ui_;
 }

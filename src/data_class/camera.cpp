@@ -5,7 +5,7 @@
 Camera::Camera(glm::vec3 position, glm::vec3 look_at,
                float fov, float heigth, float width) {
 
-    this->projection_ = glm::perspective(fov, width/heigth, 0.1f, 1000.0f);
+    this->projection_ = glm::perspective(fov, width/heigth, 0.1f, 10000.0f);
 
     this->position_ = position;
     this->direction_ = glm::normalize(look_at - position);
@@ -19,7 +19,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 look_at,
 }
 
 void Camera::resize(float width, float height) {
-    this->projection_ = glm::perspective(this->fov_, width/height, 0.1f, 100.0f);
+    this->projection_ = glm::perspective(this->fov_, width/height, 0.1f, 10000.0f);
 }
 
 

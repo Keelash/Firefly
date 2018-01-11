@@ -6,6 +6,8 @@
 
 #include "src/glm_include.h"
 
+//TODO : Separate the skeleton from the animation class
+
 typedef struct Bone_s {
     glm::mat4 offset_;
     glm::mat4 toParent_;
@@ -19,7 +21,6 @@ struct KeyData_s {
 };
 
 typedef struct Channel_s {
-
     std::vector<struct KeyData_s<glm::vec3>> translation_;
     std::vector<struct KeyData_s<glm::vec3>> scaling_;
     std::vector<struct KeyData_s<glm::quat>> rotation_;

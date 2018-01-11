@@ -12,8 +12,7 @@
 #include <iostream>
 
 #include "gui/scenedatapannel.h"
-
-#include "src/core/postprocess/node/input/a_inputnode.h"
+#include "gui/posprocess_node/input/a_inputnode.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     this->ui->setupUi(this);

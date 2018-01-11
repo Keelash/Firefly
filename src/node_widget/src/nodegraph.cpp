@@ -28,6 +28,10 @@ void NodeGraph::addNode(I_Node* node) {
 void NodeGraph::setNodeToUpdate(I_Node* node) {
     std::vector<I_Node*>::iterator it_n;
 
+    //Can be reduce to :
+        //node->setInvalid();
+        //this->updateStack.push(node);
+
     it_n = std::find(this->nodes_.begin(), this->nodes_.end(), node);
 
     if(it_n != this->nodes_.end() && node->isValid()) {
@@ -51,13 +55,17 @@ void NodeGraph::setNodeToUpdate(I_Node* node) {
 
 void NodeGraph::updateGraph() {
     while(this->updateStack_.size() != 0) {
+        //Can be reduce to :
+            //curr->updateNode();
+
         I_Node* curr = this->updateStack_.top(); this->updateStack_.pop();
         const I_Node::ReadersMap *rm = curr->getReadersMap();
+
+        curr->updateNode();
 
         for(auto it = rm->begin(); it != rm->end(); ++it) {
             this->updateStack_.push(it->second.second);
         }
-        curr->updateNode();
     }
 }
 

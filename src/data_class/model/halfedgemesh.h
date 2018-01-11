@@ -26,6 +26,8 @@ struct HalfEdgeTraits : public OpenMesh::DefaultTraits {
     };
 };
 
+
+//Put an interface here
 typedef OpenMesh::TriMesh_ArrayKernelT<HalfEdgeTraits> HalfEdgeMesh;
 
 #endif//HALFEDGEMESH_H

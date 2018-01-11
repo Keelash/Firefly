@@ -12,7 +12,6 @@
 #include "data_class/shader/modulable_shader.h"
 
 #include "core/render/renderer.h"
-#include "core/postprocess/node/input/a_inputnode.h"
 
 #define RESOLUTION_WIDTH 600
 #define RESOLUTION_HEIGHT 400

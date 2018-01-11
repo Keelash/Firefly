@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "src/data_class/model/halfedgemesh.h"
-#include "transformfactory.h"
+#include "src/core/transformfactory.h"
 
 class Mesh;
 
@@ -28,9 +28,13 @@ public:
     virtual void setBaseMesh(Mesh* mesh);
     virtual Mesh* getMesh();
 
+    virtual QWidget* getGUI();
+
 private:
     void smoothVertex(const HalfEdgeMesh::VertexHandle &vh, HalfEdgeMesh *i_m, HalfEdgeMesh *o_m);
     HalfEdgeMesh::VertexHandle computeMidPoint(const HalfEdgeMesh::EdgeHandle &eh, HalfEdgeMesh *i_m, HalfEdgeMesh *o_m);
+
+    QWidget* ui_;
 
     std::vector<Mesh*> meshes_;
 

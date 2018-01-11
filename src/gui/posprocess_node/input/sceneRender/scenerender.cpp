@@ -1,7 +1,13 @@
 #include "scenerender.h"
 #include "ui_scenerender.h"
 
-#include <iostream>
+SceneRender::SceneRenderNodeObserver::SceneRenderNodeObserver(SceneRender *node) {
+    node_ = node;
+}
+
+void SceneRender::SceneRenderNodeObserver::update() {
+    this->node_->graph_->setNodeToUpdate(this->node_);
+}
 
 SceneRender::SceneRender(DataBase *dataBase, nodegraph::NodeGraph *graph) :
     A_InputNode(dataBase, graph), ui(new Ui::SceneRender)
@@ -11,6 +17,14 @@ SceneRender::SceneRender(DataBase *dataBase, nodegraph::NodeGraph *graph) :
 
 SceneRender::~SceneRender() {
     delete ui;
+}
+
+void SceneRender::setDataBase(DataBase* data) {
+    if(data != nullptr) {
+        data->addProcessedTextureObserver(new SceneRenderNodeObserver(this));
+    }
+
+    this->dataBase_ = data;
 }
 
 unsigned int SceneRender::getOutputDataType(unsigned int output) const {

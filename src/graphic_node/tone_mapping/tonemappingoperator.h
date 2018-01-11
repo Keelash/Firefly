@@ -11,8 +11,8 @@
 #include "src/data_class/texture.h"
 
 
-#include "src/core/postprocess/arithmetic_process/blurr.h"
-#include "src/core/postprocess/arithmetic_process/threshold.h"
+#include "src/core/postprocess/blurr.h"
+#include "src/core/postprocess/threshold.h"
 
 #define TONEMAPPINGOP_NB_INPUT 1
 #define TONEMAPPINGOP_NB_OUTPUT 1

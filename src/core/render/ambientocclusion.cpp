@@ -3,10 +3,10 @@
 #include <iostream>
 
 #include "src/data_class/shader/shader.h"
-#include "src/core/postprocess/arithmetic_process/blurr.h"
-#include "src/data_class/database.h"
+#include "src/core/postprocess/blurr.h"
 #include "src/data_class/model/quadmesh.h"
 #include "src/data_class/texture.h"
+#include "src/data_class/camera.h"
 
 const std::string AMBIENTOCC_SHADER_VERT("shader/shader_quadprint.vert");
 const std::string AMBIENTOCC_SHADER_FRAG("shader/shader_ambientocclusion.frag");

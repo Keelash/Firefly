@@ -4,7 +4,7 @@
 #include <QWidget>
 
 #include "src/node_widget/node_widget.h"
-#include "src/core/postprocess/node/input/a_inputnode.h"
+#include "src/gui/posprocess_node/input/a_inputnode.h"
 
 namespace Ui {
 class SceneRender;
@@ -16,13 +16,9 @@ public:
     //Il faudra vraiment trouver quelque chose de mieux...
     class SceneRenderNodeObserver : public DataBase::DataObserver {
     public:
-        SceneRenderNodeObserver(SceneRender *node) {
-            node_ = node;
-        }
+        SceneRenderNodeObserver(SceneRender *node);
 
-        virtual void update() {
-            this->node_->graph_->setNodeToUpdate(this->node_);
-        }
+        virtual void update();
     private:
         SceneRender *node_;
     };
@@ -30,13 +26,7 @@ public:
     explicit SceneRender(DataBase* dataBase = nullptr, nodegraph::NodeGraph *graph = nullptr);
     ~SceneRender();
 
-    virtual void setDataBase(DataBase* data) {
-        if(data != nullptr) {
-            data->addProcessedTextureObserver(new SceneRenderNodeObserver(this));
-        }
-
-        this->dataBase_ = data;
-    }
+    virtual void setDataBase(DataBase* data);
 
 
     unsigned int getOutputDataType(unsigned int output) const;

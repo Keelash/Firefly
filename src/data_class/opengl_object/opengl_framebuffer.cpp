@@ -54,18 +54,6 @@ void A_OpenGlFramebuffer::getViewport(int &x, int &y, int &width, int &height) {
     width = m_viewport[2]; height = m_viewport[3];
 }
 
-void A_OpenGlFramebuffer::blitFramebuffer(A_OpenGlFramebuffer &output,
-                                          int x1, int y1, int width1, int height1,
-                                          int x2, int y2, int width2, int height2,
-                                          GLbitfield mask)
-{
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, this->framebuffer_);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, output.framebuffer_);
-    glBlitFramebuffer(x1, y1, width1, height1, x2, y2, width2, height2, mask, GL_NEAREST);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-}
-
 void OpenGlScreenFramebuffer::bind() {
      glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -136,4 +124,16 @@ void OpenGlFramebufferObject::bind() {
 
 void OpenGlFramebufferObject::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGlFramebufferObject::blitFramebuffer(OpenGlFramebufferObject &output,
+                                          int x1, int y1, int width1, int height1,
+                                          int x2, int y2, int width2, int height2,
+                                          GLbitfield mask)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, this->framebuffer_);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, output.framebuffer_);
+    glBlitFramebuffer(x1, y1, width1, height1, x2, y2, width2, height2, mask, GL_NEAREST);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }

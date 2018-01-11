@@ -12,7 +12,8 @@
 #include "mesh.h"
 #include "model.h"
 
-#include "src/core/geometry/loopsubdivision.h"
+//TODO : Must disapear
+#include "src/mesh_transform/loopsubdivision/loopsubdivision.h"
 
 glm::mat4 convertMatrix(aiMatrix4x4 mat) {
     glm::mat4 n_mat;
@@ -217,7 +218,7 @@ void Loader::extractModel(std::vector<Model *> *output) {
 
             Model* new_model = new Model(vertex_vector, faces_vector, animData);
 
-            new_model->transform_ = transf;
+            new_model->setWorldTransform(transf);
             new_model->setName(mesh->mName.C_Str());
 
             new_model->addTransformation(LoopSubdivision::getTransformName());

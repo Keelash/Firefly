@@ -92,7 +92,7 @@ glm::quat AnimationsData::CalcInterpolatedRotation(float time, Channel &channel)
     float factor = (time - channel.rotation_[id].time_)/delta;
     assert(factor >= 0.0f && factor <= 1.0f);
 
-    glm::quat out = (1.f-factor) * channel.rotation_[id].value_ + factor * channel.rotation_[id+1].value_;
+    glm::quat out = glm::slerp(channel.rotation_[id].value_, channel.rotation_[id+1].value_, factor);
     return glm::normalize(out);
 }
 

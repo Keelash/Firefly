@@ -10,6 +10,7 @@ public:
     virtual void bind() = 0;
 
 private:
+    //A Shader factory became a necessity
     virtual Shader* getShader() = 0;
 };
 

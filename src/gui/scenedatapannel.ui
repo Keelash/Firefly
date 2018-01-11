@@ -106,50 +106,7 @@
             <height>182</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QGroupBox" name="subdivision_group">
-             <property name="title">
-              <string>Subdivision</string>
-             </property>
-             <layout class="QFormLayout" name="formLayout">
-              <property name="leftMargin">
-               <number>3</number>
-              </property>
-              <property name="topMargin">
-               <number>3</number>
-              </property>
-              <property name="rightMargin">
-               <number>3</number>
-              </property>
-              <property name="bottomMargin">
-               <number>3</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QLabel" name="subdivision_label">
-                <property name="text">
-                 <string>Suddiv. level</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="subdivision_spinBox">
-                <property name="maximum">
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="add_subdiv_pushButton">
-                <property name="text">
-                 <string>Add Level</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QVBoxLayout" name="verticalLayout_3"/>
          </widget>
         </widget>
        </item>

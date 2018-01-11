@@ -3,12 +3,10 @@
 
 #include <QVariant>
 
-#include "sceneobject.h"
-
 #include "src/glm_include.h"
 #include "shader/shader.h"
 
-class Light : public SceneObject {
+class Light {
 public:
     static glm::vec3 RGBfromTemp(float temp);
 
@@ -35,6 +33,8 @@ private:
     glm::vec3 position_;
     glm::vec3 colour_hue_;
     float intensity_;
+
+    glm::mat4 Wroldtransform_;
 };
 
 Q_DECLARE_METATYPE(const Light*)

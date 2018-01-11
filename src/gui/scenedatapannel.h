@@ -5,7 +5,7 @@
 #include <QTreeWidget>
 
 #include "src/data_class/database.h"
-#include "src/core/geometry/loopsubdivision.h"
+
 
 namespace Ui {
 class SceneDataPannel;
@@ -24,11 +24,9 @@ public:
 private slots:
     void on_scene_Tree_itemActivated(QTreeWidgetItem *item, int column);
 
-    void on_subdivision_spinBox_valueChanged(int arg1);
-
-    void on_add_subdiv_pushButton_clicked();
-
 private:
+    void setModelAsCurrent(Model* current);
+
     DataBase* database_;
     Model *current_;
 

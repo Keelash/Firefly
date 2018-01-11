@@ -20,7 +20,7 @@ public:
     void getPixel(int level, float* pixel);
     void generateMipMap();
 
-    unsigned int getWidht() const { return this->width_; }
+    unsigned int getWidth() const { return this->width_; }
     unsigned int getHeight() const { return this->height_; }
 
     GLuint getTextureId() { return this->texid_; }

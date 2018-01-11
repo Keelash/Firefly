@@ -10,15 +10,14 @@ namespace Ui {
 class GraphicOutput;
 }
 
-class Shader;
 class Texture;
-class DataBase;
+class ScreenRender;
 
-class GraphicOutput : public nodegraph::ReadersNode, GraphicNode {
+class GraphicOutput : public nodegraph::ReadersNode {
     Q_OBJECT
 
 public:
-    explicit GraphicOutput(DataBase* database, nodegraph::NodeGraph *graph);
+    explicit GraphicOutput(nodegraph::NodeGraph *graph);
     ~GraphicOutput();
 
     unsigned int getInputDataType(unsigned int input) const;
@@ -33,7 +32,7 @@ protected:
 private:
     Ui::GraphicOutput *ui;
 
-    Shader* output_shader;
+    ScreenRender *screenRender_;
     Texture* render_;
 };
 

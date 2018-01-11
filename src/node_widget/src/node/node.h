@@ -9,6 +9,10 @@
 
 namespace nodegraph {
 
+//Modification must be done on another repository
+
+//Take back that QWidget dependency ! Separation between the function and the gui !
+//Think it as if you want multiple gui for a single node ! (Well it won't really happen, but who know !)
 class I_Node : public QWidget {
 public:
     typedef std::pair<int, I_Node*> NodeInput;
@@ -19,13 +23,18 @@ public:
 
     void setGraph(NodeGraph* graph) { this->graph_ = graph; }
 
+    //Don't use this, create a static connect function in the I_Node class
     virtual void setWriter(unsigned int input, I_Node* writer);
     virtual bool addReader(unsigned int output, unsigned int readers_input, I_Node* reader);
     virtual void suppReader(unsigned int output, unsigned int readers_input, I_Node* reader);
-    const ReadersMap* getReadersMap() const { return &this->readers_; }
+
+    //Must be hidden as well
+    const ReadersMap *getReadersMap() const { return &this->readers_; }
 
     bool isValid() const { return isValid_; }
+    //All the readers invalidation can be done here !
     void setInvalid() { this->isValid_ = false; }
+    //Can't be a public function
     void setValid() { this->isValid_ = true; }
 
     virtual unsigned int getInputDataType(unsigned int input) const = 0;
@@ -37,6 +46,7 @@ public:
     virtual unsigned int getOutputDataType(unsigned int output) const = 0;
     virtual unsigned int getNbOutputChannel() const = 0;
 
+    //He can update is own child as well
     virtual void updateNode() final;
 
 protected:

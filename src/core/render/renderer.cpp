@@ -68,8 +68,6 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
 
     for(unsigned int i = 0; i < data->getNbModels(); ++i) {
         Model* model = data->getModel(i);
-
-        this->zPassShader_->setUniformLocation("matrix_mesh", model->transform_);
         model->draw(this->zPassShader_, timeInSecond);
     }
 
@@ -91,13 +89,15 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     //this->framebuffer_->setPolygonMode(GL_LINE);
 
     this->renderShader_->bindShader();
+
+    this->ambient_->getAOTexture()->bindAsActiveTexture(0);
+    this->renderShader_->setTextureLocation("texture_AO", 0);
+
     this->renderShader_->setUniformLocation("matrix_view", camera->getViewMatrix());
     this->renderShader_->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());
 
     for(unsigned int i = 0; i < data->getNbModels(); ++i) {
         Model* model = data->getModel(i);
-
-        this->renderShader_->setUniformLocation("matrix_mesh", model->transform_);
 
         for(unsigned int j = 0; j < data->getLights().size(); ++j) {
             Light* l = data->getLights()[j];
