@@ -47,12 +47,10 @@ glm::vec3 Light::RGBfromTemp(float temperature) {
     return rgb_value / glm::vec3(255.0);
 }
 
-void Light::bindLight(Shader *shader, glm::mat4 transform) const {
-    glm::vec4 position = transform * glm::vec4(this->position_, 1.0f);
-
+void Light::bindLight(Shader *shader) const {
     shader->bindShader();
 
-    shader->setUniformLocation("light_position", position);
+    shader->setUniformLocation("light_position", this->position_);
     shader->setUniformLocation("light_colour", this->colour_hue_);
     shader->setUniformLocation("light_intensity", this->intensity_);
 }

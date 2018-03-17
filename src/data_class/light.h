@@ -26,7 +26,7 @@ public:
     inline void setIntensity(float intensity) { this->intensity_ = intensity; }
     inline float getIntensity() { return this->intensity_; }
 
-    void bindLight(Shader *shader, glm::mat4 transform) const;
+    void bindLight(Shader *shader) const;
 
     virtual void draw(Shader* shader, float timeInSecond = 0.f) { }
 private:

@@ -1,22 +1,32 @@
 #include "graphicoutput.h"
 #include "ui_graphicoutput.h"
 
+#include "src/glm_include.h"
+
 #include "src/data_class/texture.h"
 #include "src/core/render/screenrender.h"
+#include "src/data_class/database.h"
 
 
-GraphicOutput::GraphicOutput(nodegraph::NodeGraph *graph)
-    : nodegraph::ReadersNode(graph), ui(new Ui::GraphicOutput), render_(nullptr) {
-
+GraphicOutput::GraphicOutput(nodegraph::NodeGraph *graph, DataBase *database)
+    : nodegraph::ReadersNode(graph),
+      ui(new Ui::GraphicOutput),
+      render_(nullptr),
+      database_(database)
+{
     ui->setupUi(this);
 
-    this->screenRender_ = new ScreenRender(600, 400);
+    this->screenRender_ = new ScreenRender();
 }
 
 GraphicOutput::~GraphicOutput() {
     delete ui;
 
     delete this->screenRender_;
+}
+
+void GraphicOutput::setDataBase(DataBase* data) {
+    this->database_ = data;
 }
 
 void GraphicOutput::setInput(unsigned int input, QVariant data) {
@@ -52,6 +62,6 @@ QString GraphicOutput::getInputName(unsigned int input) const {
 
 void GraphicOutput::processData() {
     if(this->render_) {
-        this->screenRender_->renderTexToScreen(this->render_);
+        this->screenRender_->renderTexToScreen(this->render_, this->database_->windowRes_);
     }
 }

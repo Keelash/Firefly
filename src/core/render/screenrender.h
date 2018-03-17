@@ -8,14 +8,12 @@ class Texture;
 
 class ScreenRender {
 public:
-    ScreenRender(unsigned int width, unsigned int length);
+    ScreenRender();
     ~ScreenRender();
 
-    void renderTexToScreen(Texture* tex);
+    void renderTexToScreen(Texture* tex, const glm::ivec2 &res);
 
 private:
-    unsigned int width_, length_;
-
     Shader* shader_;
 };
 

@@ -44,11 +44,14 @@ void GLFrame::initializeGL() {
     screen.setViewport(0, 0, RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
     screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    this->graph_->addNode(new GraphicOutput(this->graph_));
+    this->defaultNodeNetwork();
     this->renderer_ = new Renderer(1280, 720);
 
-    this->database_->addLight(glm::vec3(10.0f), 4000.0f, 5.0f);
-    this->database_->addLight(glm::vec3(-4.0f), 8000.0f, 0.5f);
+    this->database_->addLight(glm::vec3(0.0, 20.0f, 0.0), 4000.0f, 5.0f);
+    //this->database_->addLight(glm::vec3(-4.0f), 8000.0f, 0.5f);
+
+    this->output_ = new GraphicOutput(this->graph_, this->database_);
+    this->graph_->addNode(this->output_);
 }
 
 void GLFrame::resizeGL(int w, int h) {
@@ -114,6 +117,10 @@ void GLFrame::mousePressEvent(QMouseEvent *e) {
 
 void GLFrame::mouseReleaseEvent(QMouseEvent *e) {
         this->state_ = 0;
+}
+
+void GLFrame::defaultNodeNetwork() {
+    this->addRenderNode("SceneRender");
 }
 
 void GLFrame::addRenderNode(std::string name) {

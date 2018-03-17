@@ -9,17 +9,24 @@ uniform vec3 sample_vec[64];
 uniform vec3 noise_vec[16];
 
 uniform mat4 projection_matrix;
+uniform mat4 view_matrix;
 
 uniform int kernelSize;
 uniform float radius;
 uniform float bias;
 
 vec3 getNormal(vec2 coord) {
-    return texture2D(normal_tex, coord).xyz;
+    vec4 norm = vec4(texture2D(normal_tex, coord).xyz, 1.0f);
+    norm = view_matrix * norm;
+
+    return norm.xyz;
 }
 
 vec3 getPosition(vec2 coord) {
-    return texture2D(position_tex, coord).xyz;
+    vec4 pos = vec4(texture2D(position_tex, coord).xyz, 1.0f);
+    pos = view_matrix * pos;
+
+    return pos.xyz;
 }
 
 vec3 getNoise(vec2 coord) {

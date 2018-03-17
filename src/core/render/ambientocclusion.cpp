@@ -78,7 +78,9 @@ void N_AmbientOcclusion::CalculateAmbientOcclusion(Texture* position, Texture* n
     this->shader_->setTextureLocation("normal_tex", 1);
     this->shader_->setUniformLocation("sample_vec", this->sample_);
     this->shader_->setUniformLocation("noise_vec", this->noise_);
+
     this->shader_->setUniformLocation("projection_matrix", camera->getProjectionMatrix());
+    this->shader_->setUniformLocation("view_matrix", camera->getViewMatrix());
 
     this->shader_->setUniformLocation("kernelSize", this->kernelSize_);
     this->shader_->setUniformLocation("radius", this->sampleRadius_);

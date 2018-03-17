@@ -6,19 +6,23 @@
 #include "src/node_widget/node_widget.h"
 #include "src/graphic_node/graphicnode.h"
 
+
 namespace Ui {
 class GraphicOutput;
 }
 
 class Texture;
 class ScreenRender;
+class DataBase;
 
 class GraphicOutput : public nodegraph::ReadersNode {
     Q_OBJECT
 
 public:
-    explicit GraphicOutput(nodegraph::NodeGraph *graph);
+    explicit GraphicOutput(nodegraph::NodeGraph *graph = nullptr, DataBase* database = nullptr);
     ~GraphicOutput();
+
+    void setDataBase(DataBase* data);
 
     unsigned int getInputDataType(unsigned int input) const;
     unsigned int getNbInputChannel() const;
@@ -33,6 +37,8 @@ private:
     Ui::GraphicOutput *ui;
 
     ScreenRender *screenRender_;
+    DataBase* database_;
+
     Texture* render_;
 };
 

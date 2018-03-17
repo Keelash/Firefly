@@ -13,7 +13,7 @@ class SceneRender;
 class SceneRender : public A_InputNode {
     Q_OBJECT
 public:
-    //Il faudra vraiment trouver quelque chose de mieux...
+    //TODO : Il faudra vraiment trouver quelque chose de mieux...
     class SceneRenderNodeObserver : public DataBase::DataObserver {
     public:
         SceneRenderNodeObserver(SceneRender *node);

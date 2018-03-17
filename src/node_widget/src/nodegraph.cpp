@@ -213,6 +213,7 @@ void NodeGraph::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
             if(ni && no) {
                 gui::EdgeView *e = ni->getInputEdge(d_i->getDockPos());
 
+                //If there is already a link we destroy it
                 if(e != nullptr) {
                     gui::NodeView *ne = qgraphicsitem_cast<gui::NodeView*>(e->getInput()->parentItem());
 

@@ -63,6 +63,7 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     //this->framebuffer_->setPolygonMode(GL_LINE);
 
     this->zPassShader_->bindShader();
+    this->zPassShader_->setUniformLocation("camera_position", camera->getPosition());
     this->zPassShader_->setUniformLocation("matrix_view", camera->getViewMatrix());
     this->zPassShader_->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());
 
@@ -93,6 +94,7 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
     this->ambient_->getAOTexture()->bindAsActiveTexture(0);
     this->renderShader_->setTextureLocation("texture_AO", 0);
 
+    this->zPassShader_->setUniformLocation("camera_position", camera->getPosition());
     this->renderShader_->setUniformLocation("matrix_view", camera->getViewMatrix());
     this->renderShader_->setUniformLocation("matrix_view_projection", camera->getProjectionMatrix() * camera->getViewMatrix());
 
@@ -102,7 +104,7 @@ void Renderer::drawScene(DataBase* data, float timeInSecond) {
         for(unsigned int j = 0; j < data->getLights().size(); ++j) {
             Light* l = data->getLights()[j];
 
-            l->bindLight(this->renderShader_, camera->getViewMatrix());
+            l->bindLight(this->renderShader_);
             model->draw(this->renderShader_, timeInSecond);
         }
     }

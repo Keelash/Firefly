@@ -4,11 +4,16 @@ in vec2 uvcoord_vertex;
 in vec4 position_vertex;
 in vec4 normal_vertex;
 
-uniform vec4 light_position;
+uniform vec3 light_position;
 uniform vec3 light_colour;
 uniform float light_intensity;
 
+uniform vec3 camera_position;
+
 uniform float M_PI = 3.1415926535897932384626433832795;
+
+layout(origin_upper_left) in vec4 gl_FragCoord;
+uniform sampler2D texture_AO;
 
 vec3 getNormal() {
     return normal_vertex.xyz;
@@ -71,8 +76,8 @@ float Fr_DisneyDiffuse( float NdotV , float NdotL , float LdotH , float linearRo
 void main() {
     vec3 position = getPosition();
     vec3 N = getNormal();
-    vec3 L = normalize(light_position.xyz - position);
-    vec3 V = normalize(-position);
+    vec3 L = normalize(light_position - position);
+    vec3 V = normalize(camera_position - position);
 
     float roughness = getRoughness();
     float linearRoughness = pow(roughness, 4);
@@ -88,6 +93,10 @@ void main() {
     float NdotH = abs(dot(N , H));
     float NdotL = max(dot(N , L), 0.0f);
 
+    //Ambient
+    vec2 texCoord = vec2(gl_FragCoord.x / 1280.f,  -gl_FragCoord.y / 720.f);
+    vec3 ao = texture2D(texture_AO, texCoord).xyz;
+
     //Specular
     vec3 F = F_Schlick(F0, 1, LdotH);
     float Vis = GGX_PartialGeometryTerm(V, N, H, roughness) * GGX_PartialGeometryTerm(L, N, H, roughness);
@@ -96,7 +105,8 @@ void main() {
 
     //Diffuse
     float Fd = Fr_DisneyDiffuse(NdotV, NdotL, LdotH, linearRoughness);
-    vec3 colour = (m_colour / M_PI * Fd + Fr) * light_intensity * light_colour * NdotL;
+
+    vec3 colour = ao * 0.3f + (m_colour / M_PI * Fd + Fr) * light_intensity * light_colour * NdotL;
 
     voxel_color = vec4(colour, 1.0f);
 }

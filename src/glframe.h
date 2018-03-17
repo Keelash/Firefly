@@ -16,6 +16,8 @@
 #define RESOLUTION_WIDTH 600
 #define RESOLUTION_HEIGHT 400
 
+class GraphicOutput;
+
 class GLFrame : public QGLWidget {
     Q_OBJECT
 public:
@@ -29,6 +31,7 @@ public:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
 
+    void defaultNodeNetwork();
     void addRenderNode(std::string name);
 
     DataBase* getDataBase() { return this->database_; }
@@ -45,7 +48,10 @@ private:
     QElapsedTimer *e_timer_;
 
     DataBase *database_;
+
     nodegraph::NodeGraph* graph_;
+    GraphicOutput* output_;
+
     Renderer *renderer_;
 };
 

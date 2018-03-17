@@ -6,15 +6,14 @@
 template<class Key, class A_Item>
 class Factory {
 public:
-    static Factory *getInstance() {
-        static Factory instance;
-        return &instance;
-    }
 
     typedef A_Item* (*CreateItem)(void);
     typedef std::map<Key, CreateItem> FactoryMap;
 
-    virtual ~Factory() {  }
+    static Factory *getInstance() {
+        static Factory instance;
+        return &instance;
+    }
 
     void registerItem(const Key &key, CreateItem fCreate) {
         this->getFactoryMap()[key] = fCreate;
@@ -34,7 +33,8 @@ public:
     typename FactoryMap::iterator end() { return this->getFactoryMap().end(); }
 
 protected:
-    static FactoryMap& getFactoryMap() {
+
+    FactoryMap& getFactoryMap() {
         static FactoryMap factoryMap;
         return factoryMap;
     }
@@ -42,6 +42,8 @@ protected:
     Factory() {  }
     Factory(const Factory& ) {  }
     Factory &operator=(const Factory&) { return *this; }
+
+    virtual ~Factory() {  }
 };
 
 #define REGISTER_FACTORY_ITEM(factory_klass, a_item_klass, klass, name) \

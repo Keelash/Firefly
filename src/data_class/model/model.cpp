@@ -57,7 +57,8 @@ void Model::draw(Shader* shader, float timeInSecond) {
         shader->setUniformLocation("bonesTransform", glm::mat4(0.0f));
     }
 
-    shader->setUniformLocation("matrix_mesh", this->worldTransform_);
+    shader->setUniformLocation("matrix_model", this->worldTransform_);
+    shader->setUniformLocation("matrix_worldNormal", glm::transpose(glm::inverse(this->worldTransform_)));
 
     //A ne faire que dans le cas ou on fait un render, pas un draw.
     /*

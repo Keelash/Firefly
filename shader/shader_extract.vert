@@ -9,7 +9,10 @@ out vec2 uvcoord_vertex;
 out vec4 position_vertex;
 out vec4 normal_vertex;
 
-uniform mat4 matrix_mesh;
+uniform vec3 camera_position;
+
+uniform mat4 matrix_model;
+uniform mat4 matrix_worldNormal;
 uniform mat4 matrix_view_projection;
 uniform mat4 matrix_view;
 
@@ -22,10 +25,10 @@ void main() {
     transform += bonesTransform[boneId_in[2]] * weight_in[2];
     transform += bonesTransform[boneId_in[3]] * weight_in[3];
 
-    vec4 position = matrix_mesh * transform * vec4(position_in, 1.0);
+    vec4 position = matrix_model * transform * vec4(position_in, 1.0);
     gl_Position = matrix_view_projection * position;
 
-    position_vertex =  matrix_view * position;
+    position_vertex =  position;
     uvcoord_vertex = vec2(uvcoord_in.x, -uvcoord_in.y);
-    normal_vertex = normalize(matrix_view * matrix_mesh * transform * vec4(normale_in, 0.0));
+    normal_vertex = normalize(matrix_worldNormal * transform * vec4(normale_in, 0.0));
 }

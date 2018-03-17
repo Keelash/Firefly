@@ -9,9 +9,7 @@
 const std::string OUTPUTSHADER_VERT("shader/shader_quadprint.vert");
 const std::string OUTPUTSHADER_FRAG("shader/shader_output.frag");
 
-ScreenRender::ScreenRender(unsigned int width, unsigned int length) :
-    width_(width), length_(length)
-{
+ScreenRender::ScreenRender() {
     ShaderCode code;
 
     code.createFromFile(OUTPUTSHADER_VERT, OUTPUTSHADER_FRAG);
@@ -22,13 +20,13 @@ ScreenRender::~ScreenRender() {
     delete this->shader_;
 }
 
-void ScreenRender::renderTexToScreen(Texture* tex) {
+void ScreenRender::renderTexToScreen(Texture* tex, const glm::ivec2 &res) {
     ScreenFramebuffer screen;
     QuadMesh *quad = QuadMesh::getInstance();
 
     if(tex != nullptr) {
         screen.bind();
-        screen.setViewport(0, 0, width_, length_);
+        screen.setViewport(0, 0, res.x, res.y);
         screen.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         screen.disableBlending();
         screen.disableDepthTest();
